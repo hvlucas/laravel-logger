@@ -1,0 +1,36 @@
+{
+    "name": "hvlucas/laravel-logger",
+    "description": "Log Model events easily with laravel-logger!",
+    "authors": [
+        {
+            "name": "Lucas Novoa",
+            "email": "novoalg@hotmail.com",
+            "homepage": "https://www.highervisibility.com#footer-consultation"
+        }
+    ],
+    "license": "MIT",
+    "type": "package",
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "keywords": [
+        "laravel"
+    ],
+    "require": {
+        "php": ">=7.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "HVLucas\\LaravelLogger\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "HVLucas\\LaravelLogger\\LaravelLoggerProvider"
+            ],
+            "aliases": {
+                "LaravelLogger": "HVLucas\\LaravelLogger\\Facades\\LaravelLogger"
+            }
+        }
+    }
+}
