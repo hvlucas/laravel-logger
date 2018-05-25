@@ -18,4 +18,6 @@ With Laravel Logger you can:
 None as of yet
 
 ## # Development
-If you have any ideas to contribute or bug fixes in mind, feel free to fork the repo and create a PR for my to take a look
+If you have any ideas to contribute or bug fixes in mind: 
+  - Fork the repo 
+  - Create a PR for me to take a look
