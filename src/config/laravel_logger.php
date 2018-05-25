@@ -23,7 +23,37 @@
         /* Route pathing */
         //'route_prefix' => 'events',
 
+        /* Default events*/
+        //'default_events' => ['created', 'updated', 'deleted', 'retrieved'],
 
         /* Models that are going to have Events Logged */
-        //'loggable_models' => []
+        //There are two ways to format loggable_models, you may pass specific options on a individual model.
+        //You can also pass the string of the model you want to log. 
+        //To be more specific on which events you want to track (if you only pass a string), then you will have to setup through the model 
+        //EXAMPLE:
+        /*
+        'loggable_models' => [
+            [
+                'model' => 'App\Post',
+                'events' => ['created', 'deleted', 'updated', 'retrieved'],
+                'attributes' => ['title', 'publisher', 'udpated_at'],
+            ],
+            'App\Comment', 
+            'App\User',
+            [
+                'model' => 'App\UserVote',
+                'events' => 'created'
+                'attributes' => 'score'
+                'with_user' => false,
+            ],
+            [
+                'model' => 'App\Team',
+                'attributes' => ['name', 'favorite_animal']
+            ],
+            [
+                'model' => 'App\Role',
+                'attributes' => false,
+            ],
+        ],
+         */
     ];

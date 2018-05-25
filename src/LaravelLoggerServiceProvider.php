@@ -3,6 +3,8 @@
 namespace HVLucas\LaravelLogger;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Contracts\Validation\Validator;
+use HVLucas\LaravelLogger\Observers\ModelObserver;
 
 class LaravelLoggerServiceProvider extends ServiceProvider
 {
@@ -42,6 +44,13 @@ class LaravelLoggerServiceProvider extends ServiceProvider
             //TODO
             //handle error exception
         }
+
+        $to_log = array();
+        foreach($loggable_models as $loggable){
+            if($this->validModel($loggable)){
+                $this->handleModel($loggable);
+            }
+        }
     }
 
     private function autoDetectModels(): array
@@ -50,11 +59,40 @@ class LaravelLoggerServiceProvider extends ServiceProvider
         $models = array();
         foreach($dir_tree as $file){
             $model_namespace = config('laravel_logger.base_model_namespace', 'App');
-            $model = "$model_namespace\\$file";
+            $file_name = "$model_namespace\\$file";
+            $model = preg_replace('/\.php$/', '', $file_name);
             if(class_exists($model)){
-                $models[] = preg_replace('/\.php$/', '', $model);
+                $models[] = $model;
             }
         }
         return $models;
+    }
+
+    private function validModel($data)
+    {
+        if(is_string($data) && class_exists($data)){
+            return true;
+        }
+
+        $validator = Validator::make($data, [
+            'model'         => 'required|string',
+            'events'        => 'nullable',
+            'attributes'    => 'nullable',
+        ]);
+
+        return $validator->passes();
+    }
+
+    private function handleModel($data): void
+    {
+        if(is_string($data)){
+            $model = $data; 
+        }
+
+        $model = $data['model'];
+        $events = $data['events'] ?? config('laravel_logger.default_events', ['created', 'updated', 'deleted', 'retrieved']);
+        $attributes = $data['attributes'] ?? null;
+
+        $model::observe(new ModelObserver($events, $attributes));
     }
 }
