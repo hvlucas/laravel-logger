@@ -20,7 +20,7 @@ class LaravelLoggerServiceProvider extends ServiceProvider
     public function registerLaravelLogger(): void
     {
         //Load config
-        $config = __DIR__ . '/../config/laravel_logger.php';
+        $config = __DIR__ . '/config/laravel_logger.php';
         $this->mergeConfigFrom($config, 'laravel_logger');
         $this->publishes([
             __DIR__.'/config/laravel_logger.php' => config_path('laravel_logger.php'),
