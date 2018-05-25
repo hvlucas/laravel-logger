@@ -20,6 +20,11 @@ class Event extends Model
     protected $table;
 
     /*
+     * Supported primary key types
+     */
+    protected $primary_key_types = ['int', 'string'];
+
+    /*
      * Guarded attributes
      */
     protected $guarded = [];
@@ -52,12 +57,20 @@ class Event extends Model
         $this->log_connection = config('laravel_logger.log_connection');
         $this->table = config('laravel_logger.table_name');
     }
+
     /*
      * Get log connection name 
      */
     public function getLogConnection()
     {
         return $this->log_connection;
+    }
+
+    /*
+     * Get supported primary key types
+     */
+    public function getPrimaryKeyTypes(){
+        return $this->primary_key_types;
     }
 
     /*
