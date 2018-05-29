@@ -9,10 +9,13 @@
         /* Interchangable options available */
 
         /* Displays attributes being changed */
-        //'with_data' => true,
+        //'log_data' => true,
         
         /* Name of table being created */
         //'table_name' => 'logged_events',
+
+        /* Log Authenticated user triggering the events */
+        //'log_user' => true,
 
         /* Default User model */
         //'user_model' => 'App\User',
@@ -44,7 +47,7 @@
                 'model' => 'App\UserVote',
                 'events' => 'created'
                 'attributes' => 'score'
-                'with_user' => false,
+                'log_user' => false,
             ],
             [
                 'model' => 'App\Team',

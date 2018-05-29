@@ -68,7 +68,10 @@ class LaravelLoggerServiceProvider extends ServiceProvider
         return $models;
     }
 
-    private function validModel($data)
+    /*
+     * Validates passed model data, could be array with attribute settings, or string of class name
+     */
+    private function validModel($data): boolean
     {
         if(is_string($data) && class_exists($data)){
             return true;
@@ -83,6 +86,9 @@ class LaravelLoggerServiceProvider extends ServiceProvider
         return $validator->passes();
     }
 
+    /*
+     * Start observing model
+     */
     private function handleModel($data): void
     {
         if(is_string($data)){
@@ -92,7 +98,6 @@ class LaravelLoggerServiceProvider extends ServiceProvider
         $model = $data['model'];
         $events = $data['events'] ?? config('laravel_logger.default_events', ['created', 'updated', 'deleted', 'retrieved']);
         $attributes = $data['attributes'] ?? null;
-
-        $model::observe(new ModelObserver($events, $attributes));
+        $model::observe(new ModelObserver($events, $attributes, config('laravel_logger.log_user'));
     }
 }

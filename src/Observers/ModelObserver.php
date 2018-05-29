@@ -16,13 +16,13 @@ class ModelObserver
     protected $attributes;
 
     // Flag to log Authenticated user (or not)
-    protected $with_user;
+    protected $log_user;
 
-    public function __construct($events, $attributes, $with_user)
+    public function __construct($events, $attributes, $log_user)
     {
         $this->events = $events;
         $this->attributes = $attributes;
-        $this->with_user = $with_user;
+        $this->log_user = $log_user;
     }
 
     /*
@@ -65,7 +65,8 @@ class ModelObserver
     /*
      * Sets up variables to log event
      */
-    private function logModelEvent($model, $event){
+    private function logModelEvent($model, $event)
+    {
         if(array_search($event, $this->events) === false){
             return;
         }
@@ -82,7 +83,7 @@ class ModelObserver
         }
 
         $current_user_id = null;
-        if($this->with_user){
+        if($this->log_user){
             $current_user = Auth::user();
             $current_user_id = $current_user->{$current_user->getKeyName()} ?? null;
         }
@@ -93,14 +94,22 @@ class ModelObserver
             $attributes = json_encode($attributes);
         }
 
-        //TODO 
-        //sanitize data
+        $data = [
+            'activity' => $event,
+            'model_id' => (string) $model->id,
+            'model_name' => $class,
+            'model_attributes' => $attributes,
+            'created_at' => time(),
+            'user_id' => $current_user_id,
+        ];
+
         static::storeEvent($data);
     }
 
-    //TODO
-    //create Event
-    private static function storeEvent($data){
+    private static function storeEvent($data)
+    {
+        //TODO
+        //validate Event
         Event::create($data);
     }
 }
