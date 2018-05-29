@@ -8,14 +8,8 @@
 
         /* Interchangable options available */
 
-        /* Displays attributes being changed */
-        //'log_data' => true,
-        
         /* Name of table being created */
         //'table_name' => 'logged_events',
-
-        /* Log Authenticated user triggering the events */
-        //'log_user' => true,
 
         /* Default User model */
         //'user_model' => 'App\User',
@@ -40,6 +34,8 @@
                 'model' => 'App\Post',
                 'events' => ['created', 'deleted', 'updated', 'retrieved'],
                 'attributes' => ['title', 'publisher', 'udpated_at'],
+                'log_data' => false,
+                'log_user' => false,
             ],
             'App\Comment', 
             'App\User',

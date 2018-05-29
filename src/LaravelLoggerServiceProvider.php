@@ -5,6 +5,7 @@ namespace HVLucas\LaravelLogger;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Validation\Validator;
 use HVLucas\LaravelLogger\Observers\ModelObserver;
+use HVLucas\LaravelLogger\LaravelLoggerTracker;
 
 class LaravelLoggerServiceProvider extends ServiceProvider
 {
@@ -48,6 +49,12 @@ class LaravelLoggerServiceProvider extends ServiceProvider
             //handle error exception
         }
 
+        $this->app->singleton('LaravelLoggerTracker', function() {
+            return new LaravelLoggerTracker();
+        });
+
+        $laravel_logger = $this->app->make(LaravelLoggerTracker::class);
+
         foreach($loggable_models as $loggable){
             if($this->validModel($loggable)){
                 $this->handleModel($loggable);
@@ -83,29 +90,45 @@ class LaravelLoggerServiceProvider extends ServiceProvider
             'model'         => 'required|string',
             'events'        => 'nullable',
             'attributes'    => 'nullable',
+            'log_user'      => 'nullable|boolean',
+            'log_data'      => 'nullable|boolean',
         ]);
 
         return $validator->passes();
     }
 
     /*
-     * Start observing model
-     * TODO
-     * Check for settings inside the Model given
+     * Start tracking model using Laravel Observers 
      */
     private function handleModel($data): void
     {
-        $default_events = config('laravel_logger.default_events', ['created', 'updated', 'deleted', 'retrieved']);
-        if(is_string($data)){
-            $model = $data; 
-            $events = $default_events;
-            $attributes = [];
-        }else{
+        $model = $data; 
+        $events = [];
+        $attributes = [];
+        $tracks_user = true;
+        $tracks_data = true;
+        if(!is_string($data)){
             $model = $data['model'];
-            $events = $data['events'] ?? $default_events;
-            $attributes = $data['attributes'] ?? [];
+
+            if(isset($data['events'])){
+                $events = (array) $data['events'];
+            }
+            
+            if(isset($data['attributes'])){
+                $attributes = (array) $data['attributes'];
+            }
+
+            if(isset($data['log_user'])){
+                $tracks_user = (bool) $data['log_user'];
+            }
+
+            if(isset($data['log_data'])){
+                $tracks_data = (bool) $data['log_data'];
+            }
         }
 
-        $model::observe(new ModelObserver($events, $attributes, config('laravel_logger.log_user', true)));
+        $laravel_logger_model = new LaravelLoggerModel($model, $events, $attributes, $tracks_user, $tracks_data);
+        LaravelLoggerTracker::push($laravel_logger_model);
+        $model::observe($this->app->make('HVLucas\LaravelLogger\Observers\ModelObserver'));
     }
 }

@@ -7,7 +7,7 @@ With Laravel Logger you can:
   - Keep track of of model change history
   - Have a clean front-end to view model changes
   - Export model history (CSV, PDF) from a Date Range or its full history
-  - View everything from a clean and responsive front-endo
+  - View everything from a clean and responsive front-end
 
 ## # Compatibility
 | Laravel Logger | Laravel | PHP   |
