@@ -9,6 +9,8 @@ class Event extends Model
 {
     use SoftDeletes;
 
+    public $timestamps = false;
+
     /*
      * The connection name for the model.
      */

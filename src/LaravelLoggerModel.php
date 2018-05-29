@@ -56,7 +56,7 @@ class LaravelLoggerModel
 
     public function isTrackingEvent(string $event)
     {
-        return array_search($event, $events) !== false;
+        return array_search($event, $this->events) !== false;
     }
 
     public function getAttributeValues($model)
@@ -71,7 +71,7 @@ class LaravelLoggerModel
         }else{
             $attributes = $model->only($attributes);
         }
-        return $attributes;
+        return json_encode($attributes);
     }
 
     // Getters
@@ -83,10 +83,5 @@ class LaravelLoggerModel
     public function getEvents()
     {
         return $this->events;
-    }
-
-    public function getAttributes()
-    {
-        return $this->attributes;
     }
 }
