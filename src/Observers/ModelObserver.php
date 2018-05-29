@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Observers;
+namespace HVLucas\LaravelLogger\Observers;
 
 use ReflectionClass;
 use Illuminate\Support\Facades\Auth;
-use HVLucas\LaravelLogger\Event;
+use HVLucas\LaravelLogger\App\Event;
 
 class ModelObserver
 {

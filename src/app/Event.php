@@ -1,6 +1,6 @@
 <?php
 
-namespace HVLucas\LaravelLogger;
+namespace HVLucas\LaravelLogger\App;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
