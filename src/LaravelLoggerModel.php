@@ -73,4 +73,20 @@ class LaravelLoggerModel
         }
         return $attributes;
     }
+
+    // Getters
+    public function getClassName()
+    {
+        return $this->class_name;
+    }
+
+    public function getEvents()
+    {
+        return $this->events;
+    }
+
+    public function getAttributes()
+    {
+        return $this->attributes;
+    }
 }

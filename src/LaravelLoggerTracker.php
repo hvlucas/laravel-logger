@@ -15,7 +15,7 @@ class LaravelLoggerTracker
     // Push an instance of LaravelLoggerModel into list of trackable models
     public function push(LaravelLoggerModel $model)
     {
-        $this->models[$model->class_name] = $model;
+        $this->models[$model->getClassName()] = $model;
     }
 
     public function getModel(string $model)

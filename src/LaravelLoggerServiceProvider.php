@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Validation\Validator;
 use HVLucas\LaravelLogger\Observers\ModelObserver;
 use HVLucas\LaravelLogger\LaravelLoggerTracker;
+use HVLucas\LaravelLogger\Facades\LaravelLogger;
 
 class LaravelLoggerServiceProvider extends ServiceProvider
 {
@@ -14,13 +15,23 @@ class LaravelLoggerServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->registerLaravelLogger();
+        $this->bootLaravelLogger();
     }
 
     /*
-     * TODO
+     * Register Application
      */
-    public function registerLaravelLogger(): void
+    public function register()
+    {
+        $this->app->bind('LaravelLogger', function(){
+            return new LaravelLoggerTracker;
+        });
+    }
+
+    /*
+     * Boot Application with given configuration
+     */
+    public function bootLaravelLogger(): void
     {
         //Load config
         $config = __DIR__ . '/config/laravel_logger.php';
@@ -41,12 +52,10 @@ class LaravelLoggerServiceProvider extends ServiceProvider
         //Register Migrations
         $this->loadMigrationsFrom(__DIR__.'/database/migrations');
 
-        //TODO
-        //boot Observer for models that are going to be Logged
         $loggable_models = config('laravel_logger.loggable_models', $this->autoDetectModels());
         if(empty($loggable_models)){
             //TODO
-            //handle error exception
+            //throw exception of no detectable models 
         }
 
         $this->app->singleton('LaravelLoggerTracker', function() {
@@ -62,6 +71,9 @@ class LaravelLoggerServiceProvider extends ServiceProvider
         }
     }
 
+    /*
+     * Returns a list of models based on application base path
+     */
     private function autoDetectModels(): array
     {
         $dir_tree = preg_grep('/.*\.php/', scandir(base_path('app/')));
@@ -128,7 +140,7 @@ class LaravelLoggerServiceProvider extends ServiceProvider
         }
 
         $laravel_logger_model = new LaravelLoggerModel($model, $events, $attributes, $tracks_user, $tracks_data);
-        LaravelLoggerTracker::push($laravel_logger_model);
+        LaravelLogger::push($laravel_logger_model);
         $model::observe($this->app->make('HVLucas\LaravelLogger\Observers\ModelObserver'));
     }
 }
