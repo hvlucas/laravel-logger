@@ -67,7 +67,7 @@ class ModelObserver
             $created_at->setTimestamp(time());
             $data = [
                 'activity' => $event,
-                'model_id' => (string) $model->id,
+                'model_id' => (string) $model_tracked->id,
                 'model_name' => get_class($model_tracked),
                 'model_attributes' => $attributes,
                 'created_at' => $created_at,

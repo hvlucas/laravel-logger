@@ -34,7 +34,7 @@ class Event extends Model
     /*
      * Date attributes
      */
-    protected $dates = [ 'deleted_at' ];
+    protected $dates = [ 'created_at', 'deleted_at' ];
 
     /*
      * TODO
