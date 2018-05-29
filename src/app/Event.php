@@ -55,7 +55,7 @@ class Event extends Model
     {
         parent::__construct($attributes);
         $this->log_connection = config('laravel_logger.log_connection');
-        $this->table = config('laravel_logger.table_name');
+        $this->table = config('laravel_logger.table_name', 'logged_events');
     }
 
     /*

@@ -28,7 +28,7 @@ class LaravelLoggerServiceProvider extends ServiceProvider
             __DIR__.'/config/laravel_logger.php' => config_path('laravel_logger.php'),
         ]);
 
-        //Publish the config/breadcrumbs.php file
+        //Publish the config/laravel_logger.php file
         $this->publishes([$config => config_path('laravel_logger.php')], 'config');
 
         //Register Routes
@@ -36,6 +36,9 @@ class LaravelLoggerServiceProvider extends ServiceProvider
 
         //Register views
         $this->loadViewsFrom(__DIR__ . '/resources/views/', 'laravel_logger');
+
+        //Register Migrations
+        $this->loadMigrationsFrom(__DIR__.'/database/migrations');
 
         //TODO
         //boot Observer for models that are going to be Logged
@@ -45,7 +48,6 @@ class LaravelLoggerServiceProvider extends ServiceProvider
             //handle error exception
         }
 
-        $to_log = array();
         foreach($loggable_models as $loggable){
             if($this->validModel($loggable)){
                 $this->handleModel($loggable);
