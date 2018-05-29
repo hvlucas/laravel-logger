@@ -1,6 +1,7 @@
 <?php
 
 namespace HVLucas\LaravelLogger;
+use ReflectionClass;
 
 class LaravelLoggerModel
 {
