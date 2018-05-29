@@ -62,8 +62,6 @@ class LaravelLoggerServiceProvider extends ServiceProvider
             return new LaravelLoggerTracker();
         });
 
-        $laravel_logger = $this->app->make(LaravelLoggerTracker::class);
-
         foreach($loggable_models as $loggable){
             if($this->validModel($loggable)){
                 $this->handleModel($loggable);
@@ -102,8 +100,8 @@ class LaravelLoggerServiceProvider extends ServiceProvider
             'model'         => 'required|string',
             'events'        => 'nullable',
             'attributes'    => 'nullable',
-            'log_user'      => 'nullable|boolean',
-            'log_data'      => 'nullable|boolean',
+            'tracks_user'   => 'nullable|boolean',
+            'tracks_data'   => 'nullable|boolean',
         ]);
 
         return $validator->passes();

@@ -5,7 +5,7 @@ namespace HVLucas\LaravelLogger\Observers;
 use ReflectionClass;
 use Illuminate\Support\Facades\Auth;
 use HVLucas\LaravelLogger\App\Event;
-use HVLucas\LaravelLogger\LaravelLoggerTracker;
+use HVLucas\LaravelLogger\Facades\LaravelLogger;
 
 class ModelObserver
 {
@@ -49,7 +49,7 @@ class ModelObserver
      */
     private function logModelEvent($model_tracked, $event): void
     {
-        $model = LaravelLoggerTracker::getModel(get_class($model_tracked));
+        $model = LaravelLogger::getModel(get_class($model_tracked));
         if($model->isTrackingEvent($event)){
             $attributes = [];
             if($model_tracker->isTrackingData()){
