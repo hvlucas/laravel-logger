@@ -71,7 +71,7 @@ class LaravelLoggerServiceProvider extends ServiceProvider
     /*
      * Validates passed model data, could be array with attribute settings, or string of class name
      */
-    private function validModel($data): boolean
+    private function validModel($data): bool
     {
         if(is_string($data) && class_exists($data)){
             return true;
