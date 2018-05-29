@@ -2,7 +2,7 @@
 
 namespace HVLucas\LaravelLogger;
 
-use HVLucas\LaravelLogger\Exceptions\ModelNotFoundException
+use HVLucas\LaravelLogger\Exceptions\ModelNotFoundException;
 
 class LaravelLoggerTracker
 {
