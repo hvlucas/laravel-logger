@@ -88,14 +88,18 @@ class LaravelLoggerServiceProvider extends ServiceProvider
 
     /*
      * Start observing model
+     * TODO
+     * Check for settings inside the Model given
      */
     private function handleModel($data): void
     {
+        $default_events = config('laravel_logger.default_events', ['created', 'updated', 'deleted', 'retrieved']);
         if(is_string($data)){
             $model = $data; 
+            $events = $default_events;
         }else{
             $model = $data['model'];
-            $events = $data['events'] ?? config('laravel_logger.default_events', ['created', 'updated', 'deleted', 'retrieved']);
+            $events = $data['events'] ?? $default_events;
             $attributes = $data['attributes'] ?? null;
         }
         $model::observe(new ModelObserver($events, $attributes, config('laravel_logger.log_user')));
