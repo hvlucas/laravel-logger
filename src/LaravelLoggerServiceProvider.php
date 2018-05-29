@@ -98,6 +98,6 @@ class LaravelLoggerServiceProvider extends ServiceProvider
         $model = $data['model'];
         $events = $data['events'] ?? config('laravel_logger.default_events', ['created', 'updated', 'deleted', 'retrieved']);
         $attributes = $data['attributes'] ?? null;
-        $model::observe(new ModelObserver($events, $attributes, config('laravel_logger.log_user'));
+        $model::observe(new ModelObserver($events, $attributes, config('laravel_logger.log_user')));
     }
 }
