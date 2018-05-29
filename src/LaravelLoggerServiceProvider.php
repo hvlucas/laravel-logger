@@ -97,11 +97,13 @@ class LaravelLoggerServiceProvider extends ServiceProvider
         if(is_string($data)){
             $model = $data; 
             $events = $default_events;
+            $attributes = null;
         }else{
             $model = $data['model'];
             $events = $data['events'] ?? $default_events;
             $attributes = $data['attributes'] ?? null;
         }
+
         $model::observe(new ModelObserver($events, $attributes, config('laravel_logger.log_user')));
     }
 }
