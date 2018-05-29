@@ -18,7 +18,7 @@ class ModelObserver
     // Flag to log Authenticated user (or not)
     protected $log_user;
 
-    public function __construct($events, $attributes, $log_user)
+    public function __construct(array $events, array $attributes, bool $log_user)
     {
         $this->events = $events;
         $this->attributes = $attributes;
