@@ -30,7 +30,7 @@ class CreateLaravelLoggerEventTable extends Migration
                 exit(1);
             }
 
-            Schema::connection($connection)->create($table, function (Blueprint $table) {
+            Schema::connection($connection)->create($table, function (Blueprint $table) use($user_key_type) {
                 $table->increments('id');
                 $table->string('activity');
 
