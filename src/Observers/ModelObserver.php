@@ -10,44 +10,25 @@ use HVLucas\LaravelLogger\Facades\LaravelLogger;
 
 class ModelObserver
 {
-    /*
-     * Log created eloquent event
-     */
+    // Log created eloquent event
     public function created($model)
     {
         $this->logModelEvent($model, 'created');
     }
-
-    /*
-     * Log updated eloquent event
-     */
+    
+    // Log updated eloquent event
     public function updated($model)
     {
         $this->logModelEvent($model, 'updated');
     }
 
-    /*
-     * Log deleted eloquent event
-     */
+    // Log deleted eloquent event
     public function deleted($model)
     {
         $this->logModelEvent($model, 'deleted');
     }
 
-    /*
-     * Log retrieved eloquent event
-     */
-    public function retrieved($model)
-    {
-        $this->logModelEvent($model, 'retrieved');
-    }
-
-    //TODO
-    //custom events
-
-    /*
-     * Sets up variables to log event
-     */
+    // Sets up variables to log event
     private function logModelEvent($model_tracked, $event): void
     {
         $tracker = LaravelLogger::getTracker();
@@ -75,7 +56,7 @@ class ModelObserver
             $created_at->setTimestamp(time());
             $data = [
                 'activity' => $event,
-                'model_id' => (string) $model_tracked->id,
+                'model_id' => (string) $model_tracked->{$model_tracked->getKeyName()},
                 'model_name' => get_class($model_tracked),
                 'model_attributes' => $attributes,
                 'created_at' => $created_at,
