@@ -59,7 +59,7 @@ class ModelObserver
 
             $current_user_id = null;
             if($model->isTrackingAuthenticatedUser()){
-                $current_user = Auth::user();
+                $current_user = Auth::getUser();
                 $current_user_id = $current_user ? $current_user->{$current_user->getKeyName()} : null;
             }
 

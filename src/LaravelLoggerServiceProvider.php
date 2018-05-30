@@ -24,7 +24,7 @@ class LaravelLoggerServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind('LaravelLogger', function(){
-            return new LaravelLoggerTracker;
+            return new LaravelLoggerTracker();
         });
     }
 
