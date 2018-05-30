@@ -79,7 +79,11 @@ class LaravelLoggerServiceProvider extends ServiceProvider
             $file_name = "$model_namespace\\$file";
             $model = preg_replace('/\.php$/', '', $file_name);
             if(class_exists($model)){
-                $models[] = $model;
+                $instance = new $model;
+                $table = $instance->getTable();
+                if(Schema::hasTable($table)){
+                    $models[] = $model;
+                }
             }
         }
         return $models;
@@ -155,7 +159,6 @@ class LaravelLoggerServiceProvider extends ServiceProvider
                 $created_at = new DateTime;
                 $created_at->setTimestamp(time());
                 $attributes = $laravel_logger_model->getAttributeValues($init_model);
-
                 Event::create([
                     'activity' => 'startpoint',
                     'user_id' => null,
@@ -170,6 +173,5 @@ class LaravelLoggerServiceProvider extends ServiceProvider
                 ]);
             }
         }
-
     }
 }

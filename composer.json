@@ -25,7 +25,10 @@
     },
     "scripts": {
         "post-install-cmd": [ 
-            "HVLucas\\LaravelLogger\\Scripts\\Installation::postInstall"
+            "php artisan migrate"
+        ],
+        "post-update-cmd": [
+            "php artisan migrate"
         ]
     },
     "extra": {
