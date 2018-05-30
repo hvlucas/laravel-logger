@@ -23,6 +23,9 @@
             "HVLucas\\LaravelLogger\\": "src/"
         }
     },
+    "scripts": {
+        "post-install-cmd": "HVLucas\\LaravelLogger\\Scripts\\Installation::postInstall"
+    },
     "extra": {
         "laravel": {
             "providers": [
