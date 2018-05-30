@@ -24,7 +24,7 @@
         }
     },
     "scripts": {
-        "post-install-cmd": "HVLucas\\LaravelLogger\\Scripts\\Installation::postInstall"
+        "pre-autoload-dump": "HVLucas\\LaravelLogger\\Scripts\\Installation::postInstall"
     },
     "extra": {
         "laravel": {
