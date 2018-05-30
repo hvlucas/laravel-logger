@@ -147,25 +147,26 @@ class LaravelLoggerServiceProvider extends ServiceProvider
         $model_key = $model_instance->getKeyName();
 
         // Fetch models that have not been initiated
-        $models = $model::leftJoin($event_table, "$model_table.$model_key", '=', "$event_table.model_id")->select("$model_table.*", "$event_table.activity as event_activity_id")->whereNull("$event_table.activity")->get();
+        if(Schema::tableExists($event_table)){
+            $models = $model::leftJoin($event_table, "$model_table.$model_key", '=', "$event_table.model_id")->select("$model_table.*", "$event_table.activity as event_activity_id")->whereNull("$event_table.activity")->get();
+            foreach($models as $init_model){
+                $created_at = new DateTime;
+                $created_at->setTimestamp(time());
+                $attributes = $laravel_logger_model->getAttributeValues($init_model);
 
-        foreach($models as $init_model){
-            $created_at = new DateTime;
-            $created_at->setTimestamp(time());
-            $attributes = $laravel_logger_model->getAttributeValues($init_model);
-
-            Event::create([
-                'activity' => 'startpoint',
-                'user_id' => null,
-                'model_id' => (string) $init_model->{$init_model->getKeyName()},
-                'model_name' => $model, 
-                'model_attributes' => $attributes,
-                'user_agent' => null,
-                'session_id' => null,
-                'ajax' => false,
-                'full_url' => null,
-                'created_at' => $created_at,
-            ]);
+                Event::create([
+                    'activity' => 'startpoint',
+                    'user_id' => null,
+                    'model_id' => (string) $init_model->{$init_model->getKeyName()},
+                    'model_name' => $model, 
+                    'model_attributes' => $attributes,
+                    'user_agent' => null,
+                    'session_id' => null,
+                    'ajax' => false,
+                    'full_url' => null,
+                    'created_at' => $created_at,
+                ]);
+            }
         }
 
     }
