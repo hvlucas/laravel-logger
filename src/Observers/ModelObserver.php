@@ -50,7 +50,15 @@ class ModelObserver
      */
     private function logModelEvent($model_tracked, $event): void
     {
-        $model = LaravelLogger::getModel(get_class($model_tracked));
+        $tracker = LaravelLogger::getTracker();
+        if($tracker->isTracking()){
+            return;
+        }
+
+        // Flag tracking to true
+        $tracker->setTracking(true);
+
+        $model = $tracker->getModel(get_class($model_tracked));
         if($model->isTrackingEvent($event)){
             $attributes = [];
             if($model->isTrackingData()){
@@ -72,10 +80,16 @@ class ModelObserver
                 'model_attributes' => $attributes,
                 'created_at' => $created_at,
                 'user_id' => $current_user_id,
+                'user_agent' => $tracker->getUserAgent(),
+                'full_url' => $tracker->getFullUrl(),
+                'ajax' => $tracker->getAjax(),
+                'session_id' => $tracker->getSessionId()
             ];
 
             static::storeEvent($data);
         }
+
+        $tracker->setTracking(false);
     }
 
     private static function storeEvent($data)

@@ -40,11 +40,14 @@ class CreateLaravelLoggerEventTable extends Migration
                     $table->string('user_id')->nullable();
                 }
                 
-                //model could have string primary_key
                 $table->string('model_id');
                 $table->string('model_name');
                 $table->longText('model_attributes')->nullable();
-
+                $table->string('user_agent')->nullable();
+                $table->string('session_id')->nullable();
+                $table->string('ip_address')->nullable();
+                $table->boolean('ajax');
+                $table->longText('full_url')->nullable();
                 $table->dateTime('created_at');
                 $table->softDeletes();
             });

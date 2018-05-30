@@ -10,17 +10,13 @@ use HVLucas\LaravelLogger\Facades\LaravelLogger;
 
 class LaravelLoggerServiceProvider extends ServiceProvider
 {
-    /*
-     * Boot Application
-     */
+    // Boot Application
     public function boot(): void
     {
         $this->bootLaravelLogger();
     }
 
-    /*
-     * Register Application
-     */
+    // Register Application
     public function register()
     {
         $this->app->bind('LaravelLogger', function(){
@@ -28,34 +24,33 @@ class LaravelLoggerServiceProvider extends ServiceProvider
         });
     }
 
-    /*
-     * Boot Application with given configuration
-     */
+    
+    // Boot Application with given configuration
     public function bootLaravelLogger(): void
     {
-        //Load config
+        // Load config
         $config = __DIR__ . '/config/laravel_logger.php';
         $this->mergeConfigFrom($config, 'laravel_logger');
         $this->publishes([
             __DIR__.'/config/laravel_logger.php' => config_path('laravel_logger.php'),
         ]);
 
-        //Publish the config/laravel_logger.php file
+        // Publish the config/laravel_logger.php file
         $this->publishes([$config => config_path('laravel_logger.php')], 'config');
 
-        //Register Routes
+        // Register Routes
         $this->loadRoutesFrom(__DIR__.'/routes/laravel_logger.php');
 
-        //Register views
+        // Register views
         $this->loadViewsFrom(__DIR__ . '/resources/views/', 'laravel_logger');
 
-        //Register Migrations
+        // Register Migrations
         $this->loadMigrationsFrom(__DIR__.'/database/migrations');
 
         $loggable_models = config('laravel_logger.loggable_models', $this->autoDetectModels());
         if(empty($loggable_models)){
-            //TODO
-            //throw exception of no detectable models 
+            // TODO
+            // throw exception of no detectable models 
         }
 
         $this->app->singleton('LaravelLoggerTracker', function() {
@@ -69,9 +64,9 @@ class LaravelLoggerServiceProvider extends ServiceProvider
         }
     }
 
-    /*
-     * Returns a list of models based on application base path
-     */
+    
+    // Returns a list of models based on application base path
+     
     private function autoDetectModels(): array
     {
         $dir_tree = preg_grep('/.*\.php/', scandir(base_path('app/')));
@@ -87,9 +82,9 @@ class LaravelLoggerServiceProvider extends ServiceProvider
         return $models;
     }
 
-    /*
-     * Validates passed model data, could be array with attribute settings, or string of class name
-     */
+    
+    // Validates passed model data, could be array with attribute settings, or string of class name
+     
     private function validModel($data): bool
     {
         if(is_string($data) && class_exists($data)){
@@ -107,9 +102,9 @@ class LaravelLoggerServiceProvider extends ServiceProvider
         return $validator->passes();
     }
 
-    /*
-     * Start tracking model using Laravel Observers 
-     */
+    
+    // Start tracking model using Laravel Observers 
+     
     private function handleModel($data): void
     {
         $model = $data; 
