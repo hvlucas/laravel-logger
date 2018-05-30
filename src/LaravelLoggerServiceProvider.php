@@ -147,7 +147,7 @@ class LaravelLoggerServiceProvider extends ServiceProvider
         $model_key = $model_instance->getKeyName();
 
         // Fetch models that have not been initiated
-        if(Schema::tableExists($event_table)){
+        if(Schema::hasTable($event_table)){
             $models = $model::leftJoin($event_table, "$model_table.$model_key", '=', "$event_table.model_id")->select("$model_table.*", "$event_table.activity as event_activity_id")->whereNull("$event_table.activity")->get();
             foreach($models as $init_model){
                 $created_at = new DateTime;
