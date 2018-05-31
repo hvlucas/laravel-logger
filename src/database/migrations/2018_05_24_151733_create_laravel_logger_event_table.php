@@ -54,7 +54,7 @@ class CreateLaravelLoggerEventTable extends Migration
         }
 
         // Set Starting points for all models being tracked
-        $models = LaravelLogger::models();
+        $models = LaravelLogger::getModels();
         foreach($models as $model){
             $model->setStartingPoint();
         }

@@ -2,6 +2,7 @@
 
 namespace HVLucas\LaravelLogger;
 
+use DateTime;
 use ReflectionClass;
 use Illuminate\Support\Facades\Schema;
 use HVLucas\LaravelLogger\App\Event;
