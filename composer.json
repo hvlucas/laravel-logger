@@ -24,11 +24,11 @@
         }
     },
     "scripts": {
-        "post-install-cmd": [ 
-            "php artisan migrate"
+        "post-package-install": [ 
+            "@php artisan migrate"
         ],
-        "post-update-cmd": [
-            "php artisan migrate"
+        "post-package-update": [
+            "@php artisan migrate"
         ]
     },
     "extra": {

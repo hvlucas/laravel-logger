@@ -51,6 +51,20 @@ class LaravelLoggerTracker
         $this->models[$model->getClassName()] = $model;
     }
 
+    // Set is tracking property to a boolean state
+    public function setTracking(bool $state)
+    {
+        $this->is_tracking = $state;
+    }
+
+    /* Getters */
+
+    // Return is tracking property
+    public function isTracking()
+    {
+        return $this->is_tracking;
+    }
+
     // Get model from list based on class name string
     public function getModel(string $class_name)
     {
@@ -96,6 +110,8 @@ class LaravelLoggerTracker
         return $this->user_agent;
     }
 
+    /* Refresh/Fetch Helpers */
+
     // Set full url property to current request full url
     public function refreshFullUrl()
     {
@@ -123,17 +139,5 @@ class LaravelLoggerTracker
             $id = $user->{$user->getKeyName()};
         }
         $this->user_id = $id;
-    }
-
-    // Return is tracking property
-    public function isTracking()
-    {
-        return $this->is_tracking;
-    }
-
-    // Set is tracking property to a boolean state
-    public function setTracking(bool $state)
-    {
-        $this->is_tracking = $state;
     }
 }

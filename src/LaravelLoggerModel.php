@@ -1,7 +1,9 @@
 <?php
 
 namespace HVLucas\LaravelLogger;
+
 use ReflectionClass;
+use HVLucas\LaravelLogger\Exceptions\ClassNotMatchedException;
 
 class LaravelLoggerModel
 {
@@ -63,6 +65,10 @@ class LaravelLoggerModel
     {
         //TODO
         //Throw exception if model class does not match model given
+        $class_name = get_class($model);
+        if($class_name != $this->class_name){
+            throw new ClassNotMatchedException("Model '$class_name' does not match $this->class_name.");
+        }
         
         $attributes = $this->attributes;
         if(empty($attributes)){
