@@ -35,7 +35,8 @@
     "extra": {
         "laravel": {
             "providers": [
-                "HVLucas\\LaravelLogger\\LaravelLoggerServiceProvider"
+                "HVLucas\\LaravelLogger\\LaravelLoggerServiceProvider",
+                "HVLucas\\LaravelLogger\\LaravelLoggerRouteServiceProvider"
             ],
             "aliases": {
                 "LaravelLogger": "HVLucas\\LaravelLogger\\Facades\\LaravelLogger"

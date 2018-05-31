@@ -51,10 +51,23 @@ class LaravelLoggerServiceProvider extends ServiceProvider
         // Register Migrations
         $this->loadMigrationsFrom(__DIR__.'/database/migrations');
 
+        // Publish DataTables
+        $this->publishes([
+           base_path('vendor/datatables/datatables/media') => public_path('vendor/datatables'),
+        ], 'public');
+
+        // Publish Laravel Logger assets
+        $this->publishes([
+           __DIR__.'/resources/assets/' => public_path('vendor/laravel-logger'),
+        ], 'public');
+
+
+        // Singleton LaravelLoggerTracker bind
         $this->app->singleton('LaravelLoggerTracker', function() {
             return new LaravelLoggerTracker();
         });
 
+        // Read from config or Auto Detect Models on the fly
         $loggable_models = config('laravel_logger.loggable_models', $this->autoDetectModels());
         foreach($loggable_models as $loggable){
             if($this->validModel($loggable)){

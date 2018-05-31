@@ -4,6 +4,7 @@ namespace HVLucas\LaravelLogger\App\Http\Controllers;
 
 use Illuminate\Routing\Controller;
 use HVLucas\LaravelLogger\App\Event;
+use HVLucas\LaravelLogger\Facades\LaravelLogger;
 
 abstract class LaravelLoggerController extends Controller
 {
@@ -14,6 +15,11 @@ abstract class LaravelLoggerController extends Controller
     // Export PDF/CSV
     public function list()
     {
+        $model_events = Event::orderBy('created_at', 'desc')->get()->groupBy('model_name');
+        $events = $model_events->mapWithKeys(function($models, $class_name){
+            return [LaravelLogger::getModel($class_name) => $models];
+        });
+        return view('laravel_logger::index', compact('events'));
     }
 
     // TODO
