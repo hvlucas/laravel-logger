@@ -1,14 +1,18 @@
 @extends('laravel_logger::app')
 @section('laravel_logger')
     <ul class="nav nav-tabs" id="myTab" role="tablist">
-        @foreach($models as $model => $events)
+        @foreach($models as $model_event)
             @php
+                $model              = $model_event['model'];
+                $events             = $model_event['events'];
+
                 $class_name         = $model->getClassName();
-                $no_namespace       = end(explode('\\', $class_name));
+                $class_break = explode('\\', $class_name);
+                $no_namespace       = end($class_break);
                 $lower_no_namespace = strtolower($no_namespace);
                 $id = $aria         = $lower_no_namespace;
                 $link_text          = $class_name;
-                $selected           = $loop->first() ? 'true' : 'false';
+                $selected           = $loop->first ? 'true' : 'false';
                 $count              = $events->count();
             @endphp
 
@@ -18,13 +22,13 @@
         @endforeach
     </ul>
     <div class="tab-content" id="myTabContent">
-        @foreach($models as $model => $events)
+        @foreach($models as $model_events)
             <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                 {{-- 
                     TODO 
                     Display events
                   --}}
-                {{$events->count()}}
+                {{$model_events['events']->count()}}
             </div>
         @endforeach
     </div>

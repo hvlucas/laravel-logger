@@ -16,10 +16,10 @@ abstract class LaravelLoggerController extends Controller
     public function list()
     {
         $model_events = Event::orderBy('created_at', 'desc')->get()->groupBy('model_name');
-        $events = $model_events->mapWithKeys(function($models, $class_name){
-            return [LaravelLogger::getModel($class_name) => $models];
+        $models = $model_events->map(function($models, $class_name){
+            return [ 'model' => LaravelLogger::getModel($class_name), 'events' => $models];
         });
-        return view('laravel_logger::index', compact('events'));
+        return view('laravel_logger::index', compact('models'));
     }
 
     // TODO
