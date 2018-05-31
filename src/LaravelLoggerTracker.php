@@ -110,6 +110,12 @@ class LaravelLoggerTracker
         return $this->user_agent;
     }
 
+    // Return all Models
+    public function getModels()
+    {
+        return $this->models;
+    }
+
     /* Refresh/Fetch Helpers */
 
     // Set full url property to current request full url

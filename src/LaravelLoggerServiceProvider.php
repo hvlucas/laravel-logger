@@ -110,6 +110,8 @@ class LaravelLoggerServiceProvider extends ServiceProvider
         $model = $data; 
         $events = [];
         $attributes = [];
+        //TODO
+        //get events/attributes/tracks_user/tracks_data from model itself
         $tracks_user = true;
         $tracks_data = true;
         if(!is_string($data)){
@@ -132,38 +134,11 @@ class LaravelLoggerServiceProvider extends ServiceProvider
             }
         }
 
+        // Now that we have pulled config data for each model, we create an instance of LaravelLoggerModel and observe
+        // its events. We also set the starting point for each model record in DB
         $laravel_logger_model = new LaravelLoggerModel($model, $events, $attributes, $tracks_user, $tracks_data);
         LaravelLogger::push($laravel_logger_model);
         $model::observe($this->app->make('HVLucas\LaravelLogger\Observers\ModelObserver'));
-
-        $event_instance = new Event;
-        $event_table = $event_instance->getTable();
-        
-        $model_instance = new $model;
-        $model_table = $model_instance->getTable();
-        $model_key = $model_instance->getKeyName();
-
-        // Fetch models that have not been initiated
-        if(!Schema::hasTable($event_table)){
-            throw new TableNotFoundException("Laravel Logger table '$event_table' not found. Try running `php artisan migrate`");
-        }
-        $models = $model::leftJoin($event_table, "$model_table.$model_key", '=', "$event_table.model_id")->select("$model_table.*", "$event_table.activity as event_activity_id")->whereNull("$event_table.activity")->get();
-        foreach($models as $init_model){
-            $created_at = new DateTime;
-            $created_at->setTimestamp(time());
-            $attributes = $laravel_logger_model->getAttributeValues($init_model);
-            Event::create([
-                'activity' => 'startpoint',
-                'user_id' => null,
-                'model_id' => (string) $init_model->{$init_model->getKeyName()},
-                'model_name' => $model, 
-                'model_attributes' => $attributes,
-                'user_agent' => null,
-                'session_id' => null,
-                'ajax' => false,
-                'full_url' => null,
-                'created_at' => $created_at,
-            ]);
-        }
+        $laravel_logger_model->setStartingPoint();
     }
 }

@@ -52,6 +52,12 @@ class CreateLaravelLoggerEventTable extends Migration
                 $table->softDeletes();
             });
         }
+
+        // Set Starting points for all models being tracked
+        $models = LaravelLogger::models();
+        foreach($models as $model){
+            $model->setStartingPoint();
+        }
     }
 
     /*
