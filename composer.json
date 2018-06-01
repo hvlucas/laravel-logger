@@ -17,7 +17,8 @@
     ],
     "require": {
         "php": ">=7.0.0",
-        "datatables/datatables": "^1.10"
+        "datatables/datatables": "^1.10",
+        "twbs/bootstrap": "^4.0.0"
     },
     "autoload": {
         "psr-4": {

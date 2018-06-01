@@ -28,7 +28,6 @@ class LaravelLoggerServiceProvider extends ServiceProvider
         });
     }
 
-    
     // Boot Application with given configuration
     public function bootLaravelLogger(): void
     {
@@ -61,6 +60,9 @@ class LaravelLoggerServiceProvider extends ServiceProvider
            __DIR__.'/resources/assets/' => public_path('vendor/laravel-logger'),
         ], 'public');
 
+        $this->publishes([
+            base_path('vendor/twbs/bootstrap/dist/') => public_path('vendor/bootstrap'),
+        ], 'public');
 
         // Singleton LaravelLoggerTracker bind
         $this->app->singleton('LaravelLoggerTracker', function() {
