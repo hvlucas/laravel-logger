@@ -12,37 +12,14 @@ class LaravelLoggerTracker
     // Models that are being tracked by Observer
     protected $models;
 
-    // Current session ID
-    protected $session_id;
-
-    // Current IP address
-    protected $ip_address;
-
-    // Current user ID
-    protected $user_id;
-
-    // Browser/Device request is coming from
-    protected $user_agent;
-
-    // Full URL of Request made
-    protected $full_url;
-
-    // Request was made through AJAX
-    protected $ajax;
-
     // This property is to check if session is being tracked during event, this will prevent multiple logging events
     // from triggering during a fetch
     protected $is_tracking;
 
     public function __construct() 
     {
-        $this->ip_address       = Request::ip();
-        $this->session_id       = Session::getId();
-        $this->user_id          = null;
-        $this->user_agent       = null;
-        $this->full_url         = null;
-        $this->ajax             = null;
-        $this->is_tracking      = false;
+        $this->models       = [];
+        $this->is_tracking  = false;
     }
 
     // Push an instance of LaravelLoggerModel into list of trackable models
@@ -80,34 +57,34 @@ class LaravelLoggerTracker
         return $this;
     } 
 
-    // Return session id
+    // Return request session id
     public function getSessionId()
     {
-        return $this->session_id;
+        return Session::getId();
     }
 
-    // Return IP Address
+    // Return request IP Address
     public function getIp()
     {
-        return $this->ip_address;
+        return Request::ip();
     }
 
-    // Return AJAX property
+    // Return request is AJAX 
     public function getAjax()
     {
-        return $this->ajax;
+        return Request::ajax();
     }
 
-    // Return full url property
+    // Return request full url 
     public function getFullUrl()
     {
-        return $this->full_url;
+        return Request::fullUrl();
     }
 
     // Return user agent property
     public function getUserAgent()
     {
-        return $this->user_agent;
+        return Request::userAgent();
     }
 
     // Return all Models
@@ -116,34 +93,14 @@ class LaravelLoggerTracker
         return $this->models;
     }
 
-    /* Refresh/Fetch Helpers */
-
-    // Set full url property to current request full url
-    public function refreshFullUrl()
-    {
-        $this->full_url = Request::fullUrl();
-    }
-
-    // Set ajax property to current request ajax 
-    public function refreshIsAjax()
-    {
-        $this->ajax = Request::ajax();
-    }
-
-    // Set user agent property to current request user agent
-    public function refreshUserAgent()
-    {
-        $this->user_agent = Request::userAgent();
-    }
-
-    // Set user id property with authenticated user
-    public function refreshUserId()
+    // Get user id property with authenticated user
+    public function getUserId()
     {
         $id = null;
         $user = Auth::user();
         if($user){
             $id = $user->{$user->getKeyName()};
         }
-        $this->user_id = $id;
+        return $id;
     }
 }

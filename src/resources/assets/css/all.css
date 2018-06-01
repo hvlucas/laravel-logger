@@ -1,0 +1,26 @@
+.events-container {
+    width: 100%;
+    margin: 100px 0;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.tab-pane {
+    padding: 30px;
+}
+
+.nav-tabs .nav-link {
+    border: unset;
+    border-top-left-radius: unset;
+    border-top-right-radius: unset;
+    border-right: 1px solid transparent;
+    border-left: 1px solid transparent;
+}
+
+.nav-item:first-child > .nav-link {
+    border-left: unset;
+}
+.nav-container {
+    border: solid 1px #dee2e6;
+    border-left: solid 1px #dee2e6;
+}

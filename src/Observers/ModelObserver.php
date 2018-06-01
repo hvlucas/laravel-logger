@@ -48,8 +48,7 @@ class ModelObserver
 
             $current_user_id = null;
             if($model->isTrackingAuthenticatedUser()){
-                $current_user = Auth::getUser();
-                $current_user_id = $current_user ? $current_user->{$current_user->getKeyName()} : null;
+                $current_user_id = $tracker->getUserId();
             }
 
             $created_at = new DateTime;

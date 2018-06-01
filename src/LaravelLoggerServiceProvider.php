@@ -34,6 +34,7 @@ class LaravelLoggerServiceProvider extends ServiceProvider
         // Load config
         $config = __DIR__ . '/config/laravel_logger.php';
         $this->mergeConfigFrom($config, 'laravel_logger');
+
         $this->publishes([
             __DIR__.'/config/laravel_logger.php' => config_path('laravel_logger.php'),
         ]);
@@ -50,18 +51,18 @@ class LaravelLoggerServiceProvider extends ServiceProvider
         // Register Migrations
         $this->loadMigrationsFrom(__DIR__.'/database/migrations');
 
-        // Publish DataTables
-        $this->publishes([
-           base_path('vendor/datatables/datatables/media') => public_path('vendor/datatables'),
-        ], 'public');
-
         // Publish Laravel Logger assets
         $this->publishes([
            __DIR__.'/resources/assets/' => public_path('vendor/laravel-logger'),
         ], 'public');
 
+        // Publish DataTables
         $this->publishes([
-            base_path('vendor/twbs/bootstrap/dist/') => public_path('vendor/bootstrap'),
+           base_path('vendor/datatables/datatables/media') => public_path('vendor/laravel-logger/vendor/datatables'),
+        ], 'public');
+
+        $this->publishes([
+            base_path('vendor/twbs/bootstrap/dist/') => public_path('vendor/laravel-logger/vendor/bootstrap'),
         ], 'public');
 
         // Singleton LaravelLoggerTracker bind

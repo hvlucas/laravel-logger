@@ -23,6 +23,13 @@
         <title>Events</title>
     </head>
     <body>
-        @yield('laravel_logger')
+        <div class="events-container">
+            <div class="row">
+                <div class="col-lg">
+                    @yield('laravel_logger')
+                </div>
+            </div>
+        </div>
     </body>
 </html>
+

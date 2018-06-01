@@ -4,6 +4,7 @@ namespace HVLucas\LaravelLogger\App;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Event extends Model
 {
@@ -11,48 +12,28 @@ class Event extends Model
 
     public $timestamps = false;
 
-    /*
-     * The connection name for the model.
-     */
+    // The connection name for the model.
     protected $log_connection;
 
-    /*
-     * Table name of Event
-     */
+    // Table name of Event
     protected $table;
 
-    /*
-     * Supported primary key types
-     */
+    // Supported primary key types
     protected $primary_key_types = ['int', 'string'];
 
-    /*
-     * Guarded attributes
-     */
+    // Guarded attributes
     protected $guarded = [];
 
-    /*
-     * Date attributes
-     */
+    // Date attributes
     protected $dates = [ 'created_at', 'deleted_at' ];
 
-    /*
-     * TODO
-     * set attributes
-     * Allowed attributes to fill in Model
-     */
+    // Allowed attributes to fill in Model
     protected $fillable = [];
 
-    /*
-     * TODO
-     * set casts
-     * Cast attributes when saving
-     */
+    // Cast attributes when saving
     protected $casts = [];
 
-    /*
-     * Constructor for Model
-     */
+    // Constructor for Model
     public function __construct($attributes = [])
     {
         parent::__construct($attributes);
@@ -60,37 +41,35 @@ class Event extends Model
         $this->table = config('laravel_logger.table_name', 'logged_events');
     }
 
-    /*
-     * Get log connection name 
-     */
+    // Get log connection name 
     public function getLogConnection()
     {
         return $this->log_connection;
     }
 
-    /*
-     * Get supported primary key types
-     */
+    // Get supported primary key types
     public function getPrimaryKeyTypes(){
         return $this->primary_key_types;
     }
 
-    /*
-     * Get table name
-     */
+    // Get table name
     public function getTable()
     {
         return $this->table;
     }
 
-    /*
-     * An activity has a user.
-     */
+    // An activity has a user.
     public function user()
     {
         return $this->hasOne(config('laravel_logger.user_model'));
     }
 
+    // Return create_at as a Carbon instance
+    public function getCreatedAtAttribute($created_at)
+    {
+        return new Carbon($created_at);
+    }
+    
     /*
      * TODO
      * Validator rules
