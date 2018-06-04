@@ -5,6 +5,7 @@ namespace HVLucas\LaravelLogger\App;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Sinergi\BrowserDetector\Browser; // https://github.com/sinergi/php-browser-detector
 
 class Event extends Model
 {
@@ -64,12 +65,24 @@ class Event extends Model
         return $this->hasOne(config('laravel_logger.user_model'));
     }
 
+    // Return Sinergi\Browser
+    public function getBrowser()
+    {
+        return new Browser($this->user_agent);
+    }
+
     // Return create_at as a Carbon instance
     public function getCreatedAtAttribute($created_at)
     {
         return new Carbon($created_at);
     }
     
+    // Parse full url and return without domain
+    public function getParsedUrlAttribute()
+    {
+        return parse_url($this->full_url)['path'] ?? null;
+    } 
+
     /*
      * TODO
      * Validator rules

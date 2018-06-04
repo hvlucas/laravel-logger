@@ -33,6 +33,7 @@
                     $no_namespace   = end($class_break);
                     $id             = strtolower($no_namespace);
                     $tab_classes    = $loop->first ? 'show active' : '';
+                    $browser        = $event->getBrowser();
                 @endphp
 
                 @component('laravel_logger::components.tab', compact('tab_classes', 'id'))
@@ -42,7 +43,6 @@
                                 <th>ID</th>
                                 <th>Event</th>
                                 <th>User Responsible</th>
-                                <th>Session ID</th>
                                 <th>IP Address</th>
                                 <th>User Agent</th>
                                 <th>URL Request</th>
@@ -55,10 +55,13 @@
                                 <td>{{$event->model_id}}</td>
                                 <td><span class="{{$event->activity}} event">{{$event->activity}}</span></td>
                                 <td>{{$event->user_id}}</td>
-                                <td>{{$event->session_id}}</td>
-                                <td>{{$event->ip_address}}</td>
-                                <td>{{$event->user_agent}}</td>
-                                <td>{{$event->full_url}}</td>
+                                @if($event->ip_address)
+                                    <td><a target="_blank" href="https://ipinfo.io/{{$event->ip_address}}">{{$event->ip_address}}</a></td>
+                                @else
+                                    <td></td>
+                                @endif
+                                <td>{{$browser->getName()}} - {{ $browser->getVersion() }}</td>
+                                <td>{{$event->parsed_url}}</td>
                                 <td>{{$event->created_at->diffForHumans()}}</td>
                             </tr>
                             @endforeach

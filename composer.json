@@ -18,7 +18,8 @@
     "require": {
         "php": ">=7.0.0",
         "datatables/datatables": "^1.10",
-        "twbs/bootstrap": "^4.0.0"
+        "twbs/bootstrap": "^4.0.0",
+        "singergi/browser-detector": "^6.0.0"
     },
     "autoload": {
         "psr-4": {
