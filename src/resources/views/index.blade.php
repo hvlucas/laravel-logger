@@ -34,7 +34,6 @@
                     $no_namespace   = end($class_break);
                     $id             = strtolower($no_namespace);
                     $tab_classes    = $loop->first ? 'show active' : '';
-                    $browser        = $event->getBrowser();
                 @endphp
 
                 @component('laravel_logger::components.tab', compact('tab_classes', 'id'))
@@ -63,7 +62,7 @@
                                 @else
                                     <td></td>
                                 @endif
-                                <td>{{ $browser->getName()}} - {{ $browser->getVersion() }}</td>
+                                <td><i class="far {{$event->fa_browser}}"></i> {{$event->getBrowser()->getVersion()}} <i class="far {{$event->fa_device}}"></i></td>
                                 <td>{{$event->parsed_url}}</td>
                                 <td>{{$event->created_at->diffForHumans()}}</td>
                             </tr>
