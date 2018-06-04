@@ -9,8 +9,9 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         {{-- CSS --}}
-        <link rel="stylesheet" href="{{ asset('/vendor/bootstrap/css/bootstrap.min.css') }}">
-        <link rel="stylesheet" href="{{ asset('/vendor/datatables/css/dataTables.bootstrap4.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('/vendor/laravel-logger/vendor/bootstrap/css/bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('/vendor/laravel-logger/vendor/datatables/css/dataTables.bootstrap4.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('/vendor/laravel-logger/font-awesome/fontawesome-all.min.css') }}">
         <link rel="stylesheet" href="{{ asset('/vendor/laravel-logger/css/all.css') }}">
 
         {{-- JS --}}

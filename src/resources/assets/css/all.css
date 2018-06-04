@@ -1,8 +1,8 @@
 .events-container {
     width: 100%;
     margin: 100px 0;
-    padding-left: 15px;
-    padding-right: 15px;
+    padding-left: 200px;
+    padding-right: 200px;
 }
 
 .tab-pane {
@@ -23,4 +23,55 @@
 .nav-container {
     border: solid 1px #dee2e6;
     border-left: solid 1px #dee2e6;
+}
+
+table.dataTable {
+    width: 100%;
+}
+
+a {
+    color: #003670;
+}
+
+.nav-link.active {
+    margin-top: -5px;
+    border-top: solid 5px;
+    border-top-color: #003670 !important;
+}
+
+#toggleTab {
+    background-color: #003670;
+}
+
+#toggleTab a {
+    color: #fff;
+}
+
+#toggleTab:hover {
+    background-color: #004187;
+}
+#toggleTab a:hover {
+    color: #ececec;
+}
+
+span.event {
+    padding: 5px;
+    border: solid 1px transparent;
+    border-radius: 15px;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 11px;
+    color: #fff;
+}
+
+span.event.updated {
+    background-color: #4e9dff;
+}
+
+span.event.created {
+    background-color: #10ac10;
+}
+
+span.event.destroyed {
+    background-color: #ff4646;
 }

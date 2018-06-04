@@ -30,7 +30,7 @@ class LaravelLoggerModel
         $this->class_name = $class_name;
 
         if(empty($events)){
-            $events = config('laravel_logger.default_events', ['created', 'updated', 'deleted', 'retrieved']);
+            $events = config('laravel_logger.default_events', ['created', 'updated', 'deleted']);
         }
         $this->events = $events;
 

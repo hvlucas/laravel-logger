@@ -15,9 +15,10 @@ abstract class LaravelLoggerController extends Controller
     // Export PDF/CSV
     public function list()
     {
-        $model_events = Event::orderBy('created_at', 'desc')->get()->groupBy('model_name');
-        $models = $model_events->map(function($models, $class_name){
-            return [ 'model' => LaravelLogger::getModel($class_name), 'events' => $models];
+        $models = LaravelLogger::getModelCollection();
+        $models = $models->map(function($model){
+            $model_events = Event::where('activity', '!=', 'startpoint')->where('model_name', $model->getClassName())->orderBy('created_at', 'desc')->get();
+            return [ 'model' => LaravelLogger::getModel($model->getClassName()), 'events' => $model_events];
         });
         return view('laravel_logger::index', compact('models'));
     }

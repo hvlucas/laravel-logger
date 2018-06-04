@@ -93,6 +93,12 @@ class LaravelLoggerTracker
         return $this->models;
     }
 
+    // Return all Models in Collection form
+    public function getModelCollection()
+    {
+        return collect($this->getModels());
+    }
+
     // Get user id property with authenticated user
     public function getUserId()
     {
