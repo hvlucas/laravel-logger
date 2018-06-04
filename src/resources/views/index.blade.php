@@ -17,7 +17,7 @@
                     $selected           = $loop->first ? 'true' : 'false';
                     $active             = $loop->first ? 'active' : '';
                     $count              = $events->count();
-                    $favorite           = $model->is_favorite;
+                    $favorite           = $model->getIsFavorite();
                 @endphp
 
                 @component('laravel_logger::components.nav_item', compact('id', 'aria', 'link_text', 'selected', 'count', 'active', 'favorite'))
@@ -43,7 +43,7 @@
                                 <th><i class="fal fa-database fa-sm"></i>ID</th>
                                 <th><i class="fal fa-inbox fa-sm"></i>Event</th>
                                 <th><i class="fal fa-user-tag fa-sm"></i>User Responsible</th>
-                                <th><i class="fal fa-arrow-square-right fa-sm"></i>Method</th>
+                                <th><i class="fal fa-shipping-fast fa-sm"></i>Method</th>
                                 <th><i class="fal fa-globe fa-sm"></i>IP Address</th>
                                 <th><i class="fal fa-tablet-android-alt fa-sm"></i>User Agent</th>
                                 <th><i class="fal fa-road fa-sm"></i>URL Request</th>
@@ -62,7 +62,7 @@
                                 @else
                                     <td></td>
                                 @endif
-                                <td><i class="far {{$event->fa_browser}}"></i> {{$event->getBrowser()->getVersion()}} <i class="far {{$event->fa_device}}"></i></td>
+                                <td><i class="{{$event->fa_browser}}"></i> {{$event->parsed_version}} <i class="{{$event->fa_os}}"></i></td>
                                 <td>{{$event->parsed_url}}</td>
                                 <td>{{$event->created_at->diffForHumans()}}</td>
                             </tr>

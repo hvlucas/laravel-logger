@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 use Sinergi\BrowserDetector\Browser; // https://github.com/sinergi/php-browser-detector
 use Sinergi\BrowserDetector\Device;
+use Sinergi\BrowserDetector\Os;
 
 class Event extends Model
 {
@@ -78,55 +79,117 @@ class Event extends Model
         return new Device($this->user_agent);
     }
 
+    // Return Sinergi\OS
+    public function getDevice()
+    {
+        return new Os($this->user_agent);
+    }
+
+    // Return FontAwesome Browser icon
     public function getFaBrowserAttribute()
     {
         $browser = $this->getBrowser()->getName();
         switch($browser){
+            case 'Pocket Internet Explorer':
             case 'Internet Explorer':
-                $icon = 'fa-internet-explorer';
+                $icon = 'fab fa-internet-explorer';
                 break; 
 
             case 'Microsoft Edge':
-                $icon = 'fa-edge';
+                $icon = 'fab fa-edge';
                 break; 
 
             case 'Chrome':
-                $icon = 'fa-chrome';
+                $icon = 'fab fa-chrome';
                 break; 
 
+            case 'GoogleBot':
+                $icon = 'fab fa-google';
+                break;
+
+            case 'Yahoo! Slurp':
+                $icon = 'fab fa-yahoo';
+                break;
+
+            case 'BlackBerry':
+                $icon = 'fab fa-blackberry';
+                break;
+
             case 'Firefox':
-                $icon = 'fa-firefox';
+            case 'Mozilla':
+                $icon = 'fab fa-firefox';
                 break; 
 
             case 'Safari':
-                $icon = 'fa-safari';
+                $icon = 'fab fa-safari';
                 break; 
 
+            case 'wkhtmltopdf':
+                $icon = 'far fa-file-pdf'
+
+
+            case 'Opera':
+            case 'Opera Mini':
+                $icon = 'fab fa-opera';
+                break;
+
             default:
-                $icon = 'fa-browser';
+                $icon = 'far fa-browser';
                 break; 
         }
         return $icon;
     }
 
-    public function getFaDeviceAttribute()
+    // Return FontAwesome OS icon
+    public function getFaOsAttribute()
     {
-        $device = $this->getDevice()->getName();
+        $device = $this->getOs()->getName();
         switch($device){
-            case 'iPad':
-            case 'iPhone':
-                $icon = 'fa-apple';
+            case 'OS X':
+            case 'iOS':
+                $icon = 'fab fa-apple';
                 break; 
                 
+            case 'Windows';
             case 'Windows Phone';
-            case 'Lumia':
-                $icon = 'fa-windows';
+                $icon = 'fab fa-windows';
                 break; 
 
+            case 'Android':
+                $icon = 'fab fa-android';
+                break; 
+            
+            case 'Chrome OS':
+                $icon = 'fab fa-chrome';
+                break;
+
+            case 'Linux':
+            case 'FreeBSD':
+            case 'OpenBSD':
+            case 'NetBSD':
+            case 'OpenSolaris':
+            case 'SunOS':
+                $icon = 'fab fa-linux';
+                break; 
+
+            case 'BlackBerry':
+                $icon = 'fab fa-blackberry';
+                break;
+
+            case 'BeOS':
+            case 'SymbOS':
+            case 'Nokia':
             default:
-                $icon = 'fa-mobile';
+                $icon = 'far fa-mobile';
         }
         return $icon;
+    }
+
+    // Return minimalistic version of Browser
+    public function getParsedVersionAttribute()
+    {
+        $version = $this->getBrowser()->getVersion();
+        return explode('.', $version)[0] ?? $version;
     }
 
     // Return create_at as a Carbon instance

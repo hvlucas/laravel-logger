@@ -101,6 +101,12 @@ class LaravelLoggerModel
         return $this->events;
     }
 
+    // Returns is_favorite property
+    public function getIsFavorite()
+    {
+        return $this->is_favorite;
+    }
+
     // Sets starting point for each model record
     public function setStartingPoint()
     {
