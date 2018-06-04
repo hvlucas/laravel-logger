@@ -3,7 +3,7 @@
 namespace HVLucas\LaravelLogger;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Schema;
 use HVLucas\LaravelLogger\LaravelLoggerTracker;
 use HVLucas\LaravelLogger\Observers\ModelObserver;
@@ -54,11 +54,6 @@ class LaravelLoggerServiceProvider extends ServiceProvider
         // Publish Laravel Logger assets
         $this->publishes([
            __DIR__.'/resources/assets/' => public_path('vendor/laravel-logger'),
-        ], 'public');
-
-        // Publish font files
-        $this->publishes([
-           __DIR__.'/resources/assets/fonts' => public_path('vendor/laravel-logger/webfonts'),
         ], 'public');
 
         // Publish DataTables

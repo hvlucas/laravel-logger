@@ -80,7 +80,7 @@ class Event extends Model
     }
 
     // Return Sinergi\OS
-    public function getDevice()
+    public function getOs()
     {
         return new Os($this->user_agent);
     }
@@ -125,8 +125,8 @@ class Event extends Model
                 break; 
 
             case 'wkhtmltopdf':
-                $icon = 'far fa-file-pdf'
-
+                $icon = 'far fa-file-pdf';
+                break;
 
             case 'Opera':
             case 'Opera Mini':
