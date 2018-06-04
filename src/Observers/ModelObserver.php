@@ -63,8 +63,7 @@ class ModelObserver
                 'user_agent' => $tracker->getUserAgent(),
                 'ip_address' => $tracker->getIp(),
                 'full_url' => $tracker->getFullUrl(),
-                'ajax' => $tracker->getAjax(),
-                'session_id' => $tracker->getSessionId()
+                'method' => $tracker->getMethod()
             ];
 
             static::storeEvent($data);

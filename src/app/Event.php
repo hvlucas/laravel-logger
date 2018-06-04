@@ -5,7 +5,8 @@ namespace HVLucas\LaravelLogger\App;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
-use Sinergi\BrowserDetector\Browser; // https://github.com/sinergi/php-browser-detector
+// Sinergi Browser Dectection - https://github.com/sinergi/php-browser-detector 
+use Sinergi\BrowserDetector\Browser; 
 use Sinergi\BrowserDetector\Device;
 use Sinergi\BrowserDetector\Os;
 
@@ -64,7 +65,19 @@ class Event extends Model
     // An activity has a user.
     public function user()
     {
-        return $this->hasOne(config('laravel_logger.user_model'));
+        return $this->hasOne(config('laravel_logger.user_model', 'App\User'));
+    }
+
+    // Return config's user column to call on `$this->user`
+    public function getUserColumn()
+    {
+        return config('laravel_logger.user_column', null);
+    }
+
+    // Return user column or the id
+    public function getUserNameAttribute()
+    {
+        return ($this->getUserColumn() && $this->user) ? $this->user->{$this->getUserColumn()} : $this->user_id;
     }
 
     // Return Sinergi\Browser
@@ -204,10 +217,8 @@ class Event extends Model
         return parse_url($this->full_url)['path'] ?? null;
     } 
 
-    /*
-     * TODO
-     * Validator rules
-     */
+    // TODO
+    // Validator rules
     public static function rules(){
         return [];
     }

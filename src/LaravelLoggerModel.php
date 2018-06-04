@@ -135,8 +135,7 @@ class LaravelLoggerModel
                 'model_name' => $model, 
                 'model_attributes' => $attributes,
                 'user_agent' => null,
-                'session_id' => null,
-                'ajax' => false,
+                'method' => null,
                 'full_url' => null,
                 'created_at' => $created_at,
             ]);

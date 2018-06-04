@@ -42,11 +42,10 @@
                             <tr>
                                 <th><i class="fal fa-database fa-sm"></i>ID</th>
                                 <th><i class="fal fa-inbox fa-sm"></i>Event</th>
-                                <th><i class="fal fa-user-tag fa-sm"></i>User Responsible</th>
-                                <th><i class="fal fa-shipping-fast fa-sm"></i>Method</th>
+                                <th><i class="fal fa-user-tag fa-sm"></i>Authenticated User</th>
                                 <th><i class="fal fa-globe fa-sm"></i>IP Address</th>
                                 <th><i class="fal fa-tablet-android-alt fa-sm"></i>User Agent</th>
-                                <th><i class="fal fa-road fa-sm"></i>URL Request</th>
+                                <th><i class="fal fa-shipping-fast fa-sm"></i>Request</th>
                                 <th><i class="fal fa-shipping-timed fa-sm"></i>When</th>
                             </tr>
                         </thead>
@@ -55,15 +54,18 @@
                             <tr>
                                 <td>{{$event->model_id}}</td>
                                 <td><tag class="{{$event->activity}}">{{$event->activity}}</tag></td>
-                                <td><tag class="user">{{$event->user_id}}</tag></td>
-                                <td>{{$event->method}}</th>
+                                @if($model->isTrackingAuthenticatedUser())
+                                    <td><tag class="user">{{$event->user_name}}</tag></td>
+                                @else
+                                    <td></td>
+                                @endif
                                 @if($event->ip_address)
                                     <td><a target="_blank" href="https://ipinfo.io/{{$event->ip_address}}">{{$event->ip_address}}</a></td>
                                 @else
                                     <td></td>
                                 @endif
                                 <td><i class="{{$event->fa_browser}}"></i> {{$event->parsed_version}} <i class="{{$event->fa_os}}"></i></td>
-                                <td>{{$event->parsed_url}}</td>
+                                <td><tag class="{{strtolower($event->method)}} method">{{$event->method}}</tag> {{$event->parsed_url}}</td>
                                 <td>{{$event->created_at->diffForHumans()}}</td>
                             </tr>
                             @endforeach

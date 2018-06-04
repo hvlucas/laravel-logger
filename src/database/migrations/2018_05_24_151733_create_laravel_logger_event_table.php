@@ -44,9 +44,8 @@ class CreateLaravelLoggerEventTable extends Migration
                 $table->string('model_name');
                 $table->longText('model_attributes')->nullable();
                 $table->string('user_agent')->nullable();
-                $table->string('session_id')->nullable();
+                $table->string('method')->nullable();
                 $table->string('ip_address')->nullable();
-                $table->boolean('ajax');
                 $table->longText('full_url')->nullable();
                 $table->dateTime('created_at');
                 $table->softDeletes();

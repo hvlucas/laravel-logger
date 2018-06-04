@@ -51,28 +51,34 @@ class LaravelLoggerTracker
         return $this->models[$class_name];
     }
     
+    // Return all Models
+    public function getModels()
+    {
+        return $this->models;
+    }
+
+    // Return all Models in Collection form
+    public function getModelCollection()
+    {
+        return collect($this->getModels());
+    }
+    
     // Return instance of LaravelLoggerTracker
     public function getTracker()
     {
         return $this;
     } 
 
-    // Return request session id
-    public function getSessionId()
+    // Return request method
+    public function getMethod()
     {
-        return Session::getId();
+        return Request::method();
     }
 
     // Return request IP Address
     public function getIp()
     {
         return Request::ip();
-    }
-
-    // Return request is AJAX 
-    public function getAjax()
-    {
-        return Request::ajax();
     }
 
     // Return request full url 
@@ -85,18 +91,6 @@ class LaravelLoggerTracker
     public function getUserAgent()
     {
         return Request::userAgent();
-    }
-
-    // Return all Models
-    public function getModels()
-    {
-        return $this->models;
-    }
-
-    // Return all Models in Collection form
-    public function getModelCollection()
-    {
-        return collect($this->getModels());
     }
 
     // Get user id property with authenticated user

@@ -16,7 +16,7 @@ a {
 
 .nav-link.active {
     margin-top: -5px;
-    border-top: solid 5px;
+    border-top: solid 5px !important;
     border-top-color: #003670 !important;
 }
 
@@ -61,18 +61,33 @@ tag {
     text-transform: uppercase;
     font-size: 11px;
     color: #fff;
+    /* default */
+    background-color: #a5a5a5;
 }
 
-tag.updated {
+/* blue */
+tag.updated, tag.head {
     background-color: #4e9dff;
 }
 
-tag.created {
+/* green */
+tag.created, tag.get {
     background-color: #10ac10;
 }
 
-tag.destroyed {
+/* red */
+tag.destroyed, tag.delete {
     background-color: #ff4646;
+}
+
+/* cyan */
+tag.user {
+    background-color: #0dc5da;
+}
+
+/* ylw */
+tag.post, tag.put, tag.patch {
+    background-color: #eede05;
 }
 
 /* EVENTS TABLE */
@@ -84,10 +99,11 @@ table.dataTable {
     width: 100%;
 }
 
-th i {
+th i , .method{
     margin-right: 5px;
 }
 
 .favorite {
     color: #eede05;
+    margin-left: 5px;
 }
