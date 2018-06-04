@@ -65,7 +65,7 @@ class Event extends Model
     // An activity has a user.
     public function user()
     {
-        return $this->hasOne(config('laravel_logger.user_model', 'App\User'));
+        return $this->belongsTo(config('laravel_logger.user_model', 'App\User'));
     }
 
     // Return config's user column to call on `$this->user`

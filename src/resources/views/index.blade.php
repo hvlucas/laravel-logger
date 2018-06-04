@@ -55,7 +55,7 @@
                                 <td>{{$event->model_id}}</td>
                                 <td><tag class="{{$event->activity}}">{{$event->activity}}</tag></td>
                                 @if($model->isTrackingAuthenticatedUser())
-                                    <td><tag class="user">{{$event->user_name}}</tag></td>
+                                    <td><tag class="user">{{$event->user_name ?: 'UnAuthenticated'}}</tag></td>
                                 @else
                                     <td></td>
                                 @endif
