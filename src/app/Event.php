@@ -87,7 +87,7 @@ class Event extends Model
                 break; 
 
             case 'Microsoft Edge':
-                $icon = 'fa-edge':
+                $icon = 'fa-edge';
                 break; 
 
             case 'Chrome':
