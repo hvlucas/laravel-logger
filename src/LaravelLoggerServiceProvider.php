@@ -56,6 +56,11 @@ class LaravelLoggerServiceProvider extends ServiceProvider
            __DIR__.'/resources/assets/' => public_path('vendor/laravel-logger'),
         ], 'public');
 
+        // Publish font files
+        $this->publishes([
+           __DIR__.'/resources/assets/fonts' => public_path('vendor/laravel-logger/webfonts'),
+        ], 'public');
+
         // Publish DataTables
         $this->publishes([
            base_path('vendor/datatables/datatables/media') => public_path('vendor/laravel-logger/vendor/datatables'),
@@ -130,6 +135,7 @@ class LaravelLoggerServiceProvider extends ServiceProvider
         //get events/attributes/tracks_user/tracks_data from model itself
         $tracks_user = true;
         $tracks_data = true;
+        $is_favorite = false;
         if(!is_string($data)){
             $model = $data['model'];
 
@@ -148,11 +154,15 @@ class LaravelLoggerServiceProvider extends ServiceProvider
             if(isset($data['tracks_data'])){
                 $tracks_data = (bool) $data['tracks_data'];
             }
+
+            if(isset($data['favorite'])){
+                $is_favorite = (bool) $data['favorite'];
+            }
         }
 
         // Now that we have pulled config data for each model, we create an instance of LaravelLoggerModel and observe
         // its events. We also set the starting point for each model record in DB
-        $laravel_logger_model = new LaravelLoggerModel($model, $events, $attributes, $tracks_user, $tracks_data);
+        $laravel_logger_model = new LaravelLoggerModel($model, $events, $attributes, $tracks_user, $tracks_data, $is_favorite);
         LaravelLogger::push($laravel_logger_model);
         $model::observe($this->app->make('HVLucas\LaravelLogger\Observers\ModelObserver'));
         $laravel_logger_model->setStartingPoint();

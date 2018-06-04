@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 use Sinergi\BrowserDetector\Browser; // https://github.com/sinergi/php-browser-detector
+use Sinergi\BrowserDetector\Device;
 
 class Event extends Model
 {
@@ -69,6 +70,63 @@ class Event extends Model
     public function getBrowser()
     {
         return new Browser($this->user_agent);
+    }
+
+    // Return Sinergi\Device
+    public function getDevice()
+    {
+        return new Device($this->user_agent);
+    }
+
+    public function getFaBrowserAttribute()
+    {
+        $browser = $this->getBrowser()->getName();
+        switch($browser){
+            case 'Internet Explorer':
+                $icon = 'fa-internet-explorer';
+                break; 
+
+            case 'Microsoft Edge':
+                $icon = 'fa-edge':
+                break; 
+
+            case 'Chrome':
+                $icon = 'fa-chrome';
+                break; 
+
+            case 'Firefox':
+                $icon = 'fa-firefox';
+                break; 
+
+            case 'Safari':
+                $icon = 'fa-safari';
+                break; 
+
+            default:
+                $icon = 'fa-browser';
+                break; 
+        }
+        return $icon;
+    }
+
+    public function getFaDeviceAttribute()
+    {
+        $device = $this->getDevice()->getName();
+        switch($device){
+            case 'iPad':
+            case 'iPhone':
+                $icon = 'fa-apple';
+                break; 
+                
+            case 'Windows Phone';
+            case 'Lumia':
+                $icon = 'fa-windows';
+                break; 
+
+            default:
+                $icon = 'fa-mobile';
+        }
+        return $icon;
     }
 
     // Return create_at as a Carbon instance

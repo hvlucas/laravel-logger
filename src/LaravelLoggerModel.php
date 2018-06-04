@@ -25,7 +25,10 @@ class LaravelLoggerModel
     // Flag to determine if Data is being tracked, this flag should overwrite if $attributes property is set
     protected $tracks_data;
 
-    public function __construct(string $class_name, array $events, array $attributes, bool $tracks_user, bool $tracks_data)
+    // Flag to see if this Model should show up first on the list of models being tracked
+    protected $is_favorite;
+
+    public function __construct(string $class_name, array $events, array $attributes, bool $tracks_user, bool $tracks_data, $is_favorite)
     {
         $this->class_name = $class_name;
 
@@ -47,6 +50,7 @@ class LaravelLoggerModel
         $this->attributes = $attributes;
         $this->tracks_current_user = $tracks_user;
         $this->tracks_data = $tracks_data;
+        $this->is_favorite = $is_favorite;
     }
 
     public function isTrackingAuthenticatedUser()
