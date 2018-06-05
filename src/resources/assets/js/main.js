@@ -77,7 +77,8 @@ $(document).ready(function(){
         var event_id = $(this).data('event-id');
         if(typeof event_id != "undefined"){
             $.ajax({
-                url: '/events-ajax-helpers/model-history'
+                url: '/events-ajax-helpers/model-history',
+                method: 'POST',
                 data: { event_id: event_id },
                 success: function(data) {
                     if(data !== -1){

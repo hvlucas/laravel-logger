@@ -30,16 +30,18 @@ abstract class LaravelLoggerController extends Controller
     // Fectches history of model instance
     public function modelHistory(Request $request)
     {
-        $rules = [ 'event_id' => 'required|exists:events,id' ];
+        $e = new Event;
+        $rules = [ 'event_id' => 'required|exists:'.$e->getTable().',id' ];
 
         $modal = -1;
         if(Validator::make($request->all(), $rules)->passes()){
             $event = Event::find($request->event_id);
             $history = Event::where(['model_name' => $event->model_name, 'model_id' => $event->model_id])->orderBy('created_at')->get();
-            $history = view('laravel_logger::history', compact('history'))->render();
-            $modal = view('laravel_logger::components.history', ['slot' => $history]);
+            $attributes = array_keys($history->first()->model_attributes ?? []);
+            $history = view('laravel_logger::history', compact('history', 'attributes'))->render();
+            $modal = view('laravel_logger::components.history', ['slot' => $history])->render();
         }
-        return response()->json($model);
+        return response()->json($modal);
     }
 
     // TODO

@@ -111,3 +111,19 @@ th i , .method{
 tbody tr:nth-child(odd){
     background-color: #eff1f4;
 }
+
+/* EVENTS MODAL */
+
+.event-container {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.event-history-attrs, .event-history-values {
+    white-space: pre-line;
+}
+
+.model-content {
+    padding: 30px;
+}
