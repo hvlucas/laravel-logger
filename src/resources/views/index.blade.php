@@ -52,21 +52,36 @@
                         <tbody>
                             @foreach($model_event['events'] as $event)
                             <tr>
-                                <td>{{$event->model_id}}</td>
-                                <td><tag class="{{$event->activity}}">{{$event->activity}}</tag></td>
+                                <td>
+                                    {{-- show model history using bootstrap modals --}}
+                                    <a href="javascript:void(0)" class="open-model-history" data-event-id="{{$event->id}}">{{$event->model_id}}</a>
+                                </td>
+                                <td>
+                                    <tag class="{{$event->activity}}">{{$event->activity}}</tag>
+                                </td>
                                 @if($model->isTrackingAuthenticatedUser())
-                                    <td><tag class="user">{{$event->user_name ?: 'UnAuthenticated'}}</tag></td>
+                                    <td>
+                                        <tag class="user">{{$event->user_name ?: 'UnAuthenticated'}}</tag>
+                                    </td>
                                 @else
                                     <td></td>
                                 @endif
                                 @if($event->ip_address)
-                                    <td><a target="_blank" href="https://ipinfo.io/{{$event->ip_address}}">{{$event->ip_address}}</a></td>
+                                    <td>
+                                        <a target="_blank" href="https://ipinfo.io/{{$event->ip_address}}">{{$event->ip_address}}</a>
+                                    </td>
                                 @else
                                     <td></td>
                                 @endif
-                                <td><i class="{{$event->fa_browser}}"></i> {{$event->parsed_version}} <i class="{{$event->fa_os}}"></i></td>
-                                <td><tag class="{{strtolower($event->method)}} method">{{$event->method}}</tag> {{$event->parsed_url}}</td>
-                                <td>{{$event->created_at->diffForHumans()}}</td>
+                                <td>
+                                    <i class="{{$event->fa_browser}}"></i> <sub>{{$event->parsed_version}}</sub> <i class="{{$event->fa_os}}"></i>
+                                </td>
+                                <td>
+                                    <tag class="{{strtolower($event->method)}} method">{{$event->method}}</tag> {{$event->parsed_url}}
+                                </td>
+                                <td>
+                                    {{$event->created_at->diffForHumans()}}
+                                </td>
                             </tr>
                             @endforeach
                         </tbody>

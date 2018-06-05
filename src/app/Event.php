@@ -217,6 +217,12 @@ class Event extends Model
         return parse_url($this->full_url)['path'] ?? null;
     } 
 
+    // Return decoded `$this->model_attributes`
+    public function getModelAttributesAttribute($model_attr)
+    {
+        return json_decode($model_attr);
+    }
+
     // TODO
     // Validator rules
     public static function rules(){

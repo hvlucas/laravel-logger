@@ -10,3 +10,10 @@ Route::group([
     Route::delete('/destroy/{event}/', 'EventsController@destroy');
     Route::delete('/force-destroy/{soft_event}/', 'EventsController@forceDestroy');
 });
+
+Route::group([
+    'prefix' => 'events-ajax-helpers',
+    'namespace' => 'HVLucas\LaravelLogger\App\Http\Controllers'
+], function(){
+    Route::post('/model-history', 'EventsController@modelHistory');
+});

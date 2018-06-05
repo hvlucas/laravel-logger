@@ -54,7 +54,7 @@ a {
 
 /* TAGS */
 tag {
-    padding: 5px;
+    padding: 6px;
     border: solid 1px transparent;
     border-radius: 15px;
     font-weight: 600;
@@ -106,4 +106,8 @@ th i , .method{
 .favorite {
     color: #eede05;
     margin-left: 5px;
+}
+
+tbody tr:nth-child(odd){
+    background-color: #eff1f4;
 }

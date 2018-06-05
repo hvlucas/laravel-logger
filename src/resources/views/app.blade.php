@@ -12,6 +12,7 @@
         <link rel="stylesheet" href="{{ asset('/vendor/laravel-logger/vendor/bootstrap/css/bootstrap.min.css') }}">
         <link rel="stylesheet" href="{{ asset('/vendor/laravel-logger/vendor/datatables/css/dataTables.bootstrap4.min.css') }}">
         <link rel="stylesheet" href="{{ asset('/vendor/laravel-logger/css/font-awesome/fontawesome-all.min.css') }}">
+        <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.1/css/responsive.dataTables.min.css">
         <link rel="stylesheet" href="{{ asset('/vendor/laravel-logger/css/all.css') }}">
 
         {{-- JS --}}
@@ -19,6 +20,7 @@
         <script src="{{ asset('/vendor/laravel-logger/vendor/bootstrap/js/bootstrap.min.js') }}" type="text/javascript"></script>
         <script src="{{ asset('/vendor/laravel-logger/vendor/datatables/js/jquery.dataTables.js') }}" type="text/javascript"></script>
         <script src="{{ asset('/vendor/laravel-logger/vendor/datatables/js/dataTables.bootstrap4.min.js') }}" type="text/javascript"></script>
+        <script src="https://cdn.datatables.net/responsive/2.2.1/js/dataTables.responsive.min.js" type="text/javascript"></script>
         <script src="{{ asset('/vendor/laravel-logger/js/main.js') }}" type="text/javascript"></script>
 
         <title>Events</title>

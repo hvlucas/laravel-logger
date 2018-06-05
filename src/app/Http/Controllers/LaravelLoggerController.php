@@ -2,6 +2,8 @@
 
 namespace HVLucas\LaravelLogger\App\Http\Controllers;
 
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use HVLucas\LaravelLogger\App\Event;
 use HVLucas\LaravelLogger\Facades\LaravelLogger;
@@ -23,6 +25,21 @@ abstract class LaravelLoggerController extends Controller
             return [ 'model' => LaravelLogger::getModel($model->getClassName()), 'events' => $model_events];
         });
         return view('laravel_logger::index', compact('models'));
+    }
+
+    // Fectches history of model instance
+    public function modelHistory(Request $request)
+    {
+        $rules = [ 'event_id' => 'required|exists:events,id' ];
+
+        $modal = -1;
+        if(Validator::make($request->all(), $rules)->passes()){
+            $event = Event::find($request->event_id);
+            $history = Event::where(['model_name' => $event->model_name, 'model_id' => $event->model_id])->orderBy('created_at')->get();
+            $history = view('laravel_logger::history', compact('history'))->render();
+            $modal = view('laravel_logger::components.history', ['slot' => $history]);
+        }
+        return response()->json($model);
     }
 
     // TODO

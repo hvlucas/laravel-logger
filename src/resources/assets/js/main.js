@@ -23,7 +23,17 @@ function toggleExpandTab(){
 }
 
 $(document).ready(function(){
+
+    $.ajaxSetup({
+        headers: {'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content') }
+    });
+
+    $(document).ajaxError(function(event){
+        console.log('Error making AJAX request. If you believe this is a bug please open an issue at: https://github.com/hvlucas/laravel-logger/issues/new');
+    });
+
     $('.events').DataTable({
+        responsive: true,
         searching: false,
         paging: false,
         info: false,
@@ -61,6 +71,24 @@ $(document).ready(function(){
             hideNavItem(items);
         }
         $('#toggleTab a').text(new_text);
+    });
+
+    $(document).on('click', '.open-model-history', function(){
+        var event_id = $(this).data('event-id');
+        if(typeof event_id != "undefined"){
+            $.ajax({
+                url: '/events-ajax-helpers/model-history'
+                data: { event_id: event_id },
+                success: function(data) {
+                    if(data !== -1){
+                        $(data).modal();
+                        $(data).on('hidden.bs.modal', functino(e){
+                            $(this).remove();
+                        });
+                    }
+                }
+            });
+        }
     });
 });
 
