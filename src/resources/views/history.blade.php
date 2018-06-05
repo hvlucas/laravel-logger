@@ -1,21 +1,29 @@
 <div class="row">
     <div class="col-lg event-container">
-        <div class="event-history-attrs">
-            @foreach($attributes as $attr)
-                {{$attr}}
-            @endforeach
-        </div>
-            @foreach($history as $event)
-                <div class="event-history-values">
-                    <tag class="{{$event->activity}}">{{$event->activity}}</tag>
-                    @foreach($event->model_attributes as $value)
-                        {{$value}}
-                    @endforeach
-                    @if(!$loop->last)
-                        <i class="fas fa-arrow-alt-right pointer"></i>
-                    @endif
-                </div>
-            @endforeach
-        </div>
+        <table class="history">
+            <tbody>
+                @php
+                    $split = ceil(count($attributes)/2);
+                @endphp
+                @foreach($attributes as $attr)
+                    <tr>
+                        <td>{{$attr}}</td>
+                        @foreach($history as $event)
+                            @php
+                                $value = $event->model_attributes[$attr] ?? null;
+                            @endphp
+                            <td>{{$value}}</td>
+                            @if(!$loop->last)
+                                <td> 
+                                    @if($loop->iteration == $split) 
+                                        <i class="fas fa-arrow-alt-right"></i> 
+                                    @endif
+                                </td>
+                            @endif
+                        @endforeach
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
     </div>
 </div>

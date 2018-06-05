@@ -108,8 +108,13 @@ th i , .method{
     margin-left: 5px;
 }
 
-tbody tr:nth-child(odd){
+.events tbody tr:nth-child(odd){
     background-color: #eff1f4;
+}
+
+.history table {
+    border-collapse: separate;
+    border-spacing: 15px;
 }
 
 /* EVENTS MODAL */

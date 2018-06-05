@@ -220,7 +220,7 @@ class Event extends Model
     // Return decoded `$this->model_attributes`
     public function getModelAttributesAttribute($model_attr)
     {
-        return json_decode($model_attr);
+        return json_decode($model_attr, true);
     }
 
     // TODO

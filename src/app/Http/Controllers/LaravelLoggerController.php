@@ -39,7 +39,7 @@ abstract class LaravelLoggerController extends Controller
             $history = Event::where(['model_name' => $event->model_name, 'model_id' => $event->model_id])->orderBy('created_at')->get();
             $attributes = array_keys($history->first()->model_attributes ?? []);
             $history = view('laravel_logger::history', compact('history', 'attributes'))->render();
-            $modal = view('laravel_logger::components.history', ['slot' => $history])->render();
+            $modal = view('laravel_logger::components.modal', ['slot' => $history])->render();
         }
         return response()->json($modal);
     }
