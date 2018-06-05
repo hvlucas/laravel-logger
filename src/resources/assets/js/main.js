@@ -83,7 +83,7 @@ $(document).ready(function(){
                 success: function(data) {
                     if(data !== -1){
                         $(data).modal();
-                        $(data).on('hidden.bs.modal', functino(e){
+                        $(data).on('hidden.bs.modal', function(e){
                             $(this).remove();
                         });
                     }
