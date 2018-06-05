@@ -35,6 +35,7 @@ $(document).ready(function(){
     $('.events').DataTable({
         responsive: true,
         searching: false,
+        sorting: false,
         paging: false,
         info: false,
     });

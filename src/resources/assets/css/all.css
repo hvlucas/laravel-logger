@@ -112,12 +112,7 @@ th i , .method{
     background-color: #eff1f4;
 }
 
-.history table {
-    border-collapse: separate;
-    border-spacing: 15px;
-}
-
-/* EVENTS MODAL */
+/* EVENTS HISTORY MODAL */
 
 .event-container {
     display: flex;
@@ -129,6 +124,49 @@ th i , .method{
     white-space: pre-line;
 }
 
-.model-content {
+.modal-content {
     padding: 30px;
+}
+
+.column-split {
+    text-align: center;
+}
+.column-split i{
+    font-size: 10px;
+}
+
+.column-split tag {
+    font-size: 9px;
+    display: block;
+}
+
+table.history {
+    border-collapse: separate;
+    border-spacing: 15px;
+    line-height: 20px;
+}
+
+table.history .column-split {
+    padding-right: 30px;
+}
+
+table.history td:not(.attribute-name):not(.column-split) {
+    min-width: 200px;
+}
+
+ts {
+    display: block;
+    font-size: 9px;
+    color: #626262;
+}
+
+ts[data-toggle], tag[data-toggle]{
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+@media (min-width: 576px) {
+    .modal-dialog {
+        max-width: 850px;
+    }
 }

@@ -70,8 +70,6 @@ class LaravelLoggerModel
 
     public function getAttributeValues($model)
     {
-        //TODO
-        //Throw exception if model class does not match model given
         $class_name = get_class($model);
         if($class_name != $this->class_name){
             throw new ClassNotMatchedException("Model '$class_name' does not match $this->class_name.");
@@ -80,7 +78,7 @@ class LaravelLoggerModel
         $attributes = $this->attributes;
         if(empty($attributes)){
             $hidden = ['id'] + $model->getHidden();
-            $attributes = $model->setHidden($hidden)->attributesToArray();
+            $attributes = $model->refresh()->setHidden($hidden)->attributesToArray();
         }else{
             $attributes = $model->only($attributes);
         }
@@ -122,7 +120,7 @@ class LaravelLoggerModel
         $model_table = $model_instance->getTable();
         $model_key = $model_instance->getKeyName();
 
-        $models = $model::leftJoin($event_table, "$model_table.$model_key", '=', "$event_table.model_id")->select("$model_table.*", "$event_table.activity as event_activity_id")->whereNull("$event_table.activity")->get();
+        $models = $model::leftJoin($event_table, "$model_table.$model_key", '=', "$event_table.model_id")->select("$model_table.*", "$event_table.activity as event_activity")->whereNull("$event_table.activity")->get();
 
         foreach($models as $init_model){
             $created_at = new DateTime;

@@ -13,6 +13,7 @@ class ModelObserver
     // Log created eloquent event
     public function created($model)
     {
+        $this->setStartingPoint($model);
         $this->logModelEvent($model, 'created');
     }
     
@@ -71,6 +72,16 @@ class ModelObserver
 
         $tracker->setTracking(false);
     }
+
+    // Set the starting point for newly created model instance
+    private function setStartingPoint($model)
+    {
+        $tracker = LaravelLogger::getTracker();
+        $model = $tracker->getModel(get_class($model));
+        $model->setStartingPoint();
+    }
+
+ 
 
     private static function storeEvent($data)
     {
