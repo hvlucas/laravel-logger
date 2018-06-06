@@ -16,4 +16,5 @@ Route::group([
     'namespace' => 'HVLucas\LaravelLogger\App\Http\Controllers'
 ], function(){
     Route::post('/model-history', 'EventsController@modelHistory');
+    Route::get('/model-history/filter', 'EventsController@filterHistory');
 });

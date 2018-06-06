@@ -29,6 +29,12 @@ class ModelObserver
         $this->logModelEvent($model, 'deleted');
     }
 
+    // Log restored eloquent event
+    public function restored($model)
+    {
+        $this->logModelEvent($model, 'restored');
+    }
+
     // Sets up variables to log event
     private function logModelEvent($model_tracked, $event): void
     {

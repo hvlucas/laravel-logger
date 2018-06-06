@@ -95,5 +95,25 @@ $(document).ready(function(){
     $(document).on('shown.bs.modal', '.modal', function(){
         $('#history-slider').slider();
     });
+
+    timeout = null;
+    $(document).on('change', 'input#history-slider', function(){
+        clearTimeout(timeout);
+        var event_point = $(this).attr('value');
+        var event_id = $(this).data('event-id');
+        var minimizer = $(this).data('minimizer');
+        timeout = setTimeout(function(){
+            $.ajax({
+                url: '/events-ajax-helpers/model-history/filter',
+                method: 'GET',
+                data: { event_id: event_id, event_point: event_point, minimizer: minimizer },
+                success: function(data) {
+                    if(data !== -1){
+                        $('table.history').replaceWith(data);
+                    }
+                }
+            });
+        }, 500);
+    });
 });
 

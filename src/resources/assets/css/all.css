@@ -76,9 +76,15 @@ tag.created, tag.get {
 }
 
 /* red */
-tag.destroyed, tag.delete {
+tag.destroyed, tag.deleted {
     background-color: #ff4646;
 }
+
+/* orange */
+tag.restored {
+    background-color: #ffbb32
+}
+
 
 /* cyan */
 tag.user {
@@ -176,7 +182,7 @@ ts[data-toggle], tag[data-toggle]{
 
 
 #history-slider .slider-selection {
-	background: #c4e4f4;
+	background: #81bfde;
 }
 
 #history-slider .slider-rangeHighlight {
@@ -189,4 +195,15 @@ ts[data-toggle], tag[data-toggle]{
 
 #history-slider .slider-rangeHighlight.startpoint {
     background: #10ac10;
+}
+
+#history-slider .slider-rangeHighlight.restored{
+    background: #ffbb32
+}
+
+#history-slider .slider-rangeHighlight.deleted{
+    background: #ff4646;
+}
+#history-slider {
+    width: 100%;
 }
