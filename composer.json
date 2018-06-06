@@ -26,14 +26,6 @@
             "HVLucas\\LaravelLogger\\": "src/"
         }
     },
-    "scripts": {
-        "post-package-install": [ 
-            "@php artisan migrate"
-        ],
-        "post-package-update": [
-            "@php artisan migrate"
-        ]
-    },
     "extra": {
         "laravel": {
             "providers": [
