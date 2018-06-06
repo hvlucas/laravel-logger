@@ -90,7 +90,11 @@ class LaravelLoggerServiceProvider extends ServiceProvider
             $file_name = "$model_namespace\\$file";
             $model = preg_replace('/\.php$/', '', $file_name);
             if(class_exists($model)){
-                $instance = new $model;
+                try {
+                    $instance = new $model;
+                }catch(\Throwable $e){
+                    continue;
+                }
                 $table = $instance->getTable();
                 if(Schema::hasTable($table)){
                     $models[] = $model;

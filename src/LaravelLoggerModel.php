@@ -116,7 +116,11 @@ class LaravelLoggerModel
         }
         
         $model = $this->class_name;
-        $model_instance = new $model;
+        try {
+            $model_instance = new $model;
+        }catch(\Throwable $e){
+            return;
+        }
         $model_table = $model_instance->getTable();
         $model_key = $model_instance->getKeyName();
 
