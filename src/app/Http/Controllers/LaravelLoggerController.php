@@ -33,13 +33,35 @@ abstract class LaravelLoggerController extends Controller
         $e = new Event;
         $rules = [ 'event_id' => 'required|exists:'.$e->getTable().',id' ];
 
+
         $modal = -1;
         if(Validator::make($request->all(), $rules)->passes()){
             $event = Event::find($request->event_id);
             $history = Event::where(['model_name' => $event->model_name, 'model_id' => $event->model_id])->where('activity', '!=', 'created')->orderBy('created_at')->get();
             $attributes = array_keys($history->first()->model_attributes ?? []);
-            $history = view('laravel_logger::history', compact('history', 'attributes'))->render();
-            $modal = view('laravel_logger::components.modal', ['slot' => $history])->render();
+
+            //make a slider that shows history points 
+            //in case the model is recent we need to convert from days to hours)
+            $minimizer = 60*60*24;
+            $differential = 0;
+            $level = 0;
+            $deepness = [ 24, 60 ];
+            while(isset($deepness[$level]) && $differential < 1){
+                $minimizer /= $deepness[$level];
+                $startpoint = $history->first()->created_at->getTimestamp()/$minimizer - 1;
+                $endpoint = time()/$minimizer + 1;
+                $differential = ($endpoint-$startpoint)/10;
+                ++$level;
+            }
+            $event_timestamps = json_encode($history->map(function($h) use ($differential, $minimizer){
+                return [
+                    'start' => $h->created_at->getTimestamp()/$minimizer,
+                    'end' => $h->created_at->getTimestamp()/$minimizer + $differential,
+                    'class' => $h->activity
+                ];
+            })->all());
+            $history = view('laravel_logger::history', compact('history', 'attributes', 'event_timestamps', 'startpoint', 'endpoint'))->render();
+            $modal = view('laravel_logger::components.modal', ['slot' => $history])->render();        
         }
         return response()->json($modal);
     }

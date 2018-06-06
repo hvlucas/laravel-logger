@@ -84,13 +84,16 @@ $(document).ready(function(){
                 success: function(data) {
                     if(data !== -1){
                         $(data).modal();
-                        $(data).on('hidden.bs.modal', function(e){
-                            $(this).remove();
-                        });
                     }
                 }
             });
         }
+    });
+    $(document).on('hidden.bs.modal', '.modal', function(){
+        $(this).remove();
+    });
+    $(document).on('shown.bs.modal', '.modal', function(){
+        $('#history-slider').slider();
     });
 });
 

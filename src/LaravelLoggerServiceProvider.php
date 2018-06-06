@@ -72,7 +72,7 @@ class LaravelLoggerServiceProvider extends ServiceProvider
 
         // Read from config or Auto Detect Models on the fly
         $loggable_models = config('laravel_logger.loggable_models', $this->autoDetectModels());
-        foreach($loggable_models as $loggable){
+        foreach((array) $loggable_models as $loggable){
             if($this->validModel($loggable)){
                 $this->handleModel($loggable);
             }

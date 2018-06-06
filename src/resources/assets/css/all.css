@@ -165,8 +165,28 @@ ts[data-toggle], tag[data-toggle]{
     text-decoration: underline;
 }
 
-@media (min-width: 576px) {
-    .modal-dialog {
-        max-width: 850px;
-    }
+
+.modal-dialog {
+    max-width: 90% !important;
+}
+
+.history-filter {
+    display: block;
+}
+
+
+#history-slider .slider-selection {
+	background: #81bfde;
+}
+
+#history-slider .slider-rangeHighlight {
+	background: #f70616;
+}
+
+#history-slider .slider-rangeHighlight.updated {
+    background: #4e9dff;
+}
+
+#history-slider .slider-rangeHighlight.startpoint {
+    background: #10ac10;
 }
