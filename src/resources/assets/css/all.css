@@ -183,10 +183,11 @@ ts[data-toggle], tag[data-toggle]{
 
 .history-filter {
     display: block;
+    margin-bottom: 30px;
 }
 
 
-/* SLIDER */
+/* SLIDERS */
 #history-slider .slider-selection {
 	background: #81bfde;
 }
@@ -212,4 +213,39 @@ ts[data-toggle], tag[data-toggle]{
 }
 #history-slider {
     width: 100%;
+}
+
+#history-slider .slider-tick-label-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.slider.slider-horizontal .slider-tick-label-container {
+    font-size: 10px;
+    color: #393939;
+}
+
+.history-scale {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.history-scale .slider-handle {
+    background-color: #249c32;
+    background-image: -webkit-linear-gradient(top, #249c32 0%, #287f22 100%);
+    background-image: -o-linear-gradient(top, #249c32 0%, #287f22 100%);
+    background-image: linear-gradient(to bottom, #249c32 0%, #287f22 100%);
+}
+
+.history-scale .slider-selection.tick-slider-selection {
+    background-image: -webkit-linear-gradient(top, #95ef8a 0%, #95de82 100%);
+    background-image: -o-linear-gradient(top, #95ef8a 0%, #95de82 100%);
+    background-image: linear-gradient(to bottom, #95ef8a 0%, #95de82 100%);
+}
+
+.history-scale .slider-tick.in-selection {
+    background-image: -webkit-linear-gradient(top, #95ef8a 0%, #92de8d 100%);
+    background-image: -o-linear-gradient(top, #95ef8a 0%, #82de8d 100%);
+    background-image: linear-gradient(to bottom, #95ef8a 0%, #82de8d 100%);
 }
