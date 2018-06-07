@@ -102,7 +102,7 @@ tag.post, tag.put, tag.patch {
 }
 
 table.dataTable {
-    width: 100%;
+    width: 100% !important;
 }
 
 th i , .method{
@@ -152,12 +152,17 @@ table.history {
     line-height: 20px;
 }
 
-table.history .column-split {
-    padding-right: 30px;
-}
-
 table.history td:not(.attribute-name):not(.column-split) {
     min-width: 200px;
+}
+
+table.history tr:nth-child(odd) > td:not(.column-split):not(:first-child) {
+    background-color: #eff1f4;
+}
+
+table.history td:not(:first-child) {
+    padding: 15px;
+    text-align: center;
 }
 
 ts {
@@ -181,6 +186,7 @@ ts[data-toggle], tag[data-toggle]{
 }
 
 
+/* SLIDER */
 #history-slider .slider-selection {
 	background: #81bfde;
 }

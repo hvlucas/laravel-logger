@@ -1,8 +1,21 @@
+@php
+    $split = (int) ceil(count($attributes)/2);
+@endphp
 <table class="history table-responsive">
+    <thead>
+
+        <tr>
+            <th><ts>{{$history->first()->created_at->format('e')}}</ts></th>
+            @foreach($history as $event)
+                <th>
+                    @if($loop->iteration%2)
+                        <ts>{{$event->created_at->format('F jS, Y @ H:i:s')}}</ts>
+                    @endif
+                </th>
+            @endforeach
+        </tr>
+    </thead>
     <tbody>
-        @php
-            $split = (int) ceil(count($attributes)/2);
-        @endphp
         @foreach($attributes as $attr)
             <tr>
                 <td class="attribute-name"><tag>{{$attr}}</tag></td>

@@ -36,26 +36,32 @@ abstract class LaravelLoggerController extends Controller
         $modal = -1;
         if(Validator::make($request->all(), $rules)->passes()){
             $history = $this->getHistory($request->all());
-            $event_id = $request->event_id;
+            $event = Event::find($request->event_id);
             $attributes = array_keys($history->first()->model_attributes ?? []);
             //make a slider that shows history points 
             //in case the model is recent we need to convert from days to hours)
             $minimizer = 60*60*24;
             $differential = 0;
             $level = 0;
-            $deepness = [ 24, 60 ];
+            $deepness = [ 24, 60, 60 ];
             while(isset($deepness[$level]) && $differential < 1){
                 $minimizer /= $deepness[$level];
-                $startpoint = $history->first()->created_at->getTimestamp()/$minimizer - 1;
-                $endpoint = time()/$minimizer + 1;
+                $startpoint = $history->first()->created_at->getTimestamp()/$minimizer;
+                $endpoint = $history->last()->created_at->getTimestamp()/$minimizer;
                 $differential = ($endpoint-$startpoint)/40;
                 ++$level;
             }
-            $event_timestamps = json_encode($history->map(function($h) use ($differential, $minimizer, $endpoint){
+            $smallest_diff = 1;
+            $comp = $startpoint;
+            $event_timestamps = json_encode($history->map(function($h) use ($differential, $minimizer, $endpoint, &$comp, &$smallest_diff){
                 $end = $h->created_at->getTimestamp()/$minimizer + $differential;
                 if($end > $endpoint){
                     $end  = $endpoint - $differential;
                 }
+                if(abs($end - $comp) < $smallest_diff){
+                    $smallest_diff = abs($end-$comp);
+                }
+                $comp = $end;
                 return [
                     'start' => $h->created_at->getTimestamp()/$minimizer,
                     'end' => $end,
@@ -63,7 +69,11 @@ abstract class LaravelLoggerController extends Controller
                 ];
             })->all());
 
-            $history_view = view('laravel_logger::history', compact('history', 'attributes', 'event_timestamps', 'startpoint', 'endpoint', 'minimizer', 'event_id'))->render();
+            if($smallest_diff == 0){
+                $smallest_diff = 0.1;
+            }
+
+            $history_view = view('laravel_logger::history', compact('history', 'attributes', 'event_timestamps', 'startpoint', 'endpoint', 'minimizer', 'event', 'smallest_diff'))->render();
             $modal = view('laravel_logger::components.modal', ['slot' => $history_view])->render();        
         }
         return response()->json($modal);

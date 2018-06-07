@@ -1,3 +1,6 @@
+jQuery.fn.pop = [].pop;
+jQuery.fn.shift = [].shift;
+
 function uniqueValues(value, index, self){
     return self.indexOf(value) === index;
 }
@@ -20,6 +23,37 @@ function toggleExpandTab(){
         'href': '#',
         'text': '+'
     }));
+}
+
+// From https://stackoverflow.com/a/5541252/8479313
+function collision(element, comparison) {
+    var x1 = element.offset().left;
+    var y1 = element.offset().top;
+    var h1 = element.outerHeight(true);
+    var w1 = element.outerWidth(true);
+    var b1 = y1 + h1;
+    var r1 = x1 + w1;
+    var x2 = comparison.offset().left;
+    var y2 = comparison.offset().top;
+    var h2 = comparison.outerHeight(true);
+    var w2 = comparison.outerWidth(true);
+    var b2 = y2 + h2;
+    var r2 = x2 + w2;
+
+    if(b1 < y2 || y1 > b2 || r1 < x2 || x1 > r2){
+        return false;
+    }
+    return true;
+}
+
+function clearSliderAnimations(){
+    $.each($('.slider-rangeHighlight'), function(){
+        $(this).animate({
+            top: 0,
+        }, 200, function(){
+            $(this).removeClass('animating');
+        });
+    });
 }
 
 $(document).ready(function(){
@@ -96,6 +130,43 @@ $(document).ready(function(){
         $('#history-slider').slider();
     });
 
+    timeout = null
+    $(document).on({
+        mouseenter: function(){
+            var points = $('.slider-rangeHighlight');
+            if(points.length > 1){
+                var cur_point = $(this);
+                var times = 1;
+                clearTimeout(timeout);
+                $(this).addClass('hovered');
+                timeout = setTimeout(function(){
+                    $(this).removeClass('hovered');
+                    $.each(points, function(){
+                        var collided = collision($(cur_point), $(this));
+                        if(collided && !$(this).is(cur_point)){
+                            var top_px = 5*times;
+                            var right_px = 2*times;
+                            ++times;
+                            $(this).addClass('animating');
+                            $(this).animate({
+                                top: top_px+'px',
+                            }, 200);
+                        }
+                    });
+                }, 500);
+            }
+        },
+        mouseleave: function() {
+            clearSliderAnimations();
+        }
+    }, '.slider-rangeHighlight:not(.animating)');
+
+    window.setInterval(function(){
+        if($('.slider-rangeHighlight.hovered').length > 0){
+            clearSliderAnimations();
+        }
+    }, 5000);
+    
     timeout = null;
     $(document).on('change', 'input#history-slider', function(){
         clearTimeout(timeout);
@@ -116,4 +187,3 @@ $(document).ready(function(){
         }, 500);
     });
 });
-

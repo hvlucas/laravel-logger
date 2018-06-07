@@ -39,13 +39,6 @@ class ModelObserver
     private function logModelEvent($model_tracked, $event): void
     {
         $tracker = LaravelLogger::getTracker();
-        if($tracker->isTracking()){
-            return;
-        }
-
-        // Flag tracking to true
-        $tracker->setTracking(true);
-
         $model = $tracker->getModel(get_class($model_tracked));
         if($model->isTrackingEvent($event)){
             $attributes = [];
@@ -75,8 +68,6 @@ class ModelObserver
 
             static::storeEvent($data);
         }
-
-        $tracker->setTracking(false);
     }
 
     // Set the starting point for newly created model instance
@@ -86,8 +77,6 @@ class ModelObserver
         $model = $tracker->getModel(get_class($model));
         $model->setStartingPoint();
     }
-
- 
 
     private static function storeEvent($data)
     {
