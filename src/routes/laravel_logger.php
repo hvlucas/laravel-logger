@@ -17,4 +17,6 @@ Route::group([
 ], function(){
     Route::post('/model-history', 'EventsController@modelHistory');
     Route::get('/model-history/filter', 'EventsController@filterHistory');
+    Route::get('/model-history/sync-form', 'EventsController@syncForm');
+    Route::post('/model-history/sync', 'EventsController@syncModel');
 });

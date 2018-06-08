@@ -12,7 +12,7 @@ use HVLucas\LaravelLogger\Facades\LaravelLogger;
 abstract class LaravelLoggerController extends Controller
 {
 
-    static $scale_options = ['all time', 'past year', 'past month', 'past day'];
+    static $scale_options = ['all time', 'past year', 'past month', 'past week', 'past day'];
     // TODO
     // Filter by individual models
     // Filter by user
@@ -75,6 +75,39 @@ abstract class LaravelLoggerController extends Controller
         return response()->json($history_table);
     }
 
+    // Return sync form
+    public function syncForm(Request $request)
+    {
+        $e = new Event;
+        $rules = [
+            'model_id' => 'required',
+            'sync_event_id' => 'required|exists:'.$e->getTable().',id'
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+        $validator->after(function($validator) use($request){
+            $event = Event::find($request->sync_event_id);
+            $model = new $event->model_name;
+            if(Validator::make($request->all(), ['model_id' => 'required|exists:'.$model->getTable().','.$model->getKeyName()])->fails()){
+                $validator->errors()->add('model_id', 'Does not exists');
+            }
+        });
+
+        $sync_form = -1;
+        if($validator->passes()){
+            // TODO
+        }
+
+        return response()->json($sync_form);
+    }
+
+    // Sync model to an event point in the model's timeline
+    // TODO
+    // config option to set which attributes will be updated
+    public function syncModel(Request $request)
+    {
+    }
+
     // TODO
     // Soft delete Event
     public function destroy(Event $event)
@@ -88,7 +121,7 @@ abstract class LaravelLoggerController extends Controller
     }
 
     // TODO
-    // Clear history and set starting point to current point in time
+    // Clear history and set starting point to current point in time (Maybe?)
     public function setStartingPoint()
     {
     }
@@ -110,6 +143,9 @@ abstract class LaravelLoggerController extends Controller
                     break;
                 case 'past month':
                     $created_at = new Carbon('last month');
+                    break;
+                case 'past week':
+                    $created_at = new Carbon('last week');
                     break;
                 case 'past day':
                     $created_at = new Carbon('last day');
@@ -136,9 +172,9 @@ abstract class LaravelLoggerController extends Controller
         $last = $history->last();
         while(isset($deepness[$level]) && $differential < 1){
             $minimizer /= $deepness[$level];
-            $startpoint = $first->created_at->getTimestamp()/$minimizer;
-            $endpoint = $last->created_at->getTimestamp()/$minimizer;
-            $differential = ($endpoint-$startpoint)/40;
+            $startpoint = ($first->created_at->getTimestamp()/$minimizer) - 1;
+            $endpoint = ($last->created_at->getTimestamp()/$minimizer) + 1;
+            $differential = ($endpoint-$startpoint)/100;
             ++$level;
         }
 
@@ -148,14 +184,17 @@ abstract class LaravelLoggerController extends Controller
         $labels = collect([]);
         foreach(range(0, 4) as $index){
             $label = $first->created_at->copy()->addSeconds($split*$index);
-            //months vary days, so base it on that
-            $month = 86400 * (int) $last->created_at->endOfMonth()->format('d');
+            // month/week/day in seconds (not accounting for variation in month days)
+            $month = 2678400;
+            $week = 604800;
             $day = 86400;
 
             if($diff <= $day){
-                $format = 'H:i:s a';
+                $format = 'F jS H:i:s a';
+            }elseif($diff <= $week){
+                $format = 'l H:i:s a';
             }elseif($diff <= $month){
-                $format = 'F jS';
+                $format = 'F jS Y';
             }else{
                 $format = 'F Y';
             }

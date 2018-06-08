@@ -51,6 +51,35 @@ a {
     color: #ececec;
 }
 
+h1 { 
+    font-size: 24px;
+}
+
+h2 { 
+    font-size: 21px;
+}
+
+h3 {    
+    font-size: 20px;
+}
+
+h4 { 
+    font-size: 18px;
+}
+
+h5 { 
+    font-size: 16px;
+}
+
+h6 { 
+    font-size: 14px;
+}
+
+
+h1, h2, h3, h4, h5 {
+    font-weight: 400;
+    text-transform:uppercase;
+}
 
 /* TAGS */
 tag {
@@ -63,6 +92,7 @@ tag {
     color: #fff;
     /* default */
     background-color: #a5a5a5;
+    cursor: pointer;
 }
 
 /* blue */
@@ -76,7 +106,7 @@ tag.created, tag.get {
 }
 
 /* red */
-tag.destroyed, tag.deleted {
+tag.destroyed, tag.deleted, tag.delete {
     background-color: #ff4646;
 }
 
@@ -93,7 +123,8 @@ tag.user {
 
 /* ylw */
 tag.post, tag.put, tag.patch {
-    background-color: #eede05;
+    color: #524c00;
+    background-color: #ffed00;
 }
 
 /* EVENTS TABLE */
@@ -118,6 +149,10 @@ th i , .method{
     background-color: #eff1f4;
 }
 
+table.history.table-responsive {
+    overflow-x: hidden;
+}
+
 /* EVENTS HISTORY MODAL */
 
 .event-container {
@@ -136,6 +171,7 @@ th i , .method{
 
 .column-split {
     text-align: center;
+    white-space: nowrap;
 }
 .column-split i{
     font-size: 10px;
@@ -171,6 +207,10 @@ ts {
     color: #626262;
 }
 
+th ts {
+    display: inline;
+}
+
 ts[data-toggle], tag[data-toggle]{
     cursor: pointer;
     text-decoration: underline;
@@ -186,6 +226,40 @@ ts[data-toggle], tag[data-toggle]{
     margin-bottom: 30px;
 }
 
+.model-title {
+    text-decoration: underline;
+    text-underline-position: under;
+}
+
+.table-container {
+    position: relative;
+}
+
+.modal-scroll {
+    position: absolute;
+    top:50%;
+    cursor: pointer;
+}
+
+.modal-scroll:hover {
+    text-shadow: -2px 3px 2px #c1c1c1;
+}
+
+.modal-scroll[data-direction="left"] {
+    left: -20px;
+}
+
+.modal-scroll[data-direction="right"] {
+    right: -20px;
+}
+
+.sync-model {
+    cursor: pointer;
+}
+
+.sync-model:hover {
+    text-shadow: -2px 2px 2px #5c5c5c;
+}
 
 /* SLIDERS */
 #history-slider .slider-selection {
@@ -228,7 +302,7 @@ ts[data-toggle], tag[data-toggle]{
 .history-scale {
     margin-bottom: 20px;
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
 }
 
 .history-scale .slider-handle {

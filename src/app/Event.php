@@ -228,4 +228,28 @@ class Event extends Model
     public static function rules(){
         return [];
     }
+
+    // Returns previous event
+    public function getPreviousAttribute()
+    {
+        $events = $this->getEventIds();
+        $instance_index = $events->search($this->id);
+        $previous_id = $events[--$instance_index] ?? null;
+        return $previous_id == null ? null : self::find($previous_id);
+    }
+
+    // Returns next event
+    public function getNextAttribute()
+    {
+        $events = $this->getEventIds();
+        $instance_index = $events->search($this->id);
+        $previous_id = $events[++$instance_index] ?? null;
+        return $previous_id == null ? null : self::find($previous_id);
+    }
+
+    // Return collection of Event IDs that are related to `$this` model id and model name
+    private function getEventIds()
+    {
+        return self::where(['model_name' => $this->model_name, 'model_id' => $this->model_id])->orderBy('created_at')->get()->pluck('id');
+    }
 }

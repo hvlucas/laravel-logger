@@ -1,19 +1,23 @@
 jQuery.fn.pop = [].pop;
 jQuery.fn.shift = [].shift;
 
+// Returns unique values of an array
 function uniqueValues(value, index, self){
     return self.indexOf(value) === index;
 }
 
+// Hide nav
 function hideNavItem(nav_item){
     nav_item.hide();
     nav_item.addClass('toggle-nav');
 }
 
+// Show nav
 function showNavItem(nav_item){
     nav_item.show();
 }
 
+// Expand nav tabs
 function toggleExpandTab(){
     return $('<li>', {
         'class': 'nav-item',
@@ -26,6 +30,7 @@ function toggleExpandTab(){
 }
 
 // From https://stackoverflow.com/a/5541252/8479313
+// Detects if element is colliding with another element
 function collision(element, comparison) {
     var x1 = element.offset().left;
     var y1 = element.offset().top;
@@ -46,6 +51,7 @@ function collision(element, comparison) {
     return true;
 }
 
+// Return slider Highlighted areas to original positions
 function clearSliderAnimations(){
     $.each($('.slider-rangeHighlight'), function(){
         $(this).animate({
@@ -54,6 +60,51 @@ function clearSliderAnimations(){
             $(this).removeClass('animating');
             $(this).css('z-index', 'unset');
         });
+    });
+}
+
+// Scroll modal left/right
+function scrollModal(direction){
+    if(direction == 'right'){
+        direction = '+';
+    }else{
+        direction = '-';
+    }
+    $('table.history').animate( { scrollLeft: direction+'=300' }, 200);
+
+    var table = $('table.history')[0];
+
+    if(typeof table == 'undefined'){
+        return;
+    }
+
+    var scrollWidth = table.scrollWidth;
+    var width = $('table.history').outerWidth();
+    var scrollLeft = $('table.history').scrollLeft();
+
+    if (scrollWidth - width === scrollLeft){
+        $('.modal-scroll[data-direction="right"]').hide();
+    }else{
+        $('.modal-scroll[data-direction="right"]').show();
+    }
+
+    if(scrollLeft == 0){
+        $('.modal-scroll[data-direction="left"]').hide();
+    }else{
+        $('.modal-scroll[data-direction="left"]').show();
+    }
+}
+
+// Trigger scroll event for modal
+function fireScrollEvent(){
+    $('.modal-scroll').mousedown(function(event){
+        if(event.which == 1){
+            var direction = $(this).data('direction');
+            scrollModal(direction);
+            animation_interval = setInterval(function(){
+                scrollModal(direction);
+            }, 200);
+        }
     });
 }
 
@@ -67,6 +118,7 @@ $(document).ready(function(){
         console.log('Error making AJAX request. If you believe this is a bug please open an issue at: https://github.com/hvlucas/laravel-logger/issues/new');
     });
 
+    // Events table data tables config
     $('.events').DataTable({
         responsive: true,
         searching: false,
@@ -91,11 +143,13 @@ $(document).ready(function(){
             hideNavItem($(this));
         }
     });
+
     var nav_parent = $('.nav.nav-tabs');
     if(reached_end){
         nav_parent.append(toggleExpandTab());
     }
 
+    // Toggle nav tabs
     $(document).on('click', '#toggleTab', function(){
         var items = nav_parent.find('.nav-item.toggle-nav').not('#expandTab');
         var current_text = $('#toggleTab a').text();
@@ -109,6 +163,7 @@ $(document).ready(function(){
         $('#toggleTab a').text(new_text);
     });
 
+    // Get model history and trigger modal to show
     $(document).on('click', '.open-model-history', function(){
         var event_id = $(this).data('event-id');
         if(typeof event_id != "undefined"){
@@ -124,14 +179,27 @@ $(document).ready(function(){
             });
         }
     });
+
+    // Remove modal from dom once it closes
     $(document).on('hidden.bs.modal', '.modal', function(){
         $(this).remove();
     });
+    
+    // Trigger sliders and scroll event when modal finishes loading
+    scroll_timeout = null;
+    animation_interval = null;
     $(document).on('shown.bs.modal', '.modal', function(){
         $('#history-slider').slider();
         $('#scale-slider').slider();
+        fireScrollEvent(); 
     });
 
+    // Clear interval for slider scroll
+    $(document).mouseup(function(){
+        clearInterval(animation_interval);
+    });
+
+    // Expand slider highlighted events
     event_timeout = null
     $(document).on({
         mouseenter: function(){
@@ -164,6 +232,7 @@ $(document).ready(function(){
         }
     }, '.slider-rangeHighlight:not(.animating)');
 
+    // Clear animations for slider highlighted points every 5 seconds
     window.setInterval(function(){
         if($('.slider-rangeHighlight.hovered').length > 0){
             clearSliderAnimations();
@@ -171,6 +240,7 @@ $(document).ready(function(){
         }
     }, 5000);
     
+    // Set point in timeline of model history
     history_timeout = null;
     $(document).on('change', 'input#history-slider', function(){
         clearTimeout(history_timeout);
@@ -184,13 +254,17 @@ $(document).ready(function(){
                 data: { event_id: event_id, event_point: event_point, minimizer: minimizer },
                 success: function(data) {
                     if(data !== -1){
-                        $('table.history').replaceWith(data);
+                        $('.table-container').replaceWith(data);
+                        $('.modal').modal('handleUpdate');
+                        fireScrollEvent();
+                        scrollModal('left');
                     }
                 }
             });
         }, 500);
     });
 
+    // Scale timeline of model history
     scale_timeout = null;
     $(document).on('change', 'input#scale-slider', function(){
         var scale_filter = $(this).attr('value');
@@ -206,9 +280,29 @@ $(document).ready(function(){
                     if(data !== -1){
                         $('.history-container').replaceWith(data);
                         $('#history-slider').slider();
+                        fireScrollEvent();
+                        scrollModal('left');
                     }
                 }
             });
+        });
+    });
+
+    // Render modal for syncing
+    $(document).on('click', '.sync-model', function(){
+        var sync_event_id = $(this).data('event-id');
+        var model_id = $('input[data-model-id]').data('model-id');
+        $.ajax({
+            url: '/events-ajax-helpers/model-history/sync-form',
+            method: 'GET',
+            data: { model_id: model_id, sync_event_id: sync_event_id },
+            success: function(data){
+                if(data !== -1){
+                    $('.model').append(data);
+                    $('.sync-modal#'+sync_event_id).modal();
+                    $('.modal').modal('handleUpdate');
+                }
+            }
         });
     });
 });

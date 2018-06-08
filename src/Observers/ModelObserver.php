@@ -78,6 +78,7 @@ class ModelObserver
         $model->setStartingPoint();
     }
 
+    // Store Event
     private static function storeEvent($data)
     {
         //TODO

@@ -9,7 +9,7 @@ use HVLucas\LaravelLogger\LaravelLoggerTracker;
 use HVLucas\LaravelLogger\Observers\ModelObserver;
 use HVLucas\LaravelLogger\Facades\LaravelLogger;
 use HVLucas\LaravelLogger\App\Event;
-use HVLucas\LaravelLogger\Exceptions\TableNotFoundException;
+use HVLucas\LaravelLogger\Exceptions\InvalidConfigSyntax;
 use DateTime;
 
 class LaravelLoggerServiceProvider extends ServiceProvider
@@ -110,6 +110,10 @@ class LaravelLoggerServiceProvider extends ServiceProvider
     {
         if(is_string($data) && class_exists($data)){
             return true;
+        }
+
+        if(gettype($data) != 'array'){
+            throw new InvalidConfigSyntax('Data passed through config is not a string or an array, please double check your syntax');
         }
 
         $validator = Validator::make($data, [

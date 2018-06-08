@@ -53,21 +53,13 @@ class LaravelLoggerModel
         $this->is_favorite = $is_favorite;
     }
 
-    public function isTrackingAuthenticatedUser()
-    {
-        return $this->tracks_current_user;
-    }
-
-    public function isTrackingData()
-    {
-        return $this->tracks_data;
-    }
-
-    public function isTrackingEvent(string $event)
+    // Returns if model is tracking event passed
+    public function isTrackingEvent(string $event): bool
     {
         return array_search($event, $this->events) !== false;
     }
 
+    // Get model instance attribute values (json encoded)
     public function getAttributeValues($model)
     {
         $class_name = get_class($model);
@@ -86,6 +78,18 @@ class LaravelLoggerModel
     }
 
     /* Getters */
+
+    // Return tracks_current_user attribute
+    public function isTrackingAuthenticatedUser()
+    {
+        return $this->tracks_current_user;
+    }
+
+    // Return tracks_data attribute
+    public function isTrackingData()
+    {
+        return $this->tracks_data;
+    }
 
     // Returns class name
     public function getClassName()
