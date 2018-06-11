@@ -53,14 +53,13 @@ function collision(element, comparison) {
 
 // Return slider Highlighted areas to original positions
 function clearSliderAnimations(){
-    $.each($('.slider-rangeHighlight'), function(){
-        $(this).animate({
-            top: 0,
-        }, 200, function(){
-            $(this).removeClass('animating');
-            $(this).css('z-index', 'unset');
-        });
+    $('.timeline-hover-container').fadeOut(function(){
+        $(this).remove();
     });
+    $('.slider-rangeHighlight').removeClass('animating').fadeIn(function(){
+        $(this).removeClass('animating');
+    });
+    $('.slider-rangeHighlight.hovered').removeClass('hovered');
 }
 
 // Scroll modal left/right
@@ -82,7 +81,7 @@ function scrollModal(direction){
     var width = $('table.history').outerWidth();
     var scrollLeft = $('table.history').scrollLeft();
 
-    if (scrollWidth - width === scrollLeft){
+    if (scrollWidth - width <= scrollLeft){
         $('.modal-scroll[data-direction="right"]').hide();
     }else{
         $('.modal-scroll[data-direction="right"]').show();
@@ -204,42 +203,80 @@ $(document).ready(function(){
     $(document).on({
         mouseenter: function(){
             var points = $('.slider-rangeHighlight');
-            if(points.length > 1){
+            if(points.length > 1 && $('.timeline-hover-container').length == 0){
                 var cur_point = $(this);
                 var times = 1;
                 clearTimeout(event_timeout);
                 $(this).addClass('hovered');
                 event_timeout = setTimeout(function(){
                     $(this).css('z-index', '1');
+                    hit_first_collision = false;
+                    max_left = 0;
+                    min_left = 999;
                     $.each(points, function(){
                         var collided = collision($(cur_point), $(this));
                         $(this).addClass('animating');
                         if(collided && !$(this).is(cur_point)){
-                            var top_px = 5*times;
-                            var right_px = 2*times;
+                            if(!hit_first_collision){
+                                var div = $('<div>', { 'class': 'timeline-hover-container' });
+                                $(this).before(div);
+                            }
+                            hit_first_collision = true;
+
+                            var current_left = getLeft($(this));
+                            if(current_left > max_left){
+                                max_left = current_left;
+                            }
+                            if(current_left < min_left){
+                                min_left = current_left;
+                            }
+
+                            var top_px = 25*times;
                             ++times;
-                            $(this).css('z-index', 2);
-                            $(this).animate({
+                            left = getLeft($(this));
+
+                            var clone = $(this).clone();
+                            clone.animate({
                                 top: top_px+'px',
-                            }, 200);
+                                width: '150px',
+                                height: '20px',
+                            });
+
+                            $('.timeline-hover-container').append(clone);
+                            var height = top_px+45;
+                            $('.timeline-hover-container').css({'z-index': 1, 'right': 100 - left + '%' });
+                            $('.timeline-hover-container').css('height', height+'px');
+                            $(this).hide();
                         }
+                    });
+
+                    max = $('input.history-slider').data('slider-max');
+                    min = $('input.history-slider').data('slider-min');
+                    difference = max-min;
+                    minimizer = $('input.history-slider').data('minimizer');
+                    $.each($('.timeline-hover-container').find('div'), function(){
+                        $(this).animate({
+                            left: 10+'px'
+                        });
+                        $(this).css('z-index', 2);
+
+                        var timestamp = (min + ((getLeft($(this))/100) * difference)) * minimizer * 1000;
+                        var date = new Date(timestamp);
+                        $(this).text(date.toLocaleDateString('en-US', {month: 'short', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'}));
+                    });
+                    $('.timeline-hover-container').mouseleave(function(){
+                        clearSliderAnimations();
                     });
                 }, 500);
             }
-        },
-        mouseleave: function() {
-            clearSliderAnimations();
         }
     }, '.slider-rangeHighlight:not(.animating)');
 
-    // Clear animations for slider highlighted points every 5 seconds
-    window.setInterval(function(){
-        if($('.slider-rangeHighlight.hovered').length > 0){
-            clearSliderAnimations();
-            $('.slider-rangeHighlight.hovered').removeClass('hovered');
-        }
-    }, 5000);
-    
+
+    function getLeft(element){
+        return element.position().left / element.parent().width() * 100;
+    }
+
     // Set point in timeline of model history
     history_timeout = null;
     $(document).on('change', 'input#history-slider', function(){

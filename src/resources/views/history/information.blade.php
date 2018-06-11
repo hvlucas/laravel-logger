@@ -1,6 +1,6 @@
 <div class="history-container">
     <div class="history-filter">
-        <input id="history-slider" type="text"
+        <input class="history-slider" id="history-slider" type="text"
              data-slider-id="history-slider"
              data-slider-min="{{$startpoint}}"
              data-slider-max="{{$endpoint}}"

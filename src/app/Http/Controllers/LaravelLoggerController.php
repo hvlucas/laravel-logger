@@ -95,7 +95,12 @@ abstract class LaravelLoggerController extends Controller
 
         $sync_form = -1;
         if($validator->passes()){
-            // TODO
+            $instance = $event->model_name::find($request->model_id);
+            $model = LaravelLogger::getModel(get_class($instance));
+            $current_attributes = $model->getAttributeValues($instance);
+            //TODO
+            $form = view('laravel_logger::sync_form', compact('attributes'));
+            $sync_form = view('laravel_logger::components.modal', ['slot' => $form]);
         }
 
         return response()->json($sync_form);
@@ -162,6 +167,9 @@ abstract class LaravelLoggerController extends Controller
     // Set variables for history view
     private function setHistoryAttributes($history, &$minimizer, &$differential, &$startpoint, &$endpoint, &$labels, &$smallest_diff, &$event_timestamps)
     {
+        if($history->count() == 0){
+            return;
+        }
         //make a slider that shows history points 
         //in case the model is recent we need to convert from days to hours or minutes)
         $minimizer = 60*60*24;
