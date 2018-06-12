@@ -28,6 +28,16 @@
         <title>Events</title>
     </head>
     <body>
+        @if(session()->has('message'))
+            <div class="row">
+                <div class="col-lg">
+                    @include('laravel_logger::components.alert', [
+                        'type' => session()->get('type'),
+                        'message' => session()->get('message')
+                    ])
+                </div>
+            </div>
+        @endif
         <div class="events-container">
             <div class="row">
                 <div class="col-lg">

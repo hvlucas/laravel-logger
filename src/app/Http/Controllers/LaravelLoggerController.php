@@ -95,43 +95,102 @@ abstract class LaravelLoggerController extends Controller
 
         $sync_form = -1;
         if($validator->passes()){
+            $event = Event::find($request->sync_event_id);
+            $event_attributes = $event->model_attributes;
             $instance = $event->model_name::find($request->model_id);
-            $model = LaravelLogger::getModel(get_class($instance));
-            $current_attributes = $model->getAttributeValues($instance);
-            //TODO
-            $form = view('laravel_logger::sync_form', compact('attributes'));
-            $sync_form = view('laravel_logger::components.modal', ['slot' => $form]);
+            $class_name = get_class($instance);
+            $id = $instance->{$instance->getKeyName()};
+            $model = LaravelLogger::getModel($class_name);
+            $current_attributes = json_decode($model->getAttributeValues($instance), true);
+            $attributes = array();
+            foreach($current_attributes as $column => $attr){
+                $attributes[] = ['column' => $column, 'old' => $attr, 'new' => $event_attributes[$column]??null];
+            }
+
+            $form = view('laravel_logger::sync_form', compact('attributes', 'class_name', 'id', 'event'));
+            $sync_form = view('laravel_logger::components.modal', ['class' => 'sync-modal', 'slot' => $form])->render();
         }
 
         return response()->json($sync_form);
     }
 
-    // Sync model to an event point in the model's timeline
+    // Sync model to an event point in the model's timeline and creates a `sync` Event instance 
     // TODO
     // config option to set which attributes will be updated
     public function syncModel(Request $request)
     {
+        $e = new Event;
+        $rules = [
+            'model_id' => 'required',
+            'sync_event_id' => 'required|exists:'.$e->getTable().',id',
+            'save' => 'required|array',
+        ];
+        // request comes from a serialized AJAX request, parse it then validate
+        parse_str($request->sync_data, $data);
+        $validator = Validator::make($data, $rules);
+        $validator->after(function($validator) use($data){
+            $event = Event::find($data['sync_event_id']);
+            $model = new $event->model_name;
+            if(Validator::make($data, ['model_id' => 'required|exists:'.$model->getTable().','.$model->getKeyName()])->fails()){
+                $validator->errors()->add('model_id', 'Does not exists');
+            }
+        });
+
+        $type = 'danger';
+        $message = 'Something went wrong! If you believe this is a bug please open an issue here: https://github.com/hvlucas/laravel-logger/issues/new';
+
+        if($validator->passes()){
+            $tracker = LaravelLogger::getTracker();
+            $event = Event::find($data['sync_event_id']);
+
+            $event_attributes = collect($event->model_attributes)->only(array_keys($data['save']))->all();
+            $model = LaravelLogger::getModel($event->model_name);
+            $class_name = $model->getClassName();
+            $new_instance = new $class_name;
+            // updating using a 'where' query builder does not trigger Laravel Events
+            // only issue comes when there are more than one instance with the same primary key; in which case we ignore bad design and update all of them out of spite
+            $model_id = $data['model_id'];
+            $event->model_name::where($new_instance->getKeyName(), $model_id)->update($event_attributes);
+
+            $data = [
+                'activity' => 'sync',
+                'model_id' => (string) $model_id,
+                'model_name' => $class_name,
+                'model_attributes' => json_encode($event_attributes),
+                'created_at' => new Carbon,
+                'user_id' => $tracker->getUserId(),
+                'user_agent' => $tracker->getUserAgent(),
+                'ip_address' => $tracker->getIp(),
+                'full_url' => $tracker->getFullUrl(),
+                'method' => $tracker->getMethod()
+            ];
+
+            Event::store($data);
+
+            $type = 'success';
+            $message = "Model $class_name of ID $model_id has been synced successfully!";
+        }
+
+        return response()->json(view('laravel_logger::components.alert', compact('type', 'message'))->render());
     }
 
-    // TODO
-    // Soft delete Event
+    // Soft deletes an Event
+    // TODO 
+    // add front-end functionality for this
     public function destroy(Event $event)
     {
+        $event->delete();
     }
 
-    // TODO
-    // Force delete Event
+    // Force delete an Event
+    // TODO 
+    // add front-end functionality for this
     public function forceDestroy(Event $soft_event)
     {
+        $soft_event->forceDelete();
     }
 
-    // TODO
-    // Clear history and set starting point to current point in time (Maybe?)
-    public function setStartingPoint()
-    {
-    }
-
-    // Filter and return history based on data given  
+    // Filters and returns history based on data given  
     private function getHistory($data, &$event)
     {
         $event = Event::find($data['event_id']);
@@ -186,7 +245,7 @@ abstract class LaravelLoggerController extends Controller
             ++$level;
         }
 
-        // label the time scale
+        // label the time scale with appropriate formatted date
         $diff = $last->created_at->diffInSeconds($first->created_at);
         $split = $diff/4;
         $labels = collect([]);
@@ -214,6 +273,7 @@ abstract class LaravelLoggerController extends Controller
 
         $smallest_diff = 1;
         $comp = $startpoint;
+        // iterate through each data point and set scaled timestamp
         $event_timestamps = json_encode($history->map(function($h) use ($differential, $minimizer, $endpoint, &$comp, &$smallest_diff){
             $end = $h->created_at->getTimestamp()/$minimizer + $differential;
             //endpoint can sometimes outscale the slider
@@ -221,7 +281,7 @@ abstract class LaravelLoggerController extends Controller
                 $end  = $endpoint - $differential;
             }
 
-            //slider distance it travels when sliding
+            // slider distance traveled when dragging mouse across scale
             if(abs($end - $comp) < $smallest_diff){
                 $smallest_diff = abs($end-$comp);
             }
@@ -235,7 +295,7 @@ abstract class LaravelLoggerController extends Controller
         })->all());
 
         // can't slide if it's 0
-        if($smallest_diff == 0){
+        if($smallest_diff <= 0){
             $smallest_diff = 0.1;
         }
     }

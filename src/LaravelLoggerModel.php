@@ -2,7 +2,7 @@
 
 namespace HVLucas\LaravelLogger;
 
-use DateTime;
+use Carbon\Carbon;
 use ReflectionClass;
 use Illuminate\Support\Facades\Schema;
 use HVLucas\LaravelLogger\App\Event;
@@ -131,10 +131,8 @@ class LaravelLoggerModel
         $models = $model::leftJoin($event_table, "$model_table.$model_key", '=', "$event_table.model_id")->select("$model_table.*", "$event_table.activity as event_activity")->whereNull("$event_table.activity")->get();
 
         foreach($models as $init_model){
-            $created_at = new DateTime;
-            $created_at->setTimestamp(time());
             $attributes = $this->getAttributeValues($init_model);
-            Event::create([
+            Event::store([
                 'activity' => 'startpoint',
                 'user_id' => null,
                 'model_id' => (string) $init_model->{$init_model->getKeyName()},
@@ -143,7 +141,7 @@ class LaravelLoggerModel
                 'user_agent' => null,
                 'method' => null,
                 'full_url' => null,
-                'created_at' => $created_at,
+                'created_at' => new Carbon,
             ]);
         }
     }

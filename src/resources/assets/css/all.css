@@ -9,6 +9,14 @@ a {
     color: #003670;
 }
 
+a[target="_blank"]::after {
+    content: '\f08e';
+    font-family: Font Awesome\ 5 Pro;
+    margin: 3px;
+    font-size: 10px;
+    vertical-align: super;
+}
+
 /* TABS / NAVS */
 .tab-pane {
     padding: 30px;
@@ -93,6 +101,7 @@ tag {
     /* default */
     background-color: #a5a5a5;
     cursor: pointer;
+    box-shadow: 1px 1px 5px #c1c1c1;
 }
 
 /* blue */
@@ -125,6 +134,11 @@ tag.user {
 tag.post, tag.put, tag.patch {
     color: #524c00;
     background-color: #ffed00;
+}
+
+/* purp */
+tag.sync {
+    background-color: #b642f4;
 }
 
 /* EVENTS TABLE */
@@ -261,6 +275,22 @@ ts[data-toggle], tag[data-toggle]{
     text-shadow: 2px -2px 2px #5c5c5c;
     transform: rotate(90deg);
     transition: 0.2s transform;
+}
+
+table#syncing-model {
+    border-collapse: separate;
+    border-spacing: 50px 0;
+    font-size: 15px;
+}
+
+table#syncing-model td {
+    padding: 20px 0;
+}
+
+table#syncing-model th {
+    text-transform: uppercase;
+    font-size: 14px;
+    color: #3d3d3d;
 }
 
 /* SLIDERS */

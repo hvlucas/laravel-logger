@@ -3,7 +3,7 @@
 namespace HVLucas\LaravelLogger\Observers;
 
 use ReflectionClass;
-use DateTime;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use HVLucas\LaravelLogger\App\Event;
 use HVLucas\LaravelLogger\Facades\LaravelLogger;
@@ -51,22 +51,18 @@ class ModelObserver
                 $current_user_id = $tracker->getUserId();
             }
 
-            $created_at = new DateTime;
-            $created_at->setTimestamp(time());
-            $data = [
+            Event::store([
                 'activity' => $event,
                 'model_id' => (string) $model_tracked->{$model_tracked->getKeyName()},
                 'model_name' => get_class($model_tracked),
                 'model_attributes' => $attributes,
-                'created_at' => $created_at,
+                'created_at' => new Carbon,
                 'user_id' => $current_user_id,
                 'user_agent' => $tracker->getUserAgent(),
                 'ip_address' => $tracker->getIp(),
                 'full_url' => $tracker->getFullUrl(),
                 'method' => $tracker->getMethod()
-            ];
-
-            static::storeEvent($data);
+            ]);
         }
     }
 
@@ -76,13 +72,5 @@ class ModelObserver
         $tracker = LaravelLogger::getTracker();
         $model = $tracker->getModel(get_class($model));
         $model->setStartingPoint();
-    }
-
-    // Store Event
-    private static function storeEvent($data)
-    {
-        //TODO
-        //validate Event
-        Event::create($data);
     }
 }

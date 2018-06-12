@@ -10,7 +10,6 @@ use HVLucas\LaravelLogger\Observers\ModelObserver;
 use HVLucas\LaravelLogger\Facades\LaravelLogger;
 use HVLucas\LaravelLogger\App\Event;
 use HVLucas\LaravelLogger\Exceptions\InvalidConfigSyntax;
-use DateTime;
 
 class LaravelLoggerServiceProvider extends ServiceProvider
 {

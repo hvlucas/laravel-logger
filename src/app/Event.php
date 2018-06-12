@@ -4,6 +4,7 @@ namespace HVLucas\LaravelLogger\App;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 // Sinergi Browser Dectection - https://github.com/sinergi/php-browser-detector 
 use Sinergi\BrowserDetector\Browser; 
@@ -36,6 +37,20 @@ class Event extends Model
 
     // Cast attributes when saving
     protected $casts = [];
+
+    // Validation Rule
+    public static $rules = [
+        'activity' => 'required|max:255',
+        // TODO
+        // validate if user primary key is string
+        'user_id' => 'nullable',
+        'model_id' => 'required|max:255',
+        'model_name' => 'required|max:255',
+        'model_attributes' => 'required|max:4294967295',
+        'user_agent' => 'nullable|max:255',
+        'method' => 'nullable|max:255',
+        'ip_address' => 'nullable|max:255',
+    ];
 
     // Constructor for Model
     public function __construct($attributes = [])
@@ -223,10 +238,9 @@ class Event extends Model
         return json_decode($model_attr, true);
     }
 
-    // TODO
-    // Validator rules
+    // Return rules for create an Event
     public static function rules(){
-        return [];
+        return static::$rules;
     }
 
     // Returns previous event
@@ -247,9 +261,20 @@ class Event extends Model
         return $previous_id == null ? null : self::find($previous_id);
     }
 
+    // Saves Event to DB; returns true when successfull
+    public static function store(array $data): bool
+    { 
+        $valid = Validator::make($data, static::$rules)->passes();
+        if($valid){
+            self::create($data);
+        }
+        return $valid;
+    }
+
     // Return collection of Event IDs that are related to `$this` model id and model name
     private function getEventIds()
     {
         return self::where(['model_name' => $this->model_name, 'model_id' => $this->model_id])->orderBy('created_at')->get()->pluck('id');
     }
 }
+

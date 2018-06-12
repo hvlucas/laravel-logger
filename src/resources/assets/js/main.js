@@ -180,14 +180,14 @@ $(document).ready(function(){
     });
 
     // Remove modal from dom once it closes
-    $(document).on('hidden.bs.modal', '.modal', function(){
+    $(document).on('hidden.bs.modal', '.modal:not(.sync-modal)', function(){
         $(this).remove();
     });
     
     // Trigger sliders and scroll event when modal finishes loading
     scroll_timeout = null;
     animation_interval = null;
-    $(document).on('shown.bs.modal', '.modal', function(){
+    $(document).on('shown.bs.modal', '.modal:not(.sync-modal)', function(){
         $('#history-slider').slider();
         $('#scale-slider').slider();
         fireScrollEvent(); 
@@ -215,8 +215,9 @@ $(document).ready(function(){
                     min_left = 999;
                     $.each(points, function(){
                         var collided = collision($(cur_point), $(this));
+                        console.log($(this), 'collided', collided);
                         $(this).addClass('animating');
-                        if(collided && !$(this).is(cur_point)){
+                        if(collided){
                             if(!hit_first_collision){
                                 var div = $('<div>', { 'class': 'timeline-hover-container' });
                                 $(this).before(div);
@@ -241,12 +242,17 @@ $(document).ready(function(){
                                 width: '150px',
                                 height: '20px',
                             });
+                            // if is this point is the original hovered, then add some special styling to pop
+                            if($(this).is(cur_point)){
+                                clone.css({border: 'dashed 1px #525151', filter: 'contrast(125%)', color: '#353535'});
+                            }else{
+                                $(this).hide();
+                            }
 
                             $('.timeline-hover-container').append(clone);
                             var height = top_px+45;
                             $('.timeline-hover-container').css({'z-index': 1, 'right': 100 - left + '%' });
                             $('.timeline-hover-container').css('height', height+'px');
-                            $(this).hide();
                         }
                     });
 
@@ -335,10 +341,42 @@ $(document).ready(function(){
             data: { model_id: model_id, sync_event_id: sync_event_id },
             success: function(data){
                 if(data !== -1){
-                    $('.model').append(data);
-                    $('.sync-modal#'+sync_event_id).modal();
-                    $('.modal').modal('handleUpdate');
+                    $('.modal').hide();
+                    $('body').append(data);
+                    var new_modal = $('#event_'+sync_event_id).parents('.modal');
+                    new_modal.modal();
                 }
+            }
+        });
+    });
+
+    // Remove sync modal and show original modal 
+    $(document).on('hidden.bs.modal', '.modal.sync-modal', function(){
+        $(this).remove();
+        $('.modal').show();
+    });
+
+    // Submit sync form;
+    // display alert on request return
+    $(document).on('click', 'form#sync-form input[type="submit"]', function(event){
+        event.preventDefault();
+        var form = $(this).parents('form');
+        var sync_data = form.serialize();
+        $.ajax({
+            url: '/events-ajax-helpers/model-history/sync',
+            method: 'POST',
+            data: { sync_data: sync_data },
+            success: function(data){
+                data = $(data);
+                form.parents('.modal').modal('hide');
+                $('.modal-history').before(data);
+                $('.modal').modal('handleUpdate');
+                setTimeout(function(){
+                    data.fadeOut(function(){
+                        $(this).remove();
+                        $('.modal').modal('handleUpdate');
+                    });
+                }, 3000);
             }
         });
     });

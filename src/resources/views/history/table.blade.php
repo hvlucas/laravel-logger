@@ -2,7 +2,7 @@
     $split = (int) ceil(count($attributes)/2);
     $timezone = null;
     if($history->count() > 0){
-        $timezone = $history->first()->created_at->format('e');
+        $timezone = $history->first()->created_at->format('e (T)');
         $previous_event = $history->first()->previous;
         if($previous_event){
             $history->prepend($previous_event);
