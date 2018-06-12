@@ -152,7 +152,7 @@ abstract class LaravelLoggerController extends Controller
             $model_id = $data['model_id'];
             $event->model_name::where($new_instance->getKeyName(), $model_id)->update($event_attributes);
 
-            $data = [
+            Event::store([
                 'activity' => 'sync',
                 'model_id' => (string) $model_id,
                 'model_name' => $class_name,
@@ -163,9 +163,7 @@ abstract class LaravelLoggerController extends Controller
                 'ip_address' => $tracker->getIp(),
                 'full_url' => $tracker->getFullUrl(),
                 'method' => $tracker->getMethod()
-            ];
-
-            Event::store($data);
+            ]);
 
             $type = 'success';
             $message = "Model $class_name of ID $model_id has been synced successfully!";
