@@ -27,14 +27,20 @@ class Event extends Model
     // Supported primary key types
     protected $primary_key_types = ['int', 'string'];
 
+    // Guarded attributes
+    protected $guarded = [];
+
     // Date attributes
     protected $dates = [ 'created_at', 'deleted_at' ];
 
     // Allowed attributes to fill in Model
-    protected $fillable = ['user_id', 'activity', 'model_id', 'model_name', 'model_attributes', 'user_agent', 'method', 'ip_address'];
+    protected $fillable = [];
 
     // Cast attributes when saving
     protected $casts = [];
+
+    // When model gets converted to json
+    protected $appends = ['model_id_link', 'event_tag', 'auth_user_tag', 'ip_address_link', 'user_agent_icons', 'request', 'when'];
 
     // Validation Rule
     public static $rules = [
@@ -235,7 +241,7 @@ class Event extends Model
     {
         return json_decode($model_attr, true);
     }
-    
+
     // Return LaravelLoggerModel instance of model associated with `$this`
     public function getModel()
     {
@@ -275,10 +281,51 @@ class Event extends Model
         return $valid;
     }
 
+    // Return model ID link view
+    public function getModelIdLinkAttribute()
+    {
+        return view('laravel_logger::events.model_id_link', ['event' => $this])->render();
+    }
+
+    // Return event tag view
+    public function getEventTagAttribute()
+    {
+        return view('laravel_logger::events.event_tag', ['event' => $this])->render();
+    }
+
+    /// Return authenticated user tag view
+    public function getAuthUserTagAttribute()
+    {
+        return view('laravel_logger::events.auth_user_tag', ['event' => $this, 'model' => $this->getModel()])->render();
+    }
+
+    // Return IP Address link view
+    public function getIpAddressLinkAttribute()
+    {
+        return view('laravel_logger::events.ip_address_link', ['event' => $this])->render();
+    }
+
+    // Return User Agent icons view
+    public function getUserAgentIconsAttribute()
+    {
+        return view('laravel_logger::events.user_agent_icons', ['event' => $this])->render();
+    }
+
+    // Return request view
+    public function getRequestAttribute()
+    {
+        return view('laravel_logger::events.request', ['event' => $this])->render();
+    }
+
+    // Return when formatted for readability
+    public function getWhenAttribute()
+    {
+        return $this->created_at->diffForHumans();
+    }
+
     // Return collection of Event IDs that are related to `$this` model id and model name
     private function getEventIds()
     {
         return self::where(['model_name' => $this->model_name, 'model_id' => $this->model_id])->orderBy('created_at')->get()->pluck('id');
     }
 }
-

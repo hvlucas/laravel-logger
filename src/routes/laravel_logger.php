@@ -17,6 +17,7 @@ Route::group([
     'namespace' => 'HVLucas\LaravelLogger\App\Http\Controllers',
     'middleware' => 'web'
 ], function(){
+    Route::get('/list', 'EventsController@filterEvents');
     Route::post('/model-history', 'EventsController@modelHistory');
     Route::get('/model-history/filter', 'EventsController@filterHistory');
     Route::get('/model-history/sync-form', 'EventsController@syncForm');

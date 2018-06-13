@@ -25,9 +25,25 @@ abstract class LaravelLoggerController extends Controller
         });
         $models = $models->map(function($model){
             $model_events = Event::where('activity', '!=', 'startpoint')->where('model_name', $model->getClassName())->orderBy('created_at', 'desc')->get();
+            $model_events = collect([]);
             return [ 'model' => LaravelLogger::getModel($model->getClassName()), 'events' => $model_events];
         });
         return view('laravel_logger::index', compact('models'));
+    }
+
+    public function filterEvents(Request $request)
+    {
+        $model = LaravelLogger::getModel($request->model);
+        $model_events = [];
+        if($model){
+            $model_events = Event::where('activity', '!=', 'startpoint')->where('model_name', $model->getClassName())->orderBy('created_at', 'desc')->get();
+        }
+        return response()->json([
+            'data' => $model_events,
+			'draw' => (int) $request->draw,
+			'recordsTotal' => $model_events->count(),
+            'recordsFiltered' => $model_events->count(),
+        ]);
     }
 
     // Fectches history of model instance

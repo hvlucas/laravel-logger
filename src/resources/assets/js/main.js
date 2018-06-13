@@ -123,7 +123,37 @@ $(document).ready(function(){
         searching: false,
         sorting: false,
         paging: false,
-        info: false,
+        info: true,
+        serverSide: true,
+        ajax: {
+            url: '/events-ajax-helpers/list',
+            method: 'GET',
+            data: function(config, datatable) {
+                var table = $(datatable.nTable);
+                var model = table.data('model');
+                config.model = model;
+            }
+        },
+        language: {
+            info: '_TOTAL_  Events',
+            infoEmpty: 'Showing 0 Events',
+            zeroRecords: 'These aren\'t the droids you are looking for &#x2639;',
+            infoFiltered: '(showing _MAX_ filtered)',
+            processing: '<i class="far fa-cog fa-spin fa-fw" aria-hidden="true"></i>',
+            paginate: {
+                previous: "«",
+                next: "»",
+            }
+        },
+        columns: [
+            { 'data' : 'model_id_link' },
+            { 'data' : 'event_tag' },
+            { 'data' : 'auth_user_tag' },
+            { 'data' : 'ip_address_link' },
+            { 'data' : 'user_agent_icons' },
+            { 'data' : 'request' },
+            { 'data' : 'when' },
+        ],
     });
 
     var items = $('.nav-item');

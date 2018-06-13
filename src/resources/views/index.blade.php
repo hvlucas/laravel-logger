@@ -37,7 +37,7 @@
                 @endphp
 
                 @component('laravel_logger::components.tab', compact('tab_classes', 'id'))
-                    <table cellspacing="0" class="events">
+                    <table cellspacing="0" data-model="{{$class_name}}" class="events">
                         <thead>
                             <tr>
                                 <th><i class="fal fa-database fa-sm"></i>ID</th>
@@ -50,40 +50,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($model_event['events'] as $event)
-                            <tr>
-                                <td>
-                                    {{-- show model history using bootstrap modals --}}
-                                    <a data-toggle="tooltip" title="Open model history" href="javascript:void(0)" class="open-model-history" data-event-id="{{$event->id}}">{{$event->model_id}}</a>
-                                </td>
-                                <td>
-                                    <tag class="{{$event->activity}}">{{$event->activity}}</tag>
-                                </td>
-                                @if($model->isTrackingAuthenticatedUser())
-                                    <td>
-                                        <tag class="user">{{$event->user_name ?: 'UnAuthenticated'}}</tag>
-                                    </td>
-                                @else
-                                    <td></td>
-                                @endif
-                                @if($event->ip_address)
-                                    <td>
-                                        <a target="_blank" href="https://ipinfo.io/{{$event->ip_address}}">{{$event->ip_address}}</a>
-                                    </td>
-                                @else
-                                    <td></td>
-                                @endif
-                                <td>
-                                    <i class="{{$event->fa_browser}}"></i> <sub>{{$event->parsed_version}}</sub> <i class="{{$event->fa_os}}"></i>
-                                </td>
-                                <td>
-                                    <tag class="{{strtolower($event->method)}} method">{{$event->method}}</tag> {{$event->parsed_url}}
-                                </td>
-                                <td>
-                                    {{$event->created_at->diffForHumans()}}
-                                </td>
-                            </tr>
-                            @endforeach
                         </tbody>
                     </table>
                 @endcomponent

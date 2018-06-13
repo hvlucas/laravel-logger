@@ -167,6 +167,15 @@ table.history.table-responsive {
     overflow-x: hidden;
 }
 
+
+.processing {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    font-size: 16px;
+    color: #000;
+}
+
 /* EVENTS HISTORY MODAL */
 
 .event-container {
