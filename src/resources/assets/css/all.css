@@ -317,6 +317,11 @@ table#syncing-model th {
 #history-slider .slider-rangeHighlight.deleted{
     background: #ff4646;
 }
+
+#history-slider .slider-rangeHighlight.sync {
+    background: #b642f4;
+}
+
 #history-slider {
     width: 100%;
 }

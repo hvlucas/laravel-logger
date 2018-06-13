@@ -36,7 +36,12 @@
                             <td class="column-split"> 
                                 @if($loop->parent->iteration == $split) 
                                     <i class="fas fa-arrow-alt-right"></i> 
-                                    <ts data-toggle="tooltip" title="{{$model_event->created_at->format('F jS, Y @ H:i:s (e)')}}">{{$model_event->user_name}} {{$model_event->activity}} {{$model_event->created_at->diffForHumans()}}</ts>
+                                    <ts data-toggle="tooltip" title="{{$model_event->created_at->format('F jS, Y @ H:i:s (e)')}}">
+                                        @if($model_event->getModel()->isTrackingAuthenticatedUser()) 
+                                            {{$model_event->user_name ?? 'UnAuthenticated'}} 
+                                        @endif {{$model_event->activity}} 
+                                        {{$model_event->created_at->diffForHumans()}}
+                                    </ts>
                                 @endif
                             </td>
                         @endif

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
+use HVLucas\LaravelLogger\Facades\LaravelLogger;
 // Sinergi Browser Dectection - https://github.com/sinergi/php-browser-detector 
 use Sinergi\BrowserDetector\Browser; 
 use Sinergi\BrowserDetector\Device;
@@ -26,14 +27,11 @@ class Event extends Model
     // Supported primary key types
     protected $primary_key_types = ['int', 'string'];
 
-    // Guarded attributes
-    protected $guarded = [];
-
     // Date attributes
     protected $dates = [ 'created_at', 'deleted_at' ];
 
     // Allowed attributes to fill in Model
-    protected $fillable = [];
+    protected $fillable = ['user_id', 'activity', 'model_id', 'model_name', 'model_attributes', 'user_agent', 'method', 'ip_address'];
 
     // Cast attributes when saving
     protected $casts = [];
@@ -236,6 +234,12 @@ class Event extends Model
     public function getModelAttributesAttribute($model_attr)
     {
         return json_decode($model_attr, true);
+    }
+    
+    // Return LaravelLoggerModel instance of model associated with `$this`
+    public function getModel()
+    {
+        return LaravelLogger::getModel($this->model_name);
     }
 
     // Return rules for create an Event
