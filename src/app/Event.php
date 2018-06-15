@@ -90,7 +90,7 @@ class Event extends Model
     // Return config's user column to call on `$this->user`
     public function getUserColumn()
     {
-        return config('laravel_logger.user_column', null);
+        return LaravelLogger::getUserColumn();
     }
 
     // Return user column or the id

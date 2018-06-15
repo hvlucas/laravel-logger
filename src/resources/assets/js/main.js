@@ -107,8 +107,46 @@ function fireScrollEvent(){
     });
 }
 
-$(document).ready(function(){
+// Returns false if does not match tag in filter
+function noMatchInFilter(tag){
+    no_match = true;
+    $.each($('.filtering-tags tag'), function(){
+        var filter_text = $(this).text();
+        var filter_data = $(this).data('filter');
+        var comp_text = tag.text();
+        var comp_data = tag.data('filter');
+        if(filter_text == comp_text && filter_data == comp_data){
+            no_match = false;
+            return false;
+        }
+    });
+    return no_match;
+}
 
+// Search for tags from list, also include 'keywords' that pull tag groups all at once
+function searchTags(search){ 
+    $('.searchable-tags li').hide();
+    if(search == 'tags' || search == 'tag'){
+        $('.searchable-tags li').show();
+    }else if(search == 'users' || search == 'user'){
+        $('.searchable-tags tag[data-filter="user_id"]').parent().show();
+    }else if(search == 'events' || search == 'event' || search == 'activities' || search == 'activity'){
+        $('.searchable-tags tag[data-filter="activity"]').parent().show();
+    }else if(search == 'methods' || search == 'method' || search == 'requests' || search == 'request'){
+        $('.searchable-tags tag[data-filter="method"]').parent().show();
+    }else{
+        $.each($('.searchable-tags tag'), function(){
+            if($(this).text().toLowerCase().indexOf(search) === -1){
+                $(this).parent().hide();
+            }else{
+                $(this).parent().show();
+            }
+        });
+    }
+}
+
+// Init document
+$(document).ready(function(){
     $.ajaxSetup({
         headers: {'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content') }
     });
@@ -118,13 +156,15 @@ $(document).ready(function(){
     });
 
     // Events table data tables config
-    $('.events').DataTable({
+    first_table = $('.events').first();
+    dataTables = $('.events').DataTable({
         responsive: true,
-        searching: false,
-        sorting: false,
-        paging: false,
+        searching: true,
+        paging: true,
+        processing: true,
         info: true,
         serverSide: true,
+        dom: '<"processing"r>t<"table-information"i><"pagination"p>',
         ajax: {
             url: '/events-ajax-helpers/list',
             method: 'GET',
@@ -132,10 +172,16 @@ $(document).ready(function(){
                 var table = $(datatable.nTable);
                 var model = table.data('model');
                 config.model = model;
+                tag_data = [];
+                var tags = $('.filtering-tags tag');
+                $.each(tags, function(){
+                    tag_data.push({'filter': $(this).data('filter'), 'value': $(this).text()});
+                });
+                config.tags = tag_data;
             }
         },
         language: {
-            info: '_TOTAL_  Events',
+            info: 'Showing _TOTAL_  Events',
             infoEmpty: 'Showing 0 Events',
             zeroRecords: 'These aren\'t the droids you are looking for &#x2639;',
             infoFiltered: '(showing _MAX_ filtered)',
@@ -145,15 +191,42 @@ $(document).ready(function(){
                 next: "»",
             }
         },
+        order: [[6, 'desc']],
         columns: [
             { 'data' : 'model_id_link' },
             { 'data' : 'event_tag' },
             { 'data' : 'auth_user_tag' },
             { 'data' : 'ip_address_link' },
-            { 'data' : 'user_agent_icons' },
+            { 'data' : 'user_agent_icons', 'orderable': false },
             { 'data' : 'request' },
             { 'data' : 'when' },
         ],
+        drawCallback: function(settings){
+            json = settings.json;
+            tags = json.tags;
+
+            // set records filtered total to nav_tab item
+            var total = '('+json.recordsFiltered+')';
+            var model = $(settings.nTable).data('parsed-model');
+            $('a[data-model="'+model+'"] .event-count').text(total);
+
+            // if it's the first time loading the tables 
+            // then ignore this callback unless it's the first table of the list
+            if(!first_table.is($(settings.nTable)) && settings.iDraw == 1){
+                return;
+            }
+            $('.searchable-tags').empty();
+            $.each(tags, function(){
+                tag = ""+this;
+                if(noMatchInFilter($(tag))){
+                    $('.searchable-tags').append(this);
+                }
+            });
+            $('.searchable-tags').find('tag').wrap('<li class="search"></li>');
+            if($('#search').val().length > 0){
+                searchTags($('#search').val());
+            }
+        }
     });
 
     var items = $('.nav-item');
@@ -245,7 +318,6 @@ $(document).ready(function(){
                     min_left = 999;
                     $.each(points, function(){
                         var collided = collision($(cur_point), $(this));
-                        console.log($(this), 'collided', collided);
                         $(this).addClass('animating');
                         if(collided){
                             if(!hit_first_collision){
@@ -380,14 +452,13 @@ $(document).ready(function(){
         });
     });
 
-    // Remove sync modal and show original modal 
+    // Remove sync modal and show parent modal 
     $(document).on('hidden.bs.modal', '.modal.sync-modal', function(){
         $(this).remove();
         $('.modal').show();
     });
 
-    // Submit sync form;
-    // display alert on request return
+    // Submit sync form; display alert on request return
     $(document).on('click', 'form#sync-form input[type="submit"]', function(event){
         event.preventDefault();
         var form = $(this).parents('form');
@@ -409,5 +480,78 @@ $(document).ready(function(){
                 }, 3000);
             }
         });
+    });
+
+    // Searching through input
+    search_timeout = null;
+    $(document).on('change, keydown, keyup', '#search', function(){
+        clearTimeout(search_timeout);
+        input = $(this);
+        search = input.val();
+        if(search.length > 0){
+            $('.searchable-tags').css('display', 'inline-block');
+        }else{
+            $('.searchable-tags').hide();
+        }
+        model = input.data('model');
+        if(model){
+            search_timeout = setTimeout(function(){
+                console.log('searching for', input.val());
+                $('table[data-parsed-model="'+model+'"]').DataTable().search(input.val()).draw();
+            }, 1000);
+        }
+        searchTags(search);
+    });
+
+    // Filtering through tags below search input
+    $(document).on('click', 'li.search', function(){
+        $('#search').val('');
+        $(this).removeClass('search').addClass('filter');
+        $('.filtering-tags').append($(this));
+        $('a#clear-filter').show();
+        //set val to empty and trigger change to timer resets
+        //$('#search').trigger('change');
+        $('.searchable-tags').hide();
+        var model = $('#search').data('model');
+        $('table[data-parsed-model="'+model+'"]').DataTable().search('').draw();
+        console.log('drawing click');
+    });
+
+    // Removing filter tags 
+    $(document).on('click', 'li.filter', function(){
+        $(this).removeClass('filter').addClass('search');
+        $('.searchable-tags').append($(this));
+        if($('.filtering-tags li').length == 0){
+            $('a#clear-filter').hide();
+        }
+        var model = $('#search').data('model');
+        $('table[data-parsed-model="'+model+'"]').DataTable().draw();
+    });
+
+    // Filter by tags when clicking on the table itself
+    $(document).on('click', 'td tag', function(){
+        if(noMatchInFilter($(this))){
+            var clone = $(this).clone();
+            $('.filtering-tags').append(clone);
+            $('a#clear-filter').show();
+            clone.wrap('<li class="filter"></li>');
+        }
+        var model = $('#search').data('model');
+        $('table[data-parsed-model="'+model+'"]').DataTable().draw();
+    });
+
+    // Redraw table once a nav_tab is clicked
+    $(document).on('click', 'a.nav-link', function(){ 
+        var model = $(this).data('model');
+        $('#search').attr('data-model', model);
+        $('table[data-parsed-model="'+model+'"]').DataTable().draw();
+    });
+
+    // Remove all tags filtering table
+    $(document).on('click', 'a#clear-filter', function(){
+        $('.searchable-tags').append($('.filtering-tags li'));
+        $('a#clear-filter').hide();
+        var model = $('#search').data('model');
+        $('table[data-parsed-model="'+model+'"]').DataTable().draw();
     });
 });

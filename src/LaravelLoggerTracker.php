@@ -103,4 +103,25 @@ class LaravelLoggerTracker
         }
         return $id;
     }
+
+    // Returns new user instance
+    // TODO
+    // add try catch
+    public function getUserInstance()
+    {
+        $user_class = config('laravel_logger.user_model', 'App\User');
+        return new $user_class;
+    }
+
+    // Returns user table name
+    public function getUserTable()
+    {
+        return $this->getUserInstance()->getTable();
+    }
+
+    // Return config's user column to call on `$this->user`
+    public function getUserColumn()
+    {
+        return config('laravel_logger.user_column', null);
+    }
 }

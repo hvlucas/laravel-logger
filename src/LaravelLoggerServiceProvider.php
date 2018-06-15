@@ -78,7 +78,6 @@ class LaravelLoggerServiceProvider extends ServiceProvider
         }
     }
 
-    
     // Returns a list of models based on application base path
     private function autoDetectModels(): array
     {
@@ -103,7 +102,6 @@ class LaravelLoggerServiceProvider extends ServiceProvider
         return $models;
     }
 
-    
     // Validates passed model data, could be array with attribute settings, or string of class name
     private function validModel($data): bool
     {
@@ -126,7 +124,6 @@ class LaravelLoggerServiceProvider extends ServiceProvider
         return $validator->passes();
     }
 
-    
     // Start tracking model using Laravel Observers 
     private function handleModel($data): void
     {

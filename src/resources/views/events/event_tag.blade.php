@@ -1,1 +1,3 @@
-<tag class="{{$event->activity}}">{{$event->activity}}</tag>
+@component('laravel_logger::components.tag', ['filter' => 'activity'])
+    {{$event->activity}}
+@endcomponent

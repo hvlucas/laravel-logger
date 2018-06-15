@@ -13,36 +13,152 @@ abstract class LaravelLoggerController extends Controller
 {
 
     static $scale_options = ['all time', 'past year', 'past month', 'past week', 'past day'];
-    // TODO
-    // Filter by individual models
-    // Filter by user
-    // Filter by range
-    // Export PDF/CSV
+
+    // Render view of model index
     public function list()
     {
         $models = LaravelLogger::getModelCollection()->sortByDesc(function($model){
             return $model->getIsFavorite();
         });
         $models = $models->map(function($model){
-            $model_events = Event::where('activity', '!=', 'startpoint')->where('model_name', $model->getClassName())->orderBy('created_at', 'desc')->get();
-            $model_events = collect([]);
-            return [ 'model' => LaravelLogger::getModel($model->getClassName()), 'events' => $model_events];
+            return [ 'model' => LaravelLogger::getModel($model->getClassName()), 'events' => collect([])];
         });
-        return view('laravel_logger::index', compact('models'));
+        $show_options = [50 => 50, 150 => 150, 300 => 300, 500 => 500, null => 'All'];
+        return view('laravel_logger::index', compact('models', 'show_options'));
     }
 
+    // TODO
+    // Filter by range
+    // Export PDF/CSV
+    // Returns list of events based on model given by ajax request; returning json with views to render on dom by main.js
     public function filterEvents(Request $request)
     {
         $model = LaravelLogger::getModel($request->model);
-        $model_events = [];
-        if($model){
-            $model_events = Event::where('activity', '!=', 'startpoint')->where('model_name', $model->getClassName())->orderBy('created_at', 'desc')->get();
+        if($model == null){
+            return response()->json([]);
         }
+
+        // Set default query
+        $query = [
+            'start' => 0,
+            'length' => 50,
+        ];
+
+        // Join with user table to pull name
+        $event = new Event;
+        $events_table = $event->getTable();
+        $user_table = LaravelLogger::getUserTable();
+        $user_table_pk = LaravelLogger::getUserInstance()->getKeyName();
+        $user_column = LaravelLogger::getUserColumn() ?: 'id';
+
+        //Possibly in the future  we can check if user column was set to something 
+        //if it wasn't then we don't need to join and we can just filter the query by user_id xD
+        $model_events = Event::join($user_table, "$events_table.user_id", '=', "$user_table.$user_table_pk")
+            ->select("$events_table.*", "$user_table.$user_column as user_name")
+            ->where('activity', '!=', 'startpoint')
+            ->where('model_name', $model->getClassName());
+
+
+        // Set slice variables
+        if(is_numeric($request->start)){
+            $query['start'] = $request->start < 0 ? 0 : $request->start;
+        }
+        if(is_numeric($request->length)){
+            $query['length'] = $request->length < 0 ? $model_events->count() : $request->length;
+        }
+
+        // Get tags available before narroing query with where's
+        $events = clone $model_events;
+        $event_tags = $events->pluck('activity')->filter()->unique()->map(function($activity){
+            return view('laravel_logger::components.tag', ['class' => $activity, 'filter' => 'activity', 'slot' => $activity])->render();
+        })->values()->all();
+
+        $method_tags = $events->pluck('method')->filter()->unique()->map(function($method){
+            return view('laravel_logger::components.tag', ['class' => strtolower($method), 'filter' => 'method', 'slot' => $method])->render();
+        })->values()->all();
+
+        $auth_user_tags = collect([]);
+        $events->each(function($event) use (&$auth_user_tags) {
+            $auth_user_tags[] = $event->user_name ?: 'UnAuthenticated';
+        });
+        $auth_user_tags = $auth_user_tags->filter()->unique()->map(function($user){
+            return view('laravel_logger::components.tag', ['class' => 'user', 'filter' => 'user_id', 'slot' => $user])->render();
+        })->values()->all();
+
+        // merge'em together for view
+        $tags = array_merge($event_tags, $auth_user_tags, $method_tags);
+
+        // Filter query by tags selected in the front-end
+        $searchable_tags = [
+            'method',
+            'user_id',
+            'activity',
+        ];
+
+        // Filter query by tags and search input field
+        $model_events->where(function($query) use ($request, $searchable_tags, $user_table, $user_column){
+            foreach((array) $request->tags as $tag){
+                if( !isset($tag['filter']) || 
+                    !isset($tag['value']) || 
+                    array_search($tag['filter'], $searchable_tags) === false){
+                    continue;
+                }
+
+                // Special case: we set 'null' to 'UnAunthenticated' when sending tags to view
+                if($tag['filter'] == 'user_name' && $tag['value'] == 'UnAuthenticated'){
+                    $tag['value'] = null;
+                }
+                $query->orWhere($tag['filter'], $tag['value']);
+            }
+
+            if(isset($request->search['value'])){
+                $search = $request->search['value'];
+                $query->where('model_id', 'LIKE', "%$search%")
+                    ->orWhere('activity', 'LIKE', "%$search%")
+                    ->orWhere('user_id', 'LIKE', "%$search%")
+                    ->orWhere("$user_table.$user_column", 'LIKE', "%$search%")
+                    ->orWhere('ip_address', 'LIKE', "%$search%")
+                    ->orWhere('full_url', 'LIKE', "%$search%")
+                    ->orWhere('method', 'LIKE', "%$search%");
+            }
+        });
+
+        // Get total of events that are going to be displayed
+        $total = $model_events->count();
+
+        $columns = [
+            0 => 'model_id',
+            1 => 'activity',
+            2 => 'user_id',
+            3 => 'ip_address',
+            5 => 'full_url', // the key is supposed to be 5 don't yell at me
+            6 => 'created_at',
+        ];
+
+        // Server side ordering
+        if($request->order && is_array($request->order)){
+            foreach($request->order as $index => $order){
+                $index = $order['column'] ?? null;
+                if(!isset($columns[$index])){
+                    continue;
+                }
+                $sortBy = $columns[$index];
+                $order = $order['dir'];
+                $model_events->orderBy($sortBy, $order);
+            }
+        }else{
+            $model_events->orderByDesc('created_at');
+        }
+
+        // Paginate so we don't take 20 years to load pages
+        $model_events = $model_events->get()->slice($query['start'], $query['length'])->values()->all();
+
         return response()->json([
-            'data' => $model_events,
 			'draw' => (int) $request->draw,
-			'recordsTotal' => $model_events->count(),
-            'recordsFiltered' => $model_events->count(),
+			'recordsTotal' => count($model_events),
+            'recordsFiltered' => $total,
+            'data' => $model_events,
+            'tags' => $tags,
         ]);
     }
 

@@ -17,6 +17,34 @@ a[target="_blank"]::after {
     vertical-align: super;
 }
 
+/* FILTER */
+
+.filter-container {
+    margin-bottom: 30px;
+}
+
+.searchable-tags, .filtering-tags {
+    display: inline-block;
+    list-style: none;
+    margin-top: 15px;
+}
+
+.searchable-tags {
+    display: none;
+    margin-bottom: 0;
+}
+
+ul.searchable-tags li, ul.filtering-tags li {
+    display: inline;    
+    margin-right: 5px;
+}
+
+a#clear-filter {
+    display: none;
+    font-size: 12px;
+    margin-left: 5px;
+}
+
 /* TABS / NAVS */
 .tab-pane {
     padding: 30px;
@@ -102,6 +130,16 @@ tag {
     background-color: #a5a5a5;
     cursor: pointer;
     box-shadow: 1px 1px 5px #c1c1c1;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none; 
+    user-select: none;
+}
+
+tag:hover {
+    opacity: 0.8;
 }
 
 /* blue */
@@ -124,7 +162,6 @@ tag.restored {
     background-color: #ffbb32
 }
 
-
 /* cyan */
 tag.user {
     background-color: #0dc5da;
@@ -139,6 +176,19 @@ tag.post, tag.put, tag.patch {
 /* purp */
 tag.sync {
     background-color: #b642f4;
+}
+
+.search tag::after {
+    content: '\f067';
+}
+ 
+.filter tag::after {
+    content: '\f00d';
+}
+
+.search tag::after, .filter tag::after {
+    font-family: Font Awesome\ 5 Pro;
+    margin-left: 5px;
 }
 
 /* EVENTS TABLE */
@@ -170,11 +220,27 @@ table.history.table-responsive {
 
 .processing {
     position: absolute;
-    right: 20px;
-    top: 20px;
+    right: -5px;
+    top: -5px;
     font-size: 16px;
     color: #000;
 }
+
+.processing .dataTables_processing {
+    background-color: unset;
+    border: unset;
+}
+
+div.dataTables_wrapper {
+    position: relative;
+}
+
+.table-information {
+    font-size: 12px;
+    color: #6e6e6e;
+    margin: 10px 0;
+}
+
 
 /* EVENTS HISTORY MODAL */
 

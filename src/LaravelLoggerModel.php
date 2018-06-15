@@ -145,4 +145,17 @@ class LaravelLoggerModel
             ]);
         }
     }
+
+    // Return the class name without the namespace
+    public function getClassNameNoNamespace()
+    {
+        $class_name = explode('\\', $this->class_name);
+        return end($class_name);
+    }
+
+    // Return class name with full namespace with replacement char
+    public function getClassNameNoSlashes($char='-')
+    {
+        return strtolower(implode($char, explode('\\', $this->class_name)));
+    }
 }
