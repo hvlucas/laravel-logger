@@ -470,7 +470,7 @@ $(document).ready(function(){
             success: function(data){
                 data = $(data);
                 form.parents('.modal').modal('hide');
-                $('.modal-history').before(data);
+                $('.history-scale').before(data);
                 $('.modal').modal('handleUpdate');
                 setTimeout(function(){
                     data.fadeOut(function(){

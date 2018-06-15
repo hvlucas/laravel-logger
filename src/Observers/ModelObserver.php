@@ -40,30 +40,28 @@ class ModelObserver
     {
         $tracker = LaravelLogger::getTracker();
         $model = $tracker->getModel(get_class($model_tracked));
-        if($model->isTrackingEvent($event)){
-            $attributes = [];
-            if($model->isTrackingData()){
-                $attributes = $model->getAttributeValues($model_tracked);
-            }
-
-            $current_user_id = null;
-            if($model->isTrackingAuthenticatedUser()){
-                $current_user_id = $tracker->getUserId();
-            }
-
-            Event::store([
-                'activity' => $event,
-                'model_id' => (string) $model_tracked->{$model_tracked->getKeyName()},
-                'model_name' => get_class($model_tracked),
-                'model_attributes' => $attributes,
-                'created_at' => new Carbon,
-                'user_id' => $current_user_id,
-                'user_agent' => $tracker->getUserAgent(),
-                'ip_address' => $tracker->getIp(),
-                'full_url' => $tracker->getFullUrl(),
-                'method' => $tracker->getMethod()
-            ]);
+        $attributes = [];
+        if($model->isTrackingData()){
+            $attributes = $model->getAttributeValues($model_tracked, false);
         }
+
+        $current_user_id = null;
+        if($model->isTrackingAuthenticatedUser()){
+            $current_user_id = $tracker->getUserId();
+        }
+
+        Event::store([
+            'activity' => $event,
+            'model_id' => (string) $model_tracked->{$model_tracked->getKeyName()},
+            'model_name' => get_class($model_tracked),
+            'model_attributes' => $attributes,
+            'created_at' => new Carbon,
+            'user_id' => $current_user_id,
+            'user_agent' => $tracker->getUserAgent(),
+            'ip_address' => $tracker->getIp(),
+            'full_url' => $tracker->getFullUrl(),
+            'method' => $tracker->getMethod()
+        ]);
     }
 
     // Set the starting point for newly created model instance

@@ -228,12 +228,14 @@ abstract class LaravelLoggerController extends Controller
         $sync_form = -1;
         if($validator->passes()){
             $event = Event::find($request->sync_event_id);
-            $event_attributes = $event->model_attributes;
+            $event_attributes = $event->sync_attributes;
+
             $instance = $event->model_name::find($request->model_id);
             $class_name = get_class($instance);
             $id = $instance->{$instance->getKeyName()};
             $model = LaravelLogger::getModel($class_name);
-            $current_attributes = json_decode($model->getAttributeValues($instance), true);
+
+            $current_attributes = json_decode($model->getAttributeValues($instance, true), true);
             $attributes = array();
             foreach($current_attributes as $column => $attr){
                 $attributes[] = ['column' => $column, 'old' => $attr, 'new' => $event_attributes[$column]??null];
@@ -274,9 +276,9 @@ abstract class LaravelLoggerController extends Controller
         if($validator->passes()){
             $tracker = LaravelLogger::getTracker();
             $event = Event::find($data['sync_event_id']);
-
-            $event_attributes = collect($event->model_attributes)->only(array_keys($data['save']))->all();
             $model = LaravelLogger::getModel($event->model_name);
+
+            $event_attributes = collect($event->sync_attributes)->only($model->getSyncAttributes())->only(array_keys($data['save']))->all();
             $class_name = $model->getClassName();
             $new_instance = new $class_name;
             // updating using a 'where' query builder does not trigger Laravel Events

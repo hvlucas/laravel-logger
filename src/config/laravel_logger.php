@@ -4,7 +4,8 @@
      * Figure out what kind of configs are going to be added
      */
     return [
-        'log_connection' => env('YOUR_DATABASE_CONNECTION'), 
+        /* Database connection which will store events */
+        //'log_connection' => env('YOUR_DATABASE_CONNECTION'), 
 
         /* Interchangable options available */
 
@@ -14,8 +15,11 @@
         /* Default User model */
         //'user_model' => 'App\User',
 
+        /* Path for LaravelLogger to auto-discover models */
+        //'discovery_path' => 'app/',
+        
         /* Base Model namespace; LaravelLogger will try to auto find models in namespace given */
-        //'base_model_namespace' => 'App',
+        //'discover_namespace' => 'App',
 
         /* Route pathing */
         //'route_prefix' => 'events',
@@ -32,26 +36,25 @@
         'loggable_models' => [
             [
                 'model' => 'App\Post',
-                'events' => ['created', 'deleted', 'updated', 'retrieved'],
-                'attributes' => ['title', 'publisher', 'udpated_at'],
-                'log_data' => false,
-                'log_user' => false,
+                'trackable_attributes' => ['title', 'publisher', 'udpated_at'],
+                'sync_attributes' => ['title'],
+                'tracks_data' => true,
+                'tracks_user' => false,
             ],
             'App\Comment', 
             'App\User',
             [
                 'model' => 'App\UserVote',
-                'events' => 'created'
                 'attributes' => 'score'
                 'log_user' => false,
             ],
             [
                 'model' => 'App\Team',
-                'attributes' => ['name', 'favorite_animal']
+                'trackable_attributes' => ['name', 'favorite_animal']
             ],
             [
                 'model' => 'App\Role',
-                'attributes' => false,
+                'trackable_attributes' => false,
             ],
         ],
          */

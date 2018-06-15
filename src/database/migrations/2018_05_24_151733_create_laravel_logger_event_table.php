@@ -43,6 +43,7 @@ class CreateLaravelLoggerEventTable extends Migration
                 $table->string('model_id');
                 $table->string('model_name');
                 $table->longText('model_attributes')->nullable();
+                $table->longText('sync_attributes')->nullable();
                 $table->string('user_agent')->nullable();
                 $table->string('method')->nullable();
                 $table->string('ip_address')->nullable();

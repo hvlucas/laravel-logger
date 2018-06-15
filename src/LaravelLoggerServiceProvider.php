@@ -81,10 +81,10 @@ class LaravelLoggerServiceProvider extends ServiceProvider
     // Returns a list of models based on application base path
     private function autoDetectModels(): array
     {
-        $dir_tree = preg_grep('/.*\.php/', scandir(base_path('app/')));
+        $dir_tree = preg_grep('/.*\.php/', scandir(base_path(config('laravel_logger.discover_path', 'app/')));
         $models = array();
         foreach($dir_tree as $file){
-            $model_namespace = config('laravel_logger.base_model_namespace', 'App');
+            $model_namespace = config('laravel_logger.discover_namespace', 'App');
             $file_name = "$model_namespace\\$file";
             $model = preg_replace('/\.php$/', '', $file_name);
             if(class_exists($model)){
@@ -130,20 +130,19 @@ class LaravelLoggerServiceProvider extends ServiceProvider
         $model = $data; 
         $events = [];
         $attributes = [];
-        //TODO
-        //get events/attributes/tracks_user/tracks_data from model itself
+        $sync_attributes = [];
         $tracks_user = true;
         $tracks_data = true;
         $is_favorite = false;
         if(!is_string($data)){
             $model = $data['model'];
 
-            if(isset($data['events'])){
-                $events = (array) $data['events'];
+            if(isset($data['trackable_attributes'])){
+                $attributes = (array) $data['trackable_attributes'];
             }
-            
-            if(isset($data['attributes'])){
-                $attributes = (array) $data['attributes'];
+
+            if(isset($data['sync_attributes'])){
+                $sync_attributes = (array) $data['sync_attributes'];
             }
 
             if(isset($data['tracks_user'])){
@@ -161,7 +160,7 @@ class LaravelLoggerServiceProvider extends ServiceProvider
 
         // Now that we have pulled config data for each model, we create an instance of LaravelLoggerModel and observe
         // its events. We also set the starting point for each model record in DB
-        $laravel_logger_model = new LaravelLoggerModel($model, $events, $attributes, $tracks_user, $tracks_data, $is_favorite);
+        $laravel_logger_model = new LaravelLoggerModel($model, $attributes, $sync_attributes, $tracks_user, $tracks_data, $is_favorite);
         LaravelLogger::push($laravel_logger_model);
         $model::observe($this->app->make('HVLucas\LaravelLogger\Observers\ModelObserver'));
         $laravel_logger_model->setStartingPoint();

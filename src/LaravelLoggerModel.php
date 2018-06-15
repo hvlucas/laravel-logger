@@ -13,11 +13,11 @@ class LaravelLoggerModel
     // Model class name being tracked
     protected $class_name;
 
-    // Events that are going to be tracked
-    protected $events;
-
     // Model attributes that are going to be tracked
     protected $attributes;
+
+    // Model attributes that are going to be updated when syncing
+    protected $sync_attributes;
 
     // Flag to determine if Authenticated User is being tracked
     protected $tracks_current_user;
@@ -27,57 +27,71 @@ class LaravelLoggerModel
 
     // Flag to see if this Model should show up first on the list of models being tracked
     protected $is_favorite;
-
-    public function __construct(string $class_name, array $events, array $attributes, bool $tracks_user, bool $tracks_data, $is_favorite)
+    
+    // Constructor for LaravelLoggerModel
+    public function __construct(string $class_name, array $attributes, array $sync_attributes, bool $tracks_user, bool $tracks_data, $is_favorite)
     {
         $this->class_name = $class_name;
 
-        if(empty($events)){
-            $events = config('laravel_logger.default_events', ['created', 'updated', 'deleted', 'restored']);
-        }
-        $this->events = $events;
-
-        //if attributes is not set in config, check model class for 'loggable' property
+        //if attributes is not set in config, check model class for 'trackable_attributes' property
+        $reflection = new ReflectionClass($class_name);
         if(empty($attributes)){
-            $reflection = new ReflectionClass($class_name);
-            if($reflection->hasProperty('loggable')){
-                $property = $reflection->getProperty('loggable');
+            if($reflection->hasProperty('trackable_attributes')){
+                $property = $reflection->getProperty('trackable_attributes');
                 $property->setAccessible('true');
                 $attributes = $property->getValue(new $class_name);
             }
         }
 
         $this->attributes = $attributes;
+
+        // TODO
+        // check if column exists in database, throw error otherwise
+        if(empty($sync_attributes)){
+            if($reflection->hasProperty('sync_attributes')){
+                $property = $reflection->getProperty('sync_attributes');
+                $property->setAccessible('true');
+                $attributes = $property->getValue(new $class_name);
+            }else{
+                $sync_attributes = $attributes;
+            }
+        }
+
+        $this->sync_attributes = $sync_attributes;
         $this->tracks_current_user = $tracks_user;
         $this->tracks_data = $tracks_data;
         $this->is_favorite = $is_favorite;
     }
 
-    // Returns if model is tracking event passed
-    public function isTrackingEvent(string $event): bool
-    {
-        return array_search($event, $this->events) !== false;
-    }
-
     // Get model instance attribute values (json encoded)
-    public function getAttributeValues($model)
+    public function getAttributeValues($model, $for_sync)
     {
         $class_name = get_class($model);
         if($class_name != $this->class_name){
             throw new ClassNotMatchedException("Model '$class_name' does not match $this->class_name.");
         }
         
-        $attributes = $this->attributes;
+        if($for_sync){
+            $attributes = $this->sync_attributes;
+        }else{
+            $attributes = $this->attributes;
+        }
+
         if(empty($attributes)){
-            $hidden = ['id'] + $model->getHidden();
+            $hidden = array_merge(['id', 'created_at', 'updated_at'], $model->getHidden());
             $attributes = $model->refresh()->setHidden($hidden)->attributesToArray();
         }else{
             $attributes = $model->only($attributes);
         }
+
         return json_encode($attributes);
     }
 
-    /* Getters */
+    // Returns syncable attributes
+    public function getSyncAttributes()
+    {
+        return $this->sync_attributes;
+    }
 
     // Return tracks_current_user attribute
     public function isTrackingAuthenticatedUser()
@@ -131,13 +145,15 @@ class LaravelLoggerModel
         $models = $model::leftJoin($event_table, "$model_table.$model_key", '=', "$event_table.model_id")->select("$model_table.*", "$event_table.activity as event_activity")->whereNull("$event_table.activity")->get();
 
         foreach($models as $init_model){
-            $attributes = $this->getAttributeValues($init_model);
+            $attributes = $this->getAttributeValues($init_model, false);
+            $sync_attributes = $this->getAttributeValues($init_model, true);
             Event::store([
                 'activity' => 'startpoint',
                 'user_id' => null,
                 'model_id' => (string) $init_model->{$init_model->getKeyName()},
                 'model_name' => $model, 
                 'model_attributes' => $attributes,
+                'sync_attributes' => $sync_attributes,
                 'user_agent' => null,
                 'method' => null,
                 'full_url' => null,
