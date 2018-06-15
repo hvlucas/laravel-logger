@@ -18,16 +18,16 @@ With Laravel Logger you can:
 ## # Configuration
 There are a few configurations that can be set from the get-go. They are all optional, but will improve flexibility. Since LaravelLogger is configured at compiler-time (when your application's Service Providers are being booted), it is **important to setup your config file before running php artisan migrate (first time installation).** Otherwise, it will try to auto-discover models in your `app/` directory, and create a copy of each database row available.   
 Each model row will have a `startpoint`. Meaning from the moment LaravelLogger's service provider boots up, it will try to find a model instance which has not started its tracking yet. Which is why it would be benefitial for you to fully understand the configuration!
-|Config|Type|Default|What it does|
-|------|----|-------|------------|
-|route_prefix|*string*|"events"|Route prefix which the list of events is going to be. `https://{server_domain}/{your_custom_prefix}/list/`|
-|log_connection|*string*|`null`|If you wish to store model instances in a different database you create a connection in `config/database.php`.|
-|table_name|*string*|"logged_events"|Name of Event table that is going to be created.|
-|user_model|*string*|"App\User"|Authenticated user class name in which an Event will be associated with. Make sure to include namespacing.|
-|user_column|*string*|`null`|Column or accessor for the associated user of an Event. Omitting this option will display their Primary Key instead.|
-|loggable_models|*string\|array*|`null`|Ommitting this option will cause LaravelLogger to go through your `app` folder to automatically search for models to track.|
-|discover_path|*string*|"app/"|If `loggable_models` is `null`, this config can set the path in which LaravelLogger will automatically search for models to track.|
-|discover_namespace|*string*|"App"|If `loggable_models` option is left blank, this option can be set to define the namespace of your `discover_path`.|
+| Config | Type | Default | What it does |
+| ------ | ---- | ------- | ------------ |
+| route_prefix | *string* | "events" | Route prefix which the list of events is going to be. `https://{server_domain}/{your_custom_prefix}/list/`|
+| log_connection | *string* | `null` | If you wish to store model instances in a different database you create a connection in `config/database.php`. |
+| table_name | *string* | "logged_events" | Name of Event table that is going to be created. |
+| user_model | *string* | "App\User" | Authenticated user class name in which an Event will be associated with. Make sure to include namespacing. |
+| user_column | *string* | `null` | Column or accessor for the associated user of an Event. Omitting this option will display their Primary Key instead. |
+| loggable_models | *string\|array* | `null` | Ommitting this option will cause LaravelLogger to go through your `app` folder to automatically search for models to track. |
+| discover_path | *string* | "app/" | If `loggable_models` is `null`, this config can set the path in which LaravelLogger will automatically search for models to track. |
+| discover_namespace | *string* | "App" | If `loggable_models` option is left blank, this option can be set to define the namespace of your `discover_path`. |
 
 
 ### # Configuration - Initialization by Config
