@@ -496,7 +496,6 @@ $(document).ready(function(){
         model = input.data('model');
         if(model){
             search_timeout = setTimeout(function(){
-                console.log('searching for', input.val());
                 $('table[data-parsed-model="'+model+'"]').DataTable().search(input.val()).draw();
             }, 1000);
         }
@@ -510,11 +509,9 @@ $(document).ready(function(){
         $('.filtering-tags').append($(this));
         $('a#clear-filter').show();
         //set val to empty and trigger change to timer resets
-        //$('#search').trigger('change');
         $('.searchable-tags').hide();
         var model = $('#search').data('model');
         $('table[data-parsed-model="'+model+'"]').DataTable().search('').draw();
-        console.log('drawing click');
     });
 
     // Removing filter tags 
@@ -529,7 +526,7 @@ $(document).ready(function(){
     });
 
     // Filter by tags when clicking on the table itself
-    $(document).on('click', 'td tag', function(){
+    $(document).on('click', 'table.events td tag', function(){
         if(noMatchInFilter($(this))){
             var clone = $(this).clone();
             $('.filtering-tags').append(clone);
