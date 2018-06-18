@@ -121,6 +121,31 @@ Setup your `config/laravel_logger.php` and then run migrations
 ```console
 php artisan migrate
 ```
+## # Front-End
+
+### # Fron-End - Filtering
+LaravelLogger takes advantages of Server-Side Processing DataTables has to offer. By clicking on individual tags, we can start filtering by them.
+![Tags screenshot](https://s3.amazonaws.com/laravel-logger/Screenshot+from+2018-06-18+10-21-34.png)
+Here are some other keywords you can use in the search bar. You can also use regular keywords, which will filter through every record on the table server-sided.
+
+|Keyword|Tags|
+|-------|------|
+|*tag/tags*|All available tags|
+|*users/user*|Authenticated user Primary Key/Column tags|
+|*event/events*|All events|
+|*activity/activities*|Alias for *event*
+|*method/methods*|Method type associated with event|
+|*request/requests*|Alias for *method*|
+
+### Front-End - Syncing
+LaravelLogger can keep track of your model well, but it can also sync your model to a point in time when necessary! You can click on the ID of the model you wish to inspect with more detail.
+![Sync screenshot](https://s3.amazonaws.com/laravel-logger/Screenshot+from+2018-06-18+10-43-14.png)
+
+TODO 
+* Show syncing example
+* Add export example
+* Add middleware section
+
 ## # Testing
 None as of yet
 
