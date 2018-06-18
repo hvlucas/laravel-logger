@@ -81,7 +81,7 @@ class LaravelLoggerServiceProvider extends ServiceProvider
     // Returns a list of models based on application base path
     private function autoDetectModels(): array
     {
-        $dir_tree = preg_grep('/.*\.php/', scandir(base_path(config('laravel_logger.discover_path', 'app/')));
+        $dir_tree = preg_grep('/.*\.php/', scandir(base_path(config('laravel_logger.discover_path', 'app/'))));
         $models = array();
         foreach($dir_tree as $file){
             $model_namespace = config('laravel_logger.discover_namespace', 'App');
