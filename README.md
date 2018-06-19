@@ -130,7 +130,8 @@ php artisan migrate
 
 ### # Fron-End - Filtering
 
-LaravelLogger takes advantages of Server-Side Processing DataTables has to offer. By clicking on individual tags, we can start filtering by them.
+LaravelLogger takes advantages of Server-Side Processing DataTables has to offer. By clicking on individual tags, we can start filtering by them.  
+
 ![Tags screenshot](https://s3.amazonaws.com/laravel-logger/Screenshot+from+2018-06-18+10-21-34.png)  
 
 Here are some other keywords you can use in the search bar. You can also use regular keywords, which will filter through every record on the table server-sided.
