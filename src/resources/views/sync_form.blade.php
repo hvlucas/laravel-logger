@@ -25,9 +25,9 @@
                     @foreach($attributes as $attribute)
                         <tr>
                             <td>{{$attribute['column']}}</td>
-                            <td>{{$attribute['old']}}</td>
+                            <td>{{is_array($attribute['old']) ? json_encode($attribute['old']) : $attribute['old']}}</td>
                             <td><i class="fas fa-caret-right"></i></td>
-                            <td>{{$attribute['new']}}</td>
+                            <td>{{is_array($attribute['new']) ? json_encode($attribute['new']) : $attribute['new']}}</td>
                             <td><input type="checkbox" name="save[{{$attribute['column']}}]" checked="checked" value="true"/>
                         </tr>
                     @endforeach

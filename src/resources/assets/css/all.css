@@ -290,6 +290,11 @@ table.history td:not(:first-child) {
     text-align: center;
 }
 
+table.history td, table#syncing-model td{
+    max-width: 200px;
+    overflow: auto;
+}
+
 ts {
     display: block;
     font-size: 9px;

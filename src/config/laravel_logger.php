@@ -14,6 +14,9 @@
 
         /* Default User model */
         //'user_model' => 'App\User',
+        
+        /* User column to be displayed in the front-end */
+        //'user_column' => 'name',
 
         /* Path for LaravelLogger to auto-discover models */
         //'discovery_path' => 'app/',
@@ -23,9 +26,6 @@
 
         /* Route pathing */
         //'route_prefix' => 'events',
-
-        /* Default events*/
-        //'default_events' => ['created', 'updated', 'deleted', 'retrieved'],
 
         /* Models that are going to have Events Logged */
         //There are two ways to format loggable_models, you may pass specific options on a individual model.

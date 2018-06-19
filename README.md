@@ -25,7 +25,7 @@ Each model row will have a `startpoint`. Meaning from the moment LaravelLogger's
 |log_connection|*string*|`null`|If you wish to store model instances in a different database you create a connection in `config/database.php`.|
 |table_name|*string*|"logged_events"|Name of Event table that is going to be created.|
 |user_model|*string*|"App\User"|Authenticated user class name in which an Event will be associated with. Make sure to include namespacing.|
-|user_column|*string*|`null`|Column or accessor for the associated user of an Event. Omitting this option will display their Primary Key instead.|
+|user_column|*string*|`null`|Column for the associated user of an Event to be displayed in the front-end. Omitting this option will display their Primary Key by default.|
 |loggable_models|*string\|array*|`null`|Ommitting this option will cause LaravelLogger to go through your `app` folder to automatically search for models to track.|
 |discover_path|*string*|"app/"|If `loggable_models` is `null`, this config can set the path in which LaravelLogger will automatically search for models to track.|
 |discover_namespace|*string*|"App"|If `loggable_models` option is left blank, this option can be set to define the namespace of your `discover_path`.|
@@ -39,14 +39,15 @@ This is a list of available sub-options for the `loggable_models` option:
 |------|----|--------|-------|-----------|
 |model|*string*|yes|`null`|Model which is going to be tracked.|
 |trackable_attributes|*string\|array*|no|`null`|Which attributes which will be stored when an event happens. If this is not set, it will pull all non-hidden attributes.|
-|sync_attributes|*string\|array*|no|`null`|Which attributes will update when syncing model. When this is not set, it will default to `trackable_attributes`. 
+|sync_attributes|*string\|array*|no|`null`|Which attributes will update when syncing model. When this is not set, it will default to `trackable_attributes`. **Columns must exist in model table.**|
 |tracks_data|*bool*|no|`true`|Are attributes being tracked? If `trackable_attributes` is set, then `tracks_data` will overwrite that setting.|
 |tracks_user|*bool*|no|`true`|Is the authenticated user being tracked?|
 |is_favorite|*bool*|no|`false`|Show this model in the beginning of the event's index page. Models are sorted by favoritism then alphabetically.|
 
 An advantage of LaravelLogger is that it incorporates Laravel's accessors. 
 ```php
-class MyClass extends Model {
+class MyClass extends Model 
+{
     //...
     public function getWeightAttribute()
     {
@@ -83,7 +84,8 @@ For example:
 ```
 There are ways you can configure what will be tracked through the model itself. In each file, you can set protected properties which will do the trick for LaravelLogger:
 ```php
-class MyClass extends Model {
+class MyClass extends Model 
+{
     //...
     protected $trackable_attributes = ['name', 'title', 'role_id', 'salary', 'gender'];
     protected $sync_attributes = ['name', 'title', 'gender'];
@@ -106,7 +108,7 @@ class MyClass extends Model
 ## # Installation
 Require our package:
 ```console
-composer require hvlucas/laravel-logger
+composer require hvlucas/laravel-logger 1.0
 ```
 Publish required files and select the number corresponding to this package:
 ```console
@@ -117,7 +119,7 @@ Which provider or tag's files would you like to publish?:
   [0 ] Publish files from all providers and tags listed below
   [X ] Provider:  HVLucas\LaravelLogger\LaravelLoggerServiceProvider
 ```
-Setup your `config/laravel_logger.php` and then run migrations
+Setup your `config/laravel_logger.php` and then run migrations:
 ```console
 php artisan migrate
 ```
@@ -125,7 +127,8 @@ php artisan migrate
 
 ### # Fron-End - Filtering
 LaravelLogger takes advantages of Server-Side Processing DataTables has to offer. By clicking on individual tags, we can start filtering by them.
-![Tags screenshot](https://s3.amazonaws.com/laravel-logger/Screenshot+from+2018-06-18+10-21-34.png)
+![Tags screenshot](https://s3.amazonaws.com/laravel-logger/Screenshot+from+2018-06-18+10-21-34.png)  
+
 Here are some other keywords you can use in the search bar. You can also use regular keywords, which will filter through every record on the table server-sided.
 
 |Keyword|Tags|

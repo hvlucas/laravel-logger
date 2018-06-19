@@ -2,7 +2,7 @@
     $split = (int) ceil(count($attributes)/2);
     $timezone = null;
     if($history->count() > 0){
-        $timezone = $history->first()->created_at->format('e (T)');
+        $timezone = $history->first()->created_at->format('e');
         $previous_event = $history->first()->previous;
         if($previous_event){
             $history->prepend($previous_event);
@@ -31,6 +31,9 @@
                     @foreach($history as $model_event)
                         @php
                             $value = $model_event->model_attributes[$attr] ?? null;
+                            if(is_array($value)){
+                                $value = json_encode($value, true);
+                            }
                         @endphp
                         @if(!$loop->first)
                             <td class="column-split"> 
@@ -39,7 +42,8 @@
                                     <ts data-toggle="tooltip" title="{{$model_event->created_at->format('F jS, Y @ H:i:s (e)')}}">
                                         @if($model_event->getModel()->isTrackingAuthenticatedUser()) 
                                             {{$model_event->user_name ?? 'UnAuthenticated'}} 
-                                        @endif {{$model_event->activity}} 
+                                        @endif 
+                                        {{$model_event->activity}} 
                                         {{$model_event->created_at->diffForHumans()}}
                                     </ts>
                                 @endif

@@ -1,1 +1,1 @@
-<i data-toggle="tooltip" title="{{$event->getBrowser()->getName()}}" class="{{$event->fa_browser}}"></i> <sub>{{$event->parsed_version}}</sub> <i data-toggle="tooltip" title="{{$event->getOs()->getName()}}" class="{{$event->fa_os}}"></i>
+<i data-toggle="tooltip" title="{{$event->getBrowser()->getName()}}" class="{{$event->fa_browser}}"></i> @if($event->parsed_version != 'unknown') <sub>{{$event->parsed_version}}</sub> @endif <i data-toggle="tooltip" title="{{$event->getOs()->getName()}}" class="{{$event->fa_os}}"></i>

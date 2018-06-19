@@ -23,7 +23,7 @@ abstract class LaravelLoggerController extends Controller
         $models = $models->map(function($model){
             return [ 'model' => LaravelLogger::getModel($model->getClassName()), 'events' => collect([])];
         });
-        $show_options = [50 => 50, 150 => 150, 300 => 300, 500 => 500, null => 'All'];
+        $show_options = [50 => 50, 150 => 150, 300 => 300, 500 => 500, -1 => 'All'];
         return view('laravel_logger::index', compact('models', 'show_options'));
     }
 
@@ -53,11 +53,10 @@ abstract class LaravelLoggerController extends Controller
 
         //Possibly in the future  we can check if user column was set to something 
         //if it wasn't then we don't need to join and we can just filter the query by user_id xD
-        $model_events = Event::join($user_table, "$events_table.user_id", '=', "$user_table.$user_table_pk")
+        $model_events = Event::leftJoin($user_table, "$events_table.user_id", '=', "$user_table.$user_table_pk")
             ->select("$events_table.*", "$user_table.$user_column as user_name")
             ->where('activity', '!=', 'startpoint')
             ->where('model_name', $model->getClassName());
-
 
         // Set slice variables
         if(is_numeric($request->start)){
@@ -105,7 +104,7 @@ abstract class LaravelLoggerController extends Controller
                 }
 
                 // Special case: we set 'null' to 'UnAunthenticated' when sending tags to view
-                if($tag['filter'] == 'user_name' && $tag['value'] == 'UnAuthenticated'){
+                if($tag['filter'] == 'user_id' && $tag['value'] == 'UnAuthenticated'){
                     $tag['value'] = null;
                 }
                 $query->orWhere($tag['filter'], $tag['value']);
@@ -249,8 +248,6 @@ abstract class LaravelLoggerController extends Controller
     }
 
     // Sync model to an event point in the model's timeline and creates a `sync` Event instance 
-    // TODO
-    // config option to set which attributes will be updated
     public function syncModel(Request $request)
     {
         $e = new Event;

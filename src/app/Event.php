@@ -242,6 +242,12 @@ class Event extends Model
         return json_decode($model_attr, true);
     }
 
+    // Return decoded `$this->sync_attributes`
+    public function getSyncAttributesAttribute($sync_attr)
+    {
+        return json_decode($sync_attr, true);
+    }
+
     // Return LaravelLoggerModel instance of model associated with `$this`
     public function getModel()
     {

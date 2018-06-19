@@ -5,6 +5,7 @@ namespace HVLucas\LaravelLogger;
 use Carbon\Carbon;
 use ReflectionClass;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 use HVLucas\LaravelLogger\App\Event;
 use HVLucas\LaravelLogger\Exceptions\ClassNotMatchedException;
 
@@ -39,21 +40,25 @@ class LaravelLoggerModel
             if($reflection->hasProperty('trackable_attributes')){
                 $property = $reflection->getProperty('trackable_attributes');
                 $property->setAccessible('true');
-                $attributes = $property->getValue(new $class_name);
+                $attributes = (array) $property->getValue(new $class_name);
             }
         }
 
         $this->attributes = $attributes;
 
-        // TODO
-        // check if column exists in database, throw error otherwise
         if(empty($sync_attributes)){
             if($reflection->hasProperty('sync_attributes')){
                 $property = $reflection->getProperty('sync_attributes');
                 $property->setAccessible('true');
-                $attributes = $property->getValue(new $class_name);
+                $sync_attributes = (array) $property->getValue(new $class_name);
             }else{
                 $sync_attributes = $attributes;
+            }
+            foreach($sync_attributes as $attr){
+                if(!Schema::hasColumn($table, $attr)){
+                    throw new ColumnNotFoundException("Column `$attr` was not found in $table table");
+
+                }
             }
         }
 
@@ -68,7 +73,7 @@ class LaravelLoggerModel
     {
         $class_name = get_class($model);
         if($class_name != $this->class_name){
-            throw new ClassNotMatchedException("Model '$class_name' does not match $this->class_name.");
+            throw new ClassNotMatchedException("Model `$class_name` does not match `$this->class_name`.");
         }
         
         if($for_sync){
@@ -129,20 +134,20 @@ class LaravelLoggerModel
         $event_instance = new Event;
         $event_table = $event_instance->getTable();
 
+        // if user hasn't migrated yet, dont initialize starting point
         if(!Schema::hasTable($event_table)){
             return;
         }
         
         $model = $this->class_name;
-        try {
-            $model_instance = new $model;
-        }catch(\Throwable $e){
-            return;
-        }
+        $model_instance = new $model;
         $model_table = $model_instance->getTable();
         $model_key = $model_instance->getKeyName();
-
-        $models = $model::leftJoin($event_table, "$model_table.$model_key", '=', "$event_table.model_id")->select("$model_table.*", "$event_table.activity as event_activity")->whereNull("$event_table.activity")->get();
+        if($model != "App\NewNamespace\ModelTestV2"){
+            return;
+        }
+        $ids = Event::where('model_name', $model)->pluck('model_id')->unique();
+        $models = $model::whereNotIn($model_key, $ids)->get();
 
         foreach($models as $init_model){
             $attributes = $this->getAttributeValues($init_model, false);
@@ -150,7 +155,7 @@ class LaravelLoggerModel
             Event::store([
                 'activity' => 'startpoint',
                 'user_id' => null,
-                'model_id' => (string) $init_model->{$init_model->getKeyName()},
+                'model_id' => (string) $init_model->{$model_key},
                 'model_name' => $model, 
                 'model_attributes' => $attributes,
                 'sync_attributes' => $sync_attributes,

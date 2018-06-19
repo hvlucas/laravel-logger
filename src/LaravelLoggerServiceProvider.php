@@ -9,7 +9,8 @@ use HVLucas\LaravelLogger\LaravelLoggerTracker;
 use HVLucas\LaravelLogger\Observers\ModelObserver;
 use HVLucas\LaravelLogger\Facades\LaravelLogger;
 use HVLucas\LaravelLogger\App\Event;
-use HVLucas\LaravelLogger\Exceptions\InvalidConfigSyntax;
+use HVLucas\LaravelLogger\Exceptions\InvalidSyntaxException;
+use HVLucas\LaravelLogger\Exceptions\ColumnNotFoundException;
 
 class LaravelLoggerServiceProvider extends ServiceProvider
 {
@@ -69,7 +70,16 @@ class LaravelLoggerServiceProvider extends ServiceProvider
             return new LaravelLoggerTracker();
         });
 
-        // Read from config or Auto Detect Models on the fly
+        // Check if column given exists in user table
+        $user_model = config('laravel_logger.user_model', 'App\User');
+        $user = new $user_model;
+        $user_table = $user->getTable();
+        $user_column = config('laravel_logger.user_column', $user->getKeyName());
+        if(!Schema::hasColumn($user_table, $user_column)){
+            throw new ColumnNotFoundException("Column `$user_column` was not found in `$user_table` table");
+        }
+
+        // Read from config or auto Detect Models on the fly
         $loggable_models = config('laravel_logger.loggable_models', $this->autoDetectModels());
         foreach((array) $loggable_models as $loggable){
             if($this->validModel($loggable)){
@@ -110,7 +120,7 @@ class LaravelLoggerServiceProvider extends ServiceProvider
         }
 
         if(gettype($data) != 'array'){
-            throw new InvalidConfigSyntax('Data passed through config is not a string or an array, please double check your syntax');
+            throw new InvalidSyntaxException('Data passed through config is not a string or an array, please double check your syntax');
         }
 
         $validator = Validator::make($data, [
@@ -156,6 +166,13 @@ class LaravelLoggerServiceProvider extends ServiceProvider
             if(isset($data['favorite'])){
                 $is_favorite = (bool) $data['favorite'];
             }
+        }
+        
+        try {
+            $model_instance = new $model;
+        }catch(\Throwable $e){
+            //can't create new instance; return;
+            return;
         }
 
         // Now that we have pulled config data for each model, we create an instance of LaravelLoggerModel and observe

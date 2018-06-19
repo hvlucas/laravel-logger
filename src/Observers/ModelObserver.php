@@ -40,9 +40,10 @@ class ModelObserver
     {
         $tracker = LaravelLogger::getTracker();
         $model = $tracker->getModel(get_class($model_tracked));
-        $attributes = [];
+        $attributes = $sync_attributes = json_encode([]);
         if($model->isTrackingData()){
             $attributes = $model->getAttributeValues($model_tracked, false);
+            $sync_attributes = $model->getAttributeValues($model_tracked, true);
         }
 
         $current_user_id = null;
@@ -55,6 +56,7 @@ class ModelObserver
             'model_id' => (string) $model_tracked->{$model_tracked->getKeyName()},
             'model_name' => get_class($model_tracked),
             'model_attributes' => $attributes,
+            'sync_attributes' => $sync_attributes,
             'created_at' => new Carbon,
             'user_id' => $current_user_id,
             'user_agent' => $tracker->getUserAgent(),
