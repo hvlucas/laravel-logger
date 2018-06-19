@@ -92,7 +92,13 @@ class LaravelLoggerModel
         return json_encode($attributes);
     }
 
-    // Returns syncable attributes
+    // Returns `$this->attributes`
+    public function getAttributes()
+    {
+        return $this->attributes;
+    }
+
+    // Returns `$this->sync_attributes`
     public function getSyncAttributes()
     {
         return $this->sync_attributes;

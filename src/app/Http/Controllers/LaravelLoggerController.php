@@ -170,7 +170,8 @@ abstract class LaravelLoggerController extends Controller
         $scale_options = json_encode(static::$scale_options);
         if(Validator::make($request->all(), $rules)->passes()){
             $history = $this->getHistory($request->all(), $event);
-            $attributes = array_keys($history->first()->model_attributes ?? []);
+            $model = LaravelLogger::getModel($event->model_name);
+            $attributes = $model->getAttributes();
             $this->setHistoryAttributes($history, $minimizer, $differential, $startpoint, $endpoint, $labels, $smallest_diff, $event_timestamps);
             // render history (information+slider+history table)
             $history_view = view('laravel_logger::history.show', compact('history', 'attributes', 'event_timestamps', 'startpoint', 'endpoint', 'minimizer', 'event', 'smallest_diff', 'labels', 'scale_options'))->render();
@@ -322,7 +323,7 @@ abstract class LaravelLoggerController extends Controller
     // Filters and returns history based on data given  
     private function getHistory($data, &$event)
     {
-        $event = Event::find($data['event_id']);
+        $event = Event::findOrFail($data['event_id']);
         $history = Event::where(['model_name' => $event->model_name, 'model_id' => $event->model_id])->where('activity', '!=', 'created')->orderBy('created_at');
         $created_at = null;
         if(isset($data['event_point']) && isset($data['minimizer'])){
