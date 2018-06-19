@@ -172,6 +172,7 @@ $(document).ready(function(){
                 var table = $(datatable.nTable);
                 var model = table.data('model');
                 config.model = model;
+                config.length = $('#show').val();
                 tag_data = [];
                 var tags = $('.filtering-tags tag');
                 $.each(tags, function(){
@@ -201,12 +202,14 @@ $(document).ready(function(){
             { 'data' : 'request' },
             { 'data' : 'when' },
         ],
+        pageLength: 50,
         drawCallback: function(settings){
             json = settings.json;
             tags = json.tags;
 
             // set records filtered total to nav_tab item
             var total = '('+json.recordsFiltered+')';
+            $('.visible-events').text(json.recordsTotal);
             var model = $(settings.nTable).data('parsed-model');
             $('a[data-model="'+model+'"] .event-count').text(total);
 
@@ -525,6 +528,12 @@ $(document).ready(function(){
         $('table[data-parsed-model="'+model+'"]').DataTable().draw();
     });
 
+    // Update table based on how many they selected
+    $(document).on('change', '#show', function(){
+        var model = $('#search').data('model');
+        $('table[data-parsed-model="'+model+'"]').DataTable().draw();
+    });
+
     // Filter by tags when clicking on the table itself
     $(document).on('click', 'table.events td tag', function(){
         if(noMatchInFilter($(this))){
@@ -538,7 +547,12 @@ $(document).ready(function(){
     });
 
     // Redraw table once a nav_tab is clicked
-    $(document).on('click', 'a.nav-link', function(){ 
+    $(document).on('click', 'a.nav-link', function(event){ 
+        var target = $(event.target);
+        if(target.is($('i.nav-item-menu')) || target.is($('ul.nav-item-menu-dropdown, ul.nav-item-menu-dropdown > *'))){
+            return;
+        }
+        $('ul.nav-item-menu-dropdown').hide();
         var model = $(this).data('model');
         $('#search').attr('data-model', model);
         $('table[data-parsed-model="'+model+'"]').DataTable().draw();
@@ -550,5 +564,22 @@ $(document).ready(function(){
         $('a#clear-filter').hide();
         var model = $('#search').data('model');
         $('table[data-parsed-model="'+model+'"]').DataTable().draw();
+    });
+
+    // Toggle menu dropdown
+    $(document).on('click', 'i.nav-item-menu', function(){
+        $(this).next('ul.nav-item-menu-dropdown').toggle();
+    });
+
+    // Select table row
+    $(document).on('click', 'table.events tbody tr', function(){
+        $(this).toggleClass('selected');
+    });
+
+    $(document).on('click', function(event){
+        var target = $(event.target);
+        if(!target.is('ul.nav-item-menu-dropdown, ul.nav-item-menu-dropdown > *, i.nav-item-menu')){
+            $('ul.nav-item-menu-dropdown').hide();
+        }
     });
 });

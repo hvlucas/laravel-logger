@@ -58,13 +58,13 @@
                     <table cellspacing="0" data-parsed-model="{{$data_parsed_model}}" data-model="{{$data_model}}" class="events">
                         <thead>
                             <tr>
-                                <th><i class="fal fa-database fa-sm"></i>ID</th>
-                                <th><i class="fal fa-inbox fa-sm"></i>Event</th>
-                                <th><i class="fal fa-user-tag fa-sm"></i>Authenticated User</th>
-                                <th><i class="fal fa-globe fa-sm"></i>IP Address</th>
-                                <th><i class="fal fa-tablet-android-alt fa-sm"></i>User Agent</th>
-                                <th><i class="fal fa-shipping-fast fa-sm"></i>Request</th>
-                                <th><i class="fal fa-shipping-timed fa-sm"></i>When</th>
+                                <th><i class="header-icon fal fa-database fa-sm"></i>ID</th>
+                                <th><i class="header-icon fal fa-inbox fa-sm"></i>Event</th>
+                                <th><i class="header-icon fal fa-user-tag fa-sm"></i>Authenticated User</th>
+                                <th><i class="header-icon fal fa-globe fa-sm"></i>IP Address</th>
+                                <th><i class="header-icon fal fa-tablet-android-alt fa-sm"></i>User Agent</th>
+                                <th><i class="header-icon fal fa-shipping-fast fa-sm"></i>Request</th>
+                                <th><i class="header-icon fal fa-shipping-timed fa-sm"></i>When</th>
                             </tr>
                         </thead>
                         <tbody>

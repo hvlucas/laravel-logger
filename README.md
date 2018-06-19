@@ -128,7 +128,7 @@ php artisan migrate
 ```
 ## # Front-End
 
-### # Fron-End - Filtering
+### # Front-End - Filtering
 
 LaravelLogger takes advantages of Server-Side Processing DataTables has to offer. By clicking on individual tags, we can start filtering by them.  
 
@@ -155,7 +155,7 @@ When you click on the ID of the Model, you are able to see the all time history 
 
 ![Model history screenshot](https://s3.amazonaws.com/laravel-logger/Screenshot+from+2018-06-19+12-12-14.png)
 
-By clicking on the sync icon, a modal will popup defining which columns will be updated.Check the attribute checkboxes you wish to update and click sync. When syncing, LaravelLogger will create a `SYNC` event instance. It is important to note that `sync_attributes` option need to have valid model's table columns.
+By clicking on the sync icon, a modal will popup defining which columns will be updated. Check the attribute checkboxes you wish to update and click sync. When syncing, LaravelLogger will create a `SYNC` event instance. It is important to note that `sync_attributes` option need to have valid model's table columns.
 
 ![Sync model screenshot](https://s3.amazonaws.com/laravel-logger/sync.png)
 
