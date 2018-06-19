@@ -1,6 +1,7 @@
 # NOT LIVE
 
 ## # Laravel Logger v1.0
+
 Laravel Logger was made to keep track of Model history! When you have an application with multiple user roles, it is important to know who made changes to the application Database. Laravel Logger can help you do that with an easy setup!
 
 With Laravel Logger you can:
@@ -11,11 +12,13 @@ With Laravel Logger you can:
   - View everything from a clean and responsive front-end
 
 ## # Compatibility
+
 | Laravel Logger | Laravel | PHP   |
 | -------------- | ------- | ----  |
 | 1.x            | 5.5     | >=7.0 |
 
 ## # Configuration
+
 There are a few configurations that can be set from the get-go. They are all optional, but will improve flexibility. Since LaravelLogger is configured at compiler-time (when your application's Service Providers are being booted), it is **important to setup your config file before running php artisan migrate (first time installation).** Otherwise, it will try to auto-discover models in your `app/` directory, and create a copy of each database row available.   
 Each model row will have a `startpoint`. Meaning from the moment LaravelLogger's service provider boots up, it will try to find a model instance which has not started its tracking yet. Which is why it would be benefitial for you to fully understand the configuration!
 
@@ -126,6 +129,7 @@ php artisan migrate
 ## # Front-End
 
 ### # Fron-End - Filtering
+
 LaravelLogger takes advantages of Server-Side Processing DataTables has to offer. By clicking on individual tags, we can start filtering by them.
 ![Tags screenshot](https://s3.amazonaws.com/laravel-logger/Screenshot+from+2018-06-18+10-21-34.png)  
 
@@ -141,6 +145,7 @@ Here are some other keywords you can use in the search bar. You can also use reg
 |*request/requests*|Alias for *method*|
 
 ### Front-End - Syncing
+
 LaravelLogger can keep track of your model well, but it can also sync your model to a point in time when necessary! You can click on the ID of the model you wish to inspect with more detail.
 ![Sync screenshot](https://s3.amazonaws.com/laravel-logger/Screenshot+from+2018-06-18+10-43-14.png)
 
@@ -150,9 +155,11 @@ TODO
 * Add middleware section
 
 ## # Testing
+
 None as of yet
 
 ## # Development
+
 If you have any ideas to contribute or bug fixes in mind: 
   - Fork the repo 
   - Create a PR for me to take a look
