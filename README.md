@@ -147,11 +147,19 @@ Here are some other keywords you can use in the search bar. You can also use reg
 
 ### Front-End - Syncing
 
-LaravelLogger can keep track of your model well, but it can also sync your model to a point in time when necessary! You can click on the ID of the model you wish to inspect with more detail.
+LaravelLogger can keep track of your model well, but it can also sync your model to a point in time when necessary! You can click on the ID of the model you wish to inspect with more detail.  
+
 ![Sync screenshot](https://s3.amazonaws.com/laravel-logger/Screenshot+from+2018-06-18+10-43-14.png)
 
+When you click on the ID of the Model, you are able to see the all time history of the selected ID. If the history is too far apart to read, then you can slide the top right slider for a more appropriate timeline. You can hover highlighted sections, which represent an event that took place in the model's timeline.  
+
+![Model history screenshot](https://s3.amazonaws.com/laravel-logger/Screenshot+from+2018-06-19+12-12-14.png)
+
+By clicking on the sync icon, a modal will popup defining which columns will be updated.Check the attribute checkboxes you wish to update and click sync. When syncing, LaravelLogger will create a `SYNC` event instance. It is important to note that `sync_attributes` option need to have valid model's table columns.
+
+![Sync model screenshot](https://s3.amazonaws.com/laravel-logger/sync.png)
+
 TODO 
-* Show syncing example
 * Add export example
 * Add middleware section
 
