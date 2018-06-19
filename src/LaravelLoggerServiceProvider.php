@@ -75,6 +75,7 @@ class LaravelLoggerServiceProvider extends ServiceProvider
         $user = new $user_model;
         $user_table = $user->getTable();
         $user_column = config('laravel_logger.user_column', $user->getKeyName());
+
         if(!Schema::hasColumn($user_table, $user_column)){
             throw new ColumnNotFoundException("Column `$user_column` was not found in `$user_table` table");
         }
