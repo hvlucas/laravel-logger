@@ -22,4 +22,6 @@ Route::group([
     Route::get('/model-history/filter', 'EventsController@filterHistory');
     Route::get('/model-history/sync-form', 'EventsController@syncForm');
     Route::post('/model-history/sync', 'EventsController@syncModel');
+    Route::delete('/archive-events', 'EventsController@archiveEvents');
+    Route::delete('/delete-events', 'EventsController@deleteEvents');
 });

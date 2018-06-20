@@ -85,6 +85,8 @@ a#clear-filter {
     display: inline !important;
 }
 
+/* DROPDOWN MENU */
+
 ul.nav-item-menu-dropdown li:hover {
     color: #0056b3;
 }
@@ -104,6 +106,16 @@ ul.nav-item-menu-dropdown {
     white-space: nowrap;
 }
 
+.delete-selected { 
+    color: #d21d1d;
+}
+
+.delete-selected:hover {
+    color: #ff4646 !important;
+}
+
+
+/* TABS */
 #toggleTab {
     background-color: #003670;
     z-index: 1;
@@ -233,6 +245,15 @@ table.dataTable {
     width: 100% !important;
 }
 
+table.events { 
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none; 
+    user-select: none;
+}
+
 th i , .method, .header-icon {
     margin-right: 5px;
 }
@@ -287,11 +308,11 @@ table.events tbody tr.selected {
 }
 
 tr.selected:first-child td, tr:not(.selected) + tr.selected > td {
-    border-top: solid 2px #206100;
+    border-top: solid 1px #206100;
 }
 
 tr.selected td {
-    border-bottom: solid 2px #206100;
+    border-bottom: solid 1px #206100;
 }
 
 /* EVENTS HISTORY MODAL */

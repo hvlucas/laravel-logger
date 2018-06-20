@@ -34,14 +34,6 @@ class LaravelLoggerTracker
         $this->is_tracking = $state;
     }
 
-    /* Getters */
-
-    // Return is tracking property
-    public function isTracking()
-    {
-        return $this->is_tracking;
-    }
-
     // Get model from list based on class name string
     public function getModel(string $class_name)
     {

@@ -15,7 +15,7 @@
                     <option value="{{$value}}">{{$option}}</option>
                 @endforeach
             </select>
-            <input class="form-control" data-model="{{$parsed_class_name}}" type="text" placeholder="Search..." id="search"/>
+            <input class="form-control" data-model="{{$parsed_class_name}}" data-archive="0" type="text" placeholder="Search..." id="search"/>
         </div>
         <ul class="searchable-tags">
         </ul>
@@ -74,4 +74,16 @@
             @endforeach
         </div>
     </div>
+    @component('laravel_logger::components.modal', ['class' => 'confirmation-modal hidden'])
+        <div class="row">
+            <div class="col-lg-12">
+                <p id="confirmation-text">Confirmation text</p>
+            </div>
+            <div class="col-lg-12">
+                <button id="confirm" class="btn btn-primary">Yes, I'm sure</button>
+                <button id="cancel" class="btn btn-secondary">Cancel</button>
+            </div>
+        </div>
+    @endcomponent
+    <div 
 @endsection

@@ -53,10 +53,16 @@ abstract class LaravelLoggerController extends Controller
 
         //Possibly in the future  we can check if user column was set to something 
         //if it wasn't then we don't need to join and we can just filter the query by user_id xD
-        $model_events = Event::leftJoin($user_table, "$events_table.user_id", '=', "$user_table.$user_table_pk")
+        $model_events = Event::withTrashed()->leftJoin($user_table, "$events_table.user_id", '=', "$user_table.$user_table_pk")
             ->select("$events_table.*", "$user_table.$user_column as user_name")
             ->where('activity', '!=', 'startpoint')
             ->where('model_name', $model->getClassName());
+
+        if($request->archived){
+            $model_events->where('deleted_at', '!=', null);
+        }else{
+            $model_events->whereNull('deleted_at');
+        }
 
         // Set slice variables
         if(is_numeric($request->start)){
@@ -149,6 +155,23 @@ abstract class LaravelLoggerController extends Controller
             $model_events->orderByDesc('created_at');
         }
 
+        // If exporting then convert list to a CSV format
+        if($request->export){
+            header('Content-Type: text/csv');
+            header('Content-Disposition: attachment; filename="event_list.csv"');
+            $out = fopen('php://output', 'w');
+            fputcsv($out, ['Model ID', 'Model Name', 'Event', 'Authenticated User', 'IP Address', 'User Agent', 'Request Method', 'Request URL', 'When (Y-M-D)']);
+            $model_events->each(function($event) use(&$formatted_events, $out){
+                $user = null;
+                
+                if(LaravelLogger::getModel($event->model_name)->isTrackingAuthenticatedUser()){
+                    $user = $event->user_name ?: 'UnAuthenticated';
+                }
+                fputcsv($out, [$event->model_id, $event->model_name, $event->activity, $user, $event->ip_address, $event->user_agent, $event->method, $event->full_url, $event->created_at->format('Y-m-d H:i:s')]);
+            });
+            fclose($out);
+        }
+
         // Paginate so we don't take 20 years to load pages
         $model_events = $model_events->get()->slice($query['start'], $query['length'])->values()->all();
 
@@ -161,7 +184,7 @@ abstract class LaravelLoggerController extends Controller
         ]);
     }
 
-    // Fectches history of model instance
+    // Fetches history of model instance
     public function modelHistory(Request $request)
     {
         $e = new Event;
@@ -176,7 +199,7 @@ abstract class LaravelLoggerController extends Controller
             // render history (information+slider+history table)
             $history_view = view('laravel_logger::history.show', compact('history', 'attributes', 'event_timestamps', 'startpoint', 'endpoint', 'minimizer', 'event', 'smallest_diff', 'labels', 'scale_options'))->render();
             // place history in a modal component
-            $modal = view('laravel_logger::components.modal', ['slot' => $history_view])->render();
+            $modal = view('laravel_logger::components.modal', ['class' => 'history-modal', 'slot' => $history_view])->render();
         }
         return response()->json($modal);
     }
@@ -304,20 +327,50 @@ abstract class LaravelLoggerController extends Controller
         return response()->json(view('laravel_logger::components.alert', compact('type', 'message'))->render());
     }
 
-    // Soft deletes an Event
-    // TODO 
-    // add front-end functionality for this
-    public function destroy(Event $event)
+    // Soft Delete multiple event ids
+    public function archiveEvents(Request $request)
     {
-        $event->delete();
+        $return = -1;
+        if(Validator::make($request->all(), ['event_ids' => 'array|required'])->passes()){
+            $e = new Event;
+            $deleted = 0;
+            $failed = 0;
+            foreach($request->event_ids as $event_id){
+                if(Validator::make(['id' => $event_id], ['id' => 'required|exists:'.$e->getTable().',id'])->passes()){
+                    $to_delete[] = $event_id;
+                    ++$deleted;
+                }else{
+                    ++$failed;
+                }
+            }
+            $events = Event::withoutTrashed()
+                ->whereIn('id', $to_delete)
+                ->where('activity', '!=', 'startpoint');
+            if($events->count() > 0){
+                $events->delete();
+            }
+            $return = view('laravel_logger::components.alert', ['message' => "Successfuly archived $deleted Events! $failed Events failed to archive."])->render();
+        }
+
+        return response()->json($return);
     }
 
-    // Force delete an Event
-    // TODO 
-    // add front-end functionality for this
-    public function forceDestroy(Event $soft_event)
+    // Force Delete multiple event ids
+    public function deleteEvents(Request $request)
     {
-        $soft_event->forceDelete();
+        $return = -1;
+        if(Validator::make($request->all(), ['event_ids' => 'array|required'])->passes()){
+            $events = Event::onlyTrashed()
+                ->whereIn('id', $request->event_ids)
+                ->where('activity', '!=', 'startpoint');
+            $deleted = $events->count();
+            if($deleted){
+                $events->forceDelete();
+            }
+            $failed = count($request->event_ids) - $deleted;
+            $return = view('laravel_logger::components.alert', ['message' => "Successfuly deleted $deleted Events! $failed Events failed to delete."])->render();
+        }
+        return response()->json($return);
     }
 
     // Filters and returns history based on data given  
@@ -378,6 +431,7 @@ abstract class LaravelLoggerController extends Controller
         // label the time scale with appropriate formatted date
         $diff = $last->created_at->diffInSeconds($first->created_at);
         $split = $diff/4;
+        //set 4 labels
         $labels = collect([]);
         foreach(range(0, 4) as $index){
             $label = $first->created_at->copy()->addSeconds($split*$index);
@@ -398,7 +452,6 @@ abstract class LaravelLoggerController extends Controller
 
             $labels[] = $label->format($format);
         }
-        // don't repeat labels
         $labels = json_encode($labels->unique()->values()->all());
 
         $smallest_diff = 1;
