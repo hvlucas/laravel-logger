@@ -621,17 +621,12 @@ $(document).ready(function(){
         }
     });
 
-    // Select table row
-    /*
-    $(document).on('click', 'table.events tbody tr', function(event){
+    // Select/Deselect event's table row
+    $(document).on('mousedown', 'table.events tbody tr', function(event){
         var target = $(event.target);
-        if(!target.is('tag, a')){
-            $(this).toggleClass('selected');
+        if(target.is('tag, a')){
+            return;
         }
-    });
-    */
-
-    $(document).on('mousedown', 'table.events tbody tr', function(){
         var tbody = $(this).parents('tbody');
         tbody.addClass('dragging');
         if($(this).hasClass('selected')){
@@ -642,6 +637,7 @@ $(document).ready(function(){
         }
     });
 
+    // Select by dragging 
     $(document).on('mouseover', 'table.events tbody tr', function(){
         if($('.dragging').length > 0){
             if($('.dragging').is('.erasing')){
@@ -652,7 +648,6 @@ $(document).ready(function(){
         }
         updateSelectedEvents();
     });
-
 
     // Select/Deselect all rows
     $(document).on('click', '.select-all, .deselect-all', function(){
