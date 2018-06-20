@@ -52,7 +52,7 @@ An advantage of LaravelLogger is that it incorporates Laravel's accessors.
 class MyClass extends Model 
 {
     //...
-    public function getWeightAttribute()
+    public function getPrettyWeightAttribute()
     {
         return (int) $this->weight / 1.5;
     }
@@ -66,7 +66,7 @@ Then add it to your `config/laravel_logger.php`
     //...
     [
         'model' => 'App\Model',
-        'trackable_attributes' => [...,'weight',...]
+        'trackable_attributes' => [...,'pretty_weight',...]
         //...
     ],
     //...
