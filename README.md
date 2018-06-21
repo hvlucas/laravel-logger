@@ -175,7 +175,7 @@ Exporting, in the other hand, will export the whole table. The filters you appli
 
 None as of yet, sorry guys :(
 
-## Incoming features
+## # Incoming features
 
 I like to keep it fresh. There are a few ideas I have in mind for this package that I would like to start working on as soon as I have time:  
 
