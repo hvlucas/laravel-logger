@@ -278,8 +278,8 @@ table.history.table-responsive {
 
 .processing {
     position: absolute;
-    right: -5px;
-    top: -5px;
+    right: -14px;
+    top: -55px;
     font-size: 16px;
     color: #000;
 }

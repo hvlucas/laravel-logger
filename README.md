@@ -11,16 +11,16 @@ With Laravel Logger you can:
   - Export model history (CSV, PDF) from a Date Range or its full history
   - View everything from a clean and responsive front-end
 
-## # Compatibility
+## # Compatibility Chart
 
 | Laravel Logger | Laravel | PHP   |
 | -------------- | ------- | ----  |
-| 1.x            | 5.5     | >=7.0 |
+| ^1.0            | 5.5     | >=7.0 |
 
 ## # Configuration
 
-There are a few configurations that can be set from the get-go. They are all optional, but will improve flexibility. Since LaravelLogger is configured at compiler-time (when your application's Service Providers are being booted), it is **important to setup your config file before running php artisan migrate (first time installation).** Otherwise, it will try to auto-discover models in your `app/` directory, and create a copy of each database row available.   
-Each model row will have a `startpoint`. Meaning from the moment LaravelLogger's service provider boots up, it will try to find a model instance which has not started its tracking yet. Which is why it would be benefitial for you to fully understand the configuration!
+There are a few configurations that can be set from the get-go. They are all optional, but will improve flexibility. Since Laravel Logger is configured at compiler-time (when your application's Service Providers are being booted), it is **important to setup your config file before running php artisan migrate (first time installation).** Otherwise, it will try to auto-discover models in your `app/` directory, and create a copy of each database row available.   
+Each model row will have a `startpoint`. Meaning from the moment Laravel Logger's service provider boots up, it will try to find a model instance which has not started its tracking yet. Which is why it would be benefitial for you to fully understand the configuration!
 
 | Config | Type | Default | What it does |
 |------|----|-------|------------|
@@ -29,8 +29,8 @@ Each model row will have a `startpoint`. Meaning from the moment LaravelLogger's
 |table_name|*string*|"logged_events"|Name of Event table that is going to be created.|
 |user_model|*string*|"App\User"|Authenticated user class name in which an Event will be associated with. Make sure to include namespacing.|
 |user_column|*string*|`null`|Column for the associated user of an Event to be displayed in the front-end. Omitting this option will display their Primary Key by default.|
-|loggable_models|*string\|array*|`null`|Ommitting this option will cause LaravelLogger to go through your `app` folder to automatically search for models to track.|
-|discover_path|*string*|"app/"|If `loggable_models` is `null`, this config can set the path in which LaravelLogger will automatically search for models to track.|
+|loggable_models|*string\|array*|`null`|Ommitting this option will cause Laravel Logger to go through your `app` folder to automatically search for models to track.|
+|discover_path|*string*|"app/"|If `loggable_models` is `null`, this config can set the path in which Laravel Logger will automatically search for models to track.|
 |discover_namespace|*string*|"App"|If `loggable_models` option is left blank, this option can be set to define the namespace of your `discover_path`.|
 
 
@@ -47,7 +47,7 @@ This is a list of available sub-options for the `loggable_models` option:
 |tracks_user|*bool*|no|`true`|Is the authenticated user being tracked?|
 |is_favorite|*bool*|no|`false`|Show this model in the beginning of the event's index page. Models are sorted by favoritism then alphabetically.|
 
-An advantage of LaravelLogger is that it incorporates Laravel's accessors. 
+An advantage of Laravel Logger is that it incorporates Laravel's accessors. 
 ```php
 class MyClass extends Model 
 {
@@ -85,7 +85,7 @@ For example:
 'loggable_models' => ['App\MyClass', 'App\SpecialModelNamespace\Team']
 //...
 ```
-There are ways you can configure what will be tracked through the model itself. In each file, you can set protected properties which will do the trick for LaravelLogger:
+There are ways you can configure what will be tracked through the model itself. In each file, you can set protected properties which will do the trick for Laravel Logger:
 ```php
 class MyClass extends Model 
 {
@@ -100,7 +100,7 @@ class MyClass extends Model
 ```
 
 ### # Configuration - Sensitive Data
-In case you don't want to store/display sensitive data, you can use Laravel's hidden attributes (or set  `trackable_attributes` config). LaravelLogger will automatically ignore `id, created_at, updated_at`, unless specified.
+In case you don't want to store/display sensitive data, you can use Laravel's hidden attributes (or set  `trackable_attributes` config). Laravel Logger will automatically ignore `id, created_at, updated_at`, unless specified.
 ```php
 class MyClass extends Model 
 {
@@ -120,17 +120,17 @@ php artisan vendor:publish
 ```console
 Which provider or tag's files would you like to publish?:
   [0 ] Publish files from all providers and tags listed below
-  [X ] Provider:  HVLucas\LaravelLogger\LaravelLoggerServiceProvider
+  [X ] Provider:  HVLucas\Laravel Logger\Laravel LoggerServiceProvider
 ```
 Setup your `config/laravel_logger.php` and then run migrations:
 ```console
 php artisan migrate
 ```
-## # Front-End
+## # Events 
 
-### # Front-End - Filtering
+### # Events - Filtering
 
-LaravelLogger takes advantages of Server-Side Processing DataTables has to offer. By clicking on individual tags, we can start filtering by them.  
+Laravel Logger takes advantages of Server-Side Processing DataTables has to offer. By clicking on individual tags, we can start filtering by them.  
 
 ![Tags screenshot](https://s3.amazonaws.com/laravel-logger/Screenshot+from+2018-06-18+10-21-34.png)  
 
@@ -145,27 +145,54 @@ Here are some other keywords you can use in the search bar. You can also use reg
 |*method/methods*|Method type associated with event|
 |*request/requests*|Alias for *method*|
 
-### Front-End - Syncing
+### # Events - Syncing
 
-LaravelLogger can keep track of your model well, but it can also sync your model to a point in time when necessary! You can click on the ID of the model you wish to inspect with more detail.  
+Laravel Logger can keep track of your model well, but it can also sync your model to a point in time when necessary! You can click on the ID of the model you wish to inspect with more detail.  
 
 ![Sync screenshot](https://s3.amazonaws.com/laravel-logger/Screenshot+from+2018-06-18+10-43-14.png)
 
-When you click on the ID of the Model, you are able to see the all time history of the selected ID. If the history is too far apart to read, then you can slide the top right slider for a more appropriate timeline. You can hover highlighted sections, which represent an event that took place in the model's timeline.  
+When you click on the ID of the Model, you are able to see the all time history of the selected ID. If the highlighted history is too far apart to read or there are too many events, then you can slide the top right slider for a more appropriate timeline. You can also hover highlighted sections, which represent an event that took place in the model's timeline.  
 
-![Model history screenshot](https://s3.amazonaws.com/laravel-logger/Screenshot+from+2018-06-19+12-12-14.png)
+![Model history screenshot](https://s3.amazonaws.com/laravel-logger/history.png)
 
-By clicking on the sync icon, a modal will popup defining which columns will be updated. Check the attribute checkboxes you wish to update and click sync. When syncing, LaravelLogger will create a `SYNC` event instance. It is important to note that `sync_attributes` option need to have valid model's table columns.
+By clicking on the sync icon, a modal will popup defining which columns will be updated. Check the attribute checkboxes you wish to update and click sync. When syncing, Laravel Logger will create a `SYNC` event instance. It is important to note that `sync_attributes` option need to have valid model's table columns.
 
 ![Sync model screenshot](https://s3.amazonaws.com/laravel-logger/sync.png)
 
-TODO 
-* Add export example
-* Add middleware section
+### # Events - Model Actions
+
+Laravel Logger gives you a few options out of the box. You can select individual/all rows for archiving/deletion. When an archived row gets deleted it will be **deleted permanently**, so you have been warned! Event deletions are not kept on the record list. Selecting 'all' rows will only select the current page you are in, but you can select a bigger scope (50, 150, 300, 500, All) from the Show dropdown above.
+
+![Dropdown screenshot](https://s3.amazonaws.com/laravel-logger/dropdown.png)
+
+Exporting, in the other hand, will export the whole table. The filters you applied will also be taken into the query.  
+
+`TODO`
+* Add middleware section  
 
 ## # Testing
 
-None as of yet
+None as of yet, sorry guys :(
+
+## Incoming features
+
+I like to keep it fresh. There are a few ideas I have in mind for this package that I would like to start working on as soon as I have time:  
+
+- Middleware and User Roles (this will be done before official release)
+- More options when exporting 
+    - Ommiting columns
+    - Flexibility to change the date format of 'When' column
+- More filtering options
+    - Date range/picker
+    - Filter by Model ID
+- Language & Translations Support
+    - Add support for different languages on the front-end
+- Tooltips
+    - Maybe you have a business manager that wants to use this tool, having help tooltips can be nice
+- Compact mode
+    - Ommit certain columns so the table is a little more compact
+- Cleanup front-end a little more. I know can do better. But hey I'm a developer not a designer, so Bootstrap 4 is what you get for right now
+- Bootstrap version control
 
 ## # Development
 

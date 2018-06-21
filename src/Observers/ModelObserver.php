@@ -13,7 +13,7 @@ class ModelObserver
     // Log created eloquent event
     public function created($model)
     {
-        $this->setStartingPoint($model);
+        LaravelLogger::getModel(get_class($model))->setStartingPoint();
         $this->logModelEvent($model, 'created');
     }
     
@@ -40,16 +40,22 @@ class ModelObserver
     {
         $tracker = LaravelLogger::getTracker();
         $model = $tracker->getModel(get_class($model_tracked));
+        $current_user_id = null;
+        if($model->isTrackingAuthenticatedUser()){
+            $current_user_id = $tracker->getUserId();
+        }
+
+        // don't log event when current user is null and only_when_authenticated is true
+        if($model->getOnlyWhenAuthenticated() && $current_user_id === null){
+            return;
+        }
+
         $attributes = $sync_attributes = json_encode([]);
         if($model->isTrackingData()){
             $attributes = $model->getAttributeValues($model_tracked, false);
             $sync_attributes = $model->getAttributeValues($model_tracked, true);
         }
 
-        $current_user_id = null;
-        if($model->isTrackingAuthenticatedUser()){
-            $current_user_id = $tracker->getUserId();
-        }
 
         Event::store([
             'activity' => $event,
@@ -64,13 +70,5 @@ class ModelObserver
             'full_url' => $tracker->getFullUrl(),
             'method' => $tracker->getMethod()
         ]);
-    }
-
-    // Set the starting point for newly created model instance
-    private function setStartingPoint($model)
-    {
-        $tracker = LaravelLogger::getTracker();
-        $model = $tracker->getModel(get_class($model));
-        $model->setStartingPoint();
     }
 }
