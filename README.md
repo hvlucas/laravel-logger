@@ -43,9 +43,10 @@ This is a list of available sub-options for the `loggable_models` option:
 |model|*string*|yes|`null`|Model which is going to be tracked.|
 |trackable_attributes|*string\|array*|no|`null`|Which attributes which will be stored when an event happens. If this is not set, it will pull all non-hidden attributes.|
 |sync_attributes|*string\|array*|no|`null`|Which attributes will update when syncing model. When this is not set, it will default to `trackable_attributes`. **Columns must exist in model table.**|
-|tracks_data|*bool*|no|`true`|Are attributes being tracked? If `trackable_attributes` is set, then `tracks_data` will overwrite that setting.|
+|only_when_authenticated|*bool*|no|`false`|Events will only be logged if there is an authenticated user present. This will default to `false` if `tracks_user` is also `false`.|
+|tracks_data|*bool*|no|`true`|Are attributes going to be tracked?  Setting `tracks_data` to `false` will overwrite `trackable_attributes` and `sync_attributes` to `[]`.|
 |tracks_user|*bool*|no|`true`|Is the authenticated user being tracked?|
-|is_favorite|*bool*|no|`false`|Show this model in the beginning of the event's index page. Models are sorted by favoritism then alphabetically.|
+|is_favorite|*bool*|no|`false`|Show this model in the beginning of the event's tabs container. Models are sorted by favoritism then alphabetically.|
 
 An advantage of Laravel Logger is that it incorporates Laravel's accessors. 
 ```php
@@ -60,7 +61,7 @@ class MyClass extends Model
 }
 ```
 
-Then add it to your `config/laravel_logger.php` 
+Then add the attribute to your `config/laravel_logger.php` options. 
 ```php
 'loggable_models' => [
     //...

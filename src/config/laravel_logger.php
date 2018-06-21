@@ -1,8 +1,4 @@
 <?php
-    /*
-     * TODO
-     * Figure out what kind of configs are going to be added
-     */
     return [
         /* Database connection which will store events */
         //'log_connection' => env('YOUR_DATABASE_CONNECTION'), 
@@ -18,10 +14,10 @@
         /* User column to be displayed in the front-end */
         //'user_column' => 'name',
 
-        /* Path for LaravelLogger to auto-discover models */
+        /* Path for Laravel Logger to auto-discover models */
         //'discovery_path' => 'app/',
         
-        /* Base Model namespace; LaravelLogger will try to auto find models in namespace given */
+        /* Base Model namespace; Laravel Logger will try to auto find models in namespace given */
         //'discover_namespace' => 'App',
 
         /* Route pathing */
@@ -39,7 +35,8 @@
                 'trackable_attributes' => ['title', 'publisher', 'udpated_at'],
                 'sync_attributes' => ['title'],
                 'tracks_data' => true,
-                'tracks_user' => false,
+                'tracks_user' => true,
+                'only_when_authenticated' => true,
             ],
             'App\Comment', 
             'App\User',
