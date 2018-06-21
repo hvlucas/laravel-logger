@@ -161,9 +161,10 @@ class LaravelLoggerServiceProvider extends ServiceProvider
         }
 
         if(!isset($tracks_user)){ 
-            $tracks_user = (bool) $this->getProperty('tracks_user', $model);
-        }else{
-            $tracks_user = true;
+            $tracks_user = $this->getProperty('tracks_user', $model);
+            if($tracks_user === null){
+                $tracks_user = true;
+            }
         }
 
         if(!isset($attribute)){
@@ -182,20 +183,20 @@ class LaravelLoggerServiceProvider extends ServiceProvider
                 $trackable_attributes = [];
                 $sync_attributes = [];
             }
-        }else{
-            $tracks_data = true;
         }
 
         if(!isset($is_favorite)){
-            $is_favorite = (bool) $this->getProperty('is_favorite', $model);
-        }else{
-            $is_favorite = false;
+            $is_favorite = $this->getProperty('is_favorite', $model);
+            if($is_favorite === null){
+                $is_favorite = false;
+            }
         }
 
         if(!isset($only_when_authenticated)){
             $only_when_authenticated = (bool) $this->getProperty('only_when_authenticated', $model);
-        }else{
-            $only_when_authenticated = false;
+            if($only_when_authenticated === null){
+                $only_when_authenticated = false;
+            }
         }
         // If not tracking user, then set only_when_authenticated flag to false
         if(!$tracks_user && $only_when_authenticated){
