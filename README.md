@@ -198,7 +198,7 @@ None as of yet, sorry guys :(
 
 I like to keep it fresh. There are a few ideas I have in mind for this package that I would like to start working on as soon as I have time:  
 
-- Middleware and User Roles (this will be done before official release)
+- Coloring of custom middleware tags
 - More options when exporting 
     - Ommiting columns
     - Flexibility to change the date format of 'When' column
