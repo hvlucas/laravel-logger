@@ -17,6 +17,25 @@ With Laravel Logger you can:
 | --------------  | ------- | ----  |
 | ^1.0            | 5.5     | >=7.0 |
 
+## # Installation
+Require our package:
+```console
+composer require hvlucas/laravel-logger 1.0
+```
+Publish required files and select the number corresponding to this package:
+```console
+php artisan vendor:publish
+```
+```console
+Which provider or tag's files would you like to publish?:
+  [0 ] Publish files from all providers and tags listed below
+  [X ] Provider:  HVLucas\Laravel Logger\Laravel LoggerServiceProvider
+```
+Setup your `config/laravel_logger.php` and then run migrations:
+```console
+php artisan migrate
+```
+
 ## # Configuration
 
 There are a few configurations that can be set from the get-go. They are all optional, but will improve flexibility. Since Laravel Logger is configured at compiler-time (when your application's Service Providers are being booted), it is **important to setup your config file before running php artisan migrate (first time installation).** Otherwise, it will try to auto-discover models in your `app/` directory, and create a copy of each database row available.   
@@ -103,24 +122,6 @@ class MyClass extends Model
 }
 ```
 
-## # Installation
-Require our package:
-```console
-composer require hvlucas/laravel-logger 1.0
-```
-Publish required files and select the number corresponding to this package:
-```console
-php artisan vendor:publish
-```
-```console
-Which provider or tag's files would you like to publish?:
-  [0 ] Publish files from all providers and tags listed below
-  [X ] Provider:  HVLucas\Laravel Logger\Laravel LoggerServiceProvider
-```
-Setup your `config/laravel_logger.php` and then run migrations:
-```console
-php artisan migrate
-```
 ## # Events 
 
 ### # Events- Middleware
