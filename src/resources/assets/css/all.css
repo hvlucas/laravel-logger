@@ -197,6 +197,11 @@ tag.created, tag.get {
     background-color: #10ac10;
 }
 
+/* blood orange */
+tag.retrieved { 
+    background-color: #e25b22
+}
+
 /* red */
 tag.destroyed, tag.deleted, tag.delete {
     background-color: #ff4646;
