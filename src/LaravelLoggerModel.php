@@ -159,4 +159,42 @@ class LaravelLoggerModel
     {
         return strtolower(implode($char, explode('\\', $this->class_name)));
     }
+
+    // Log event
+    public function logModelEvent($model_tracked, $event): void
+    {
+        $tracker = LaravelLogger::getTracker();
+        $current_user_id = null;
+        if($this->isTrackingAuthenticatedUser()){
+            $current_user_id = $tracker->getUserId();
+        }
+        // don't log event when current user is null and only_when_authenticated is true
+        if($this->getOnlyWhenAuthenticated() && $current_user_id === null){
+            return;
+        }
+        //if we're going to log, set starting point when event is `created`
+        if($event == 'created'){
+            $this->setStartingPoint();
+        }
+
+        $attributes = $sync_attributes = json_encode([]);
+        if($this->isTrackingData()){
+            $attributes = $this->getAttributeValues($model_tracked, false);
+            $sync_attributes = $this->getAttributeValues($model_tracked, true);
+        }
+
+        Event::store([
+            'activity' => $event,
+            'model_id' => (string) $model_tracked->{$model_tracked->getKeyName()},
+            'model_name' => get_class($model_tracked),
+            'model_attributes' => $attributes,
+            'sync_attributes' => $sync_attributes,
+            'created_at' => new Carbon,
+            'user_id' => $current_user_id,
+            'user_agent' => $tracker->getUserAgent(),
+            'ip_address' => $tracker->getIp(),
+            'full_url' => $tracker->getFullUrl(),
+            'method' => $tracker->getMethod()
+        ]);
+    }
 }

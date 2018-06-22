@@ -3,21 +3,23 @@
 namespace HVLucas\LaravelLogger;
 
 use ReflectionClass;
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Schema;
-use HVLucas\LaravelLogger\LaravelLoggerTracker;
-use HVLucas\LaravelLogger\Observers\ModelObserver;
-use HVLucas\LaravelLogger\Facades\LaravelLogger;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\ServiceProvider;
 use HVLucas\LaravelLogger\App\Event;
-use HVLucas\LaravelLogger\Exceptions\InvalidSyntaxException;
+use HVLucas\LaravelLogger\App\Http\Middleware\LogEvent;
+use HVLucas\LaravelLogger\Facades\LaravelLogger;
+use HVLucas\LaravelLogger\LaravelLoggerTracker;
 use HVLucas\LaravelLogger\Exceptions\ColumnNotFoundException;
+use HVLucas\LaravelLogger\Exceptions\InvalidSyntaxException;
 use HVLucas\LaravelLogger\Exceptions\TableNotFoundException;
+use HVLucas\LaravelLogger\Observers\ModelObserver;
 
 class LaravelLoggerServiceProvider extends ServiceProvider
 {
     // Boot Application
-    public function boot(): void
+    public function boot(Router $router): void
     {
         $this->bootLaravelLogger();
     }
@@ -43,6 +45,9 @@ class LaravelLoggerServiceProvider extends ServiceProvider
 
         // Publish the config/laravel_logger.php file
         $this->publishes([$config => config_path('laravel_logger.php')], 'config');
+
+        //Register middleware
+        $router->middlewareGroup('log_event', [LogEvent::class]);
 
         // Register Routes
         $this->loadRoutesFrom(__DIR__.'/routes/laravel_logger.php');

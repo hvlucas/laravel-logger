@@ -3,7 +3,7 @@
 Route::group([
     'prefix' => config('laravel_logger.route_prefix', 'events'), 
     'namespace' => 'HVLucas\LaravelLogger\App\Http\Controllers',
-    'middleware' => 'web'
+    'middleware' => ['web', config('laravel_logger.auth_middleware', 'auth')],
 ], function(){
     Route::get('/list', 'EventsController@list');
     Route::get('/show/{event}/', 'EventsController@show');
@@ -15,7 +15,7 @@ Route::group([
 Route::group([
     'prefix' => 'events-ajax-helpers',
     'namespace' => 'HVLucas\LaravelLogger\App\Http\Controllers',
-    'middleware' => 'web'
+    'middleware' => ['web', config('laravel_logger.auth_middleware', 'auth')],
 ], function(){
     Route::get('/list', 'EventsController@filterEvents');
     Route::post('/model-history', 'EventsController@modelHistory');

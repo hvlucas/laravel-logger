@@ -23,6 +23,9 @@
         /* Route pathing */
         //'route_prefix' => 'events',
 
+        /* Auth middleware */
+        //'auth_middleware' => 'auth',
+
         /* Models that are going to have Events Logged */
         //There are two ways to format loggable_models, you may pass specific options on a individual model.
         //You can also pass the string of the model you want to log. 

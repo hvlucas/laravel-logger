@@ -13,8 +13,8 @@ With Laravel Logger you can:
 
 ## # Compatibility Chart
 
-| Laravel Logger | Laravel | PHP   |
-| -------------- | ------- | ----  |
+| Laravel Logger  | Laravel | PHP   |
+| --------------  | ------- | ----  |
 | ^1.0            | 5.5     | >=7.0 |
 
 ## # Configuration
@@ -32,7 +32,7 @@ Each model row will have a `startpoint`. Meaning from the moment Laravel Logger'
 |loggable_models|*string\|array*|`null`|Ommitting this option will cause Laravel Logger to go through your `app` folder to automatically search for models to track.|
 |discover_path|*string*|"app/"|If `loggable_models` is `null`, this config can set the path in which Laravel Logger will automatically search for models to track.|
 |discover_namespace|*string*|"App"|If `loggable_models` option is left blank, this option can be set to define the namespace of your `discover_path`.|
-
+|auth_middleware|*string*|"auth"|Middleware name for only allowing authenticated users to access this package.|
 
 ### # Configuration - Initialization by Config
 
@@ -52,7 +52,6 @@ An advantage of Laravel Logger is that it incorporates Laravel's accessors.
 ```php
 class MyClass extends Model 
 {
-    //...
     public function getPrettyWeightAttribute()
     {
         return (int) $this->weight / 1.5;
@@ -64,11 +63,9 @@ class MyClass extends Model
 Then add the attribute to your `config/laravel_logger.php` options. 
 ```php
 'loggable_models' => [
-    //...
     [
         'model' => 'App\Model',
         'trackable_attributes' => [...,'pretty_weight',...]
-        //...
     ],
     //...
 ],
@@ -80,17 +77,14 @@ To read more about accessors, check Laravel's [documentation](https://laravel.co
 You can set up `loggable_models` in many different ways. Just passing a string will only track one model and its attributes.   
 For example:
 ```php
-//...
 'loggable_models' => 'App\MyClass'
 //or
 'loggable_models' => ['App\MyClass', 'App\SpecialModelNamespace\Team']
-//...
 ```
 There are ways you can configure what will be tracked through the model itself. In each file, you can set protected properties which will do the trick for Laravel Logger:
 ```php
 class MyClass extends Model 
 {
-    //...
     protected $trackable_attributes = ['name', 'title', 'role_id', 'salary', 'gender'];
     protected $sync_attributes = ['name', 'title', 'gender'];
     protected $tracks_user = false;
@@ -128,6 +122,30 @@ Setup your `config/laravel_logger.php` and then run migrations:
 php artisan migrate
 ```
 ## # Events 
+
+### # Events- Middleware
+If there are routes in your application where the instace doesn't get updated/deleted/restored, then you have the flexibility to add `log_event` middleware to your routes or controller `__construct()`:
+
+`routes/web.php`
+```php
+Route::get('/fecthing-model/{model_id}/', 'FetchingController@fetch')->middleware('log_event');
+```
+
+`app\Http\Controllers\FecthingController.php`
+```php
+public function __construct(...)
+{
+    $this->middleware('log_event')->only('fetch');
+}
+```
+
+Laravel Logger will parse through the parameters in the request and look for your model instance! The default event name will be `retrieved`. Of course, you can pass a different name like so:
+
+```php
+    $this->middleware('log_event:jumped');
+```
+
+Just be careful passing `log_event` middleware to methods that update/delete/restore your model instace, since it will be logged multiple times! To read more about middlewares check out Laravel's [documentation](https://laravel.com/docs/5.6/middleware#introduction)  
 
 ### # Events - Filtering
 
