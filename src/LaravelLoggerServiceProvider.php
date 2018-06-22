@@ -22,7 +22,7 @@ class LaravelLoggerServiceProvider extends ServiceProvider
     public function boot(Router $router): void
     {
         //Register middleware
-        $router->middlewareGroup('log_event', [LogEvent::class]);
+        $router->aliasMiddleware('log_event', LogEvent::class);
         $this->bootLaravelLogger();
     }
 

@@ -3,9 +3,10 @@
 namespace HVLucas\LaravelLogger;
 
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use HVLucas\LaravelLogger\App\Event;
+use HVLucas\LaravelLogger\Facades\LaravelLogger;
 use HVLucas\LaravelLogger\Exceptions\ClassNotMatchedException;
 
 class LaravelLoggerModel

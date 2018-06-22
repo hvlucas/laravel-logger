@@ -3,6 +3,7 @@
 namespace HVLucas\LaravelLogger\App\Http\Middleware;
 
 use Closure;
+use HVLucas\LaravelLogger\Facades\LaravelLogger;
 
 class LogEvent
 {
@@ -15,7 +16,7 @@ class LogEvent
             $model_name = $reflection->name;
             $model = LaravelLogger::getModel($model_name);
             if($model){
-                $instance = $parameters[$param->getPosision()];
+                $instance = $parameters[$param->getPosition()];
                 $model->logModelEvent($instance, $event);
             }
         }
