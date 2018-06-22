@@ -186,17 +186,11 @@ class LaravelLoggerServiceProvider extends ServiceProvider
         }
 
         if(!isset($is_favorite)){
-            $is_favorite = $this->getProperty('is_favorite', $model);
-            if($is_favorite === null){
-                $is_favorite = false;
-            }
+            $is_favorite = (bool) $this->getProperty('is_favorite', $model);
         }
 
         if(!isset($only_when_authenticated)){
             $only_when_authenticated = (bool) $this->getProperty('only_when_authenticated', $model);
-            if($only_when_authenticated === null){
-                $only_when_authenticated = false;
-            }
         }
         // If not tracking user, then set only_when_authenticated flag to false
         if(!$tracks_user && $only_when_authenticated){
