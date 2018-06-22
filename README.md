@@ -177,7 +177,7 @@ When you click on the ID of the Model, you are able to see the all time history 
 
 By clicking on the sync icon, a modal will popup defining which columns will be updated. Check the attribute checkboxes you wish to update and click sync. When syncing, Laravel Logger will create a `SYNC` event instance. It is important to note that `sync_attributes` option need to have valid model's table columns.
 
-![Sync model screenshot](https://s3.amazonaws.com/laravel-logger/sync2.png)
+![Sync model screenshot](https://s3.amazonaws.com/laravel-logger/sync.png)
 
 ### # Events - Model Actions
 

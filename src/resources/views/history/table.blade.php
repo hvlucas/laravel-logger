@@ -49,7 +49,7 @@
                                 @endif
                             </td>
                         @endif
-                        <td>{{$value}}</td>
+                        <td data-toggle="tooltip" title="{{$value}}">{{$value}}</td>
                     @endforeach
                 </tr>
             @endforeach

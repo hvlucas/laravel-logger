@@ -355,6 +355,10 @@ table.history {
     line-height: 20px;
 }
 
+table.history td {
+    border-radius: 25px;
+}
+
 table.history td:not(.attribute-name):not(.column-split) {
     min-width: 200px;
 }
@@ -370,7 +374,8 @@ table.history td:not(:first-child) {
 
 table.history td, table#syncing-model td{
     max-width: 200px;
-    overflow: auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 ts {
@@ -458,7 +463,7 @@ table#syncing-model th {
 }
 
 #history-slider .slider-rangeHighlight {
-	background: #f70616;
+	background: #7d7d7d;
 }
 
 #history-slider .slider-rangeHighlight.updated {
