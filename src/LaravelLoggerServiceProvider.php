@@ -21,6 +21,8 @@ class LaravelLoggerServiceProvider extends ServiceProvider
     // Boot Application
     public function boot(Router $router): void
     {
+        //Register middleware
+        $router->middlewareGroup('log_event', [LogEvent::class]);
         $this->bootLaravelLogger();
     }
 
@@ -45,9 +47,6 @@ class LaravelLoggerServiceProvider extends ServiceProvider
 
         // Publish the config/laravel_logger.php file
         $this->publishes([$config => config_path('laravel_logger.php')], 'config');
-
-        //Register middleware
-        $router->middlewareGroup('log_event', [LogEvent::class]);
 
         // Register Routes
         $this->loadRoutesFrom(__DIR__.'/routes/laravel_logger.php');
