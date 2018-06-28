@@ -114,7 +114,7 @@ class MyClass extends Model
 ```
 
 ### # Configuration - Sensitive Data
-In case you don't want to store/display sensitive data, you can use Laravel's hidden attributes (or set  `trackable_attributes` config). Laravel Logger will automatically ignore `id, created_at, updated_at`, unless specified.
+In case you don't want to store/display sensitive data, you can use Laravel's hidden attributes (or set  `trackable_attributes` config). Laravel Logger will automatically ignore `id, created_at, updated_at, deleted_at`, unless specified.
 ```php
 class MyClass extends Model 
 {
