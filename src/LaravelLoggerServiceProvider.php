@@ -210,7 +210,7 @@ class LaravelLoggerServiceProvider extends ServiceProvider
             $attributes = $this->getProperty('trackable_attributes', $model);
             if($attributes === null){
                 $all_attributes = Schema::getColumnListing($table_name);
-                $hidden_attributes = [$model_instance->getKeyName(), 'created_at', 'updated_at'];
+                $hidden_attributes = [$model_instance->getKeyName(), 'created_at', 'updated_at', 'deleted_at'];
                 //remove primary key/created_at/updated_at from tracking list and merge hidden attributes as well
                 $hidden_attributes = array_merge($hidden_attributes, (array) $this->getProperty('hidden', $model));
                 $attributes = array_diff($all_attributes, $hidden_attributes);
