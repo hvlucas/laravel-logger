@@ -33,6 +33,6 @@ class ModelObserver
     // Log event
     private function logModelEvent($model_tracked, $event): void
     {
-        LaravelLogger::getModel(get_class($model))->logModelEvent($model_tracked, $event);
+        LaravelLogger::getModel(get_class($model_tracked))->logModelEvent($model_tracked, $event);
     }
 }
