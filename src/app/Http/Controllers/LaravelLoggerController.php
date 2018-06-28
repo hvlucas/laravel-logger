@@ -59,9 +59,9 @@ abstract class LaravelLoggerController extends Controller
             ->where('model_name', $model->getClassName());
 
         if($request->archived){
-            $model_events->where('deleted_at', '!=', null);
+            $model_events->where("$events_table.deleted_at", '!=', null);
         }else{
-            $model_events->whereNull('deleted_at');
+            $model_events->whereNull("$events_table.deleted_at");
         }
 
         // Set slice variables
