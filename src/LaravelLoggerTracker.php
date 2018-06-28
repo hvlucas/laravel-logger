@@ -38,7 +38,7 @@ class LaravelLoggerTracker
     public function getModel(string $class_name)
     {
         if(!isset($this->models[$class_name])){
-            throw new ModelNotFoundException;
+            return null;
         }
         return $this->models[$class_name];
     }
