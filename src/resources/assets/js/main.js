@@ -282,7 +282,7 @@ $(document).ready(function(){
     // Toggle nav tabs
     $(document).on('click', '#toggleTab', function(){
         var items = nav_parent.find('.nav-item.toggle-nav').not('#expandTab');
-        var current_text = $('#toggleTab a').text();
+        var current_text = $('#toggleTab').text();
         if(current_text == '+'){
             new_text = '-';
             showNavItem(items);
@@ -290,7 +290,7 @@ $(document).ready(function(){
             new_text = '+';
             hideNavItem(items);
         }
-        $('#toggleTab a').text(new_text);
+        $('#toggleTab').text(new_text);
     });
 
     // Get model history and trigger modal to show

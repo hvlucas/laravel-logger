@@ -121,7 +121,7 @@ ul.nav-item-menu-dropdown {
     z-index: 1;
 }
 
-#toggleTab a {
+#toggleTab, #toggleTab a {
     color: #fff;
 }
 
