@@ -171,7 +171,7 @@ class LaravelLoggerServiceProvider extends ServiceProvider
             }
         }
 
-        if(!isset($attribute)){
+        if(!isset($attributes)){
             $attributes = [];
         }
 
@@ -203,7 +203,6 @@ class LaravelLoggerServiceProvider extends ServiceProvider
         // check for table_name existance in Schema
         $table_name = $model_instance->getTable();
         if(!Schema::hasTable($table_name)){
-            return;
             throw new TableNotFoundException("`$table_name` was not found in your Schema. Make sure you have the correct table name.");
         }
         //if attributes is not set in config, check model class for 'trackable_attributes' property
@@ -227,7 +226,6 @@ class LaravelLoggerServiceProvider extends ServiceProvider
         // check if sync_attributes exists in DB
         foreach($sync_attributes as $attr){
             if(!Schema::hasColumn($table_name, $attr)){
-                return;
                 throw new ColumnNotFoundException("Column `$attr` was not found in `$table_name` table");
             }
         }
