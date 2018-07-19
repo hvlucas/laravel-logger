@@ -175,7 +175,7 @@ class LaravelLoggerServiceProvider extends ServiceProvider
             $attributes = [];
         }
 
-        if(!isset($sync_attribute)){
+        if(!isset($sync_attributes)){
             $sync_attributes = [];
         }
 
