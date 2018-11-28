@@ -234,7 +234,7 @@ class LaravelLoggerServiceProvider extends ServiceProvider
         $laravel_logger_model = new LaravelLoggerModel($model, $attributes, $sync_attributes, $tracks_user, $tracks_data, $only_when_authenticated, $is_favorite);
         LaravelLogger::push($laravel_logger_model);
         $model::observe($this->app->make('HVLucas\LaravelLogger\Observers\ModelObserver'));
-        $laravel_logger_model->setStartingPoint();
+        //$laravel_logger_model->setStartingPoint();
     }
 
     // Returns model's property
