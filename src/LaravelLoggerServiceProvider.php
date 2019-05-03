@@ -107,10 +107,10 @@ class LaravelLoggerServiceProvider extends ServiceProvider
             if(class_exists($model)){
                 try {
                     $instance = new $model;
+                    $table = $instance->getTable();
                 }catch(\Throwable $e){
                     continue;
                 }
-                $table = $instance->getTable();
                 if(Schema::hasTable($table)){
                     $models[] = $model;
                 }
